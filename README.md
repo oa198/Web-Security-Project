@@ -1,16 +1,20 @@
 # University Management System
 
 ## Project Overview
-This is a **Web Security** project developed as part of a university course, focusing on building a secure **University Management System** using **Laravel**. The system manages various university roles, authentication flows, and APIs for mobile interaction. The project emphasizes security practices, role-based access control, and collaborative development.
+
+This is a **Web Security** project developed as part of a university course, focusing on building a secure **University Management System** using **Laravel**. The system manages various university roles, authentication flows, and APIs for mobile interaction. The project emphasizes security practices, role-based access control, and collaborative development. **All team members will work on all aspects of the project** to ensure everyone gains comprehensive experience across the entire development process.
 
 ### Team Members
+
 - Mohamed Saied
 - Ahmed Essam Eldin
 - Omar Ahmed Mohamed
 - Mohamed Tarek Sayed
 
 ### Project Requirements
+
 The system must include:
+
 - **Core Functionality**: A university management system with features for managing students, faculty, and administrative tasks.
 - **Roles and Permissions**:
   - At least 5 roles: **Admissions**, **DRs (Professors)**, **TAs (Teaching Assistants)**, **Students**, and **IT Support**.
@@ -29,6 +33,7 @@ The system must include:
   - To be defined as the project progresses.
 
 ### Tech Stack
+
 - **Backend**: Laravel (PHP framework)
 - **Frontend**: Blade templates (default) with optional **Vue.js** for dynamic components
 - **Database**: MySQL (via XAMPP)
@@ -39,7 +44,9 @@ The system must include:
 - **Version Control**: Git (hosted on GitHub)
 
 ## Development Setup
+
 ### Prerequisites
+
 - **XAMPP**: Ensure Apache and MySQL are installed and running.
 - **PHP**: Version 8.1 or higher (compatible with Laravel 10/11).
 - **Composer**: For managing PHP dependencies.
@@ -48,83 +55,110 @@ The system must include:
 - **Postman**: For testing and documenting APIs.
 
 ### Installation
+
 1. **Clone the Repository**:
+
    ```bash
-   git clone https://github.com/<your-repo>/university-management-system.git
+   git clone https://github.com/Black1hp/Web-Security-Project.git
    cd university-management-system
    ```
 
 2. **Install Dependencies**:
+
    ```bash
    composer install
    npm install
    ```
 
 3. **Configure Environment**:
+
    - Copy `.env.example` to `.env`:
+
      ```bash
      cp .env.example .env
      ```
+
    - Update `.env` with your database credentials (MySQL via XAMPP) and other configurations (e.g., mail driver, social login keys).
+
    - Generate an application key:
+
      ```bash
      php artisan key:generate
      ```
 
 4. **Set Up Database**:
+
    - Create a MySQL database (e.g., `university_system`) in phpMyAdmin.
+
    - Run migrations and seed the database:
+
      ```bash
      php artisan migrate --seed
      ```
 
 5. **Enable SSL Locally**:
+
    - Use XAMPP’s Apache configuration to enable HTTPS.
    - Generate a self-signed SSL certificate using OpenSSL or a tool like `mkcert`.
    - Update `.env` to reflect the HTTPS URL (e.g., `APP_URL=https://localhost`).
 
 6. **Run the Application**:
+
    ```bash
    php artisan serve
    ```
+
    - Access the app at `https://localhost:8000` (or your configured port).
 
 7. **Optional Vue.js Setup**:
+
    - If using Vue.js, compile frontend assets:
+
      ```bash
      npm run dev
      ```
 
 ## Development Workflow
+
 ### Git Workflow
+
 - **Branch**: All changes are committed directly to the `main` branch.
+
 - **Force Pushes**: **Strictly prohibited** to avoid overwriting team changes.
+
+- **Daily Updates**: **All team members must push updates to GitHub daily** to ensure consistent progress and collaboration.
+
 - **Steps for Contributing**:
+
   1. Pull the latest changes from `main`:
+
      ```bash
      git pull origin main
      ```
+
   2. Make changes locally.
+
   3. Commit changes with a descriptive message:
+
      ```bash
      git commit -m "Add feature X or fix issue Y"
      ```
-  4. Push to `main`:
+
+  4. Push to `main` daily:
+
      ```bash
      git push origin main
      ```
+
   5. Resolve any merge conflicts locally before pushing.
 
 ### Task Assignment
-- Tasks will be divided among team members based on expertise and availability.
+
+- **All team members** will contribute to every part of the project, including backend, frontend, authentication, APIs, and security features.
 - Use **GitHub Issues** to track tasks, bugs, and feature requests.
-- Example task breakdown:
-  - **Mohamed Saied**: Role editor and Spatie integration.
-  - **Ahmed Essam Eldin**: Authentication and social login.
-  - **Omar Ahmed Mohamed**: API development and Postman documentation.
-  - **Mohamed Tarek Sayed**: Frontend (Blade/Vue.js) and SSL setup.
 
 ### Project Timeline
+
 - **Duration**: 5 weeks (ending approximately mid-May 2025).
 - **Milestones**:
   - **Week 1**: Set up Laravel, database, and initial roles/permissions.
@@ -134,6 +168,7 @@ The system must include:
   - **Week 5**: Finalize features, test thoroughly, and prepare for submission.
 
 ## Security Considerations
+
 - Use **Laravel’s built-in security features** (e.g., CSRF protection, input validation).
 - Sanitize all user inputs to prevent XSS and SQL injection.
 - Secure APIs with **Laravel Sanctum** or **API tokens** for student access.
@@ -141,6 +176,7 @@ The system must include:
 - Ensure SSL is enabled for all local and production environments.
 
 ## API Development
+
 - APIs will be built for student-facing mobile interactions (e.g., view courses, grades).
 - Use **Laravel Resource Controllers** for RESTful endpoints.
 - Example endpoints:
@@ -149,17 +185,20 @@ The system must include:
 - Document all APIs in a **Postman Collection** and publish publicly.
 
 ## Testing
-- Write unit and feature tests using **PHPUnit** and Laravel’s testing tools.
+
 - Test authentication flows, role permissions, and API endpoints.
 - Manually test the application in a browser with SSL enabled.
 - Use Postman to test APIs before publishing.
 
 ## Additional Notes
+
+- **Daily updates** to GitHub are mandatory to keep the project on track.
 - Regularly communicate via team channels (e.g., WhatsApp, Discord) to coordinate tasks.
 - Update this README as new features or processes are added.
 - If issues arise (e.g., merge conflicts, setup problems), consult the team immediately.
 
 ## Contact
+
 For questions or clarifications, reach out to any team member or create a GitHub Issue.
 
 Happy coding!
