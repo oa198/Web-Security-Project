@@ -1,23 +1,65 @@
-/.phpunit.cache
-/node_modules
-/public/build
-/public/hot
+# Laravel & PHP
+/vendor/
+/node_modules/
 /public/storage
 /storage/*.key
-/storage/pail
-/vendor
+/storage/logs/
+/storage/framework/
+/storage/app/public/
+/.phpunit.cache
+/.phpunit.result.cache
+
+# Environment & Config files
 .env
+.env.*
 .env.backup
 .env.production
+.env.development
+.env.testing
+*.env
 .phpactor.json
-.phpunit.result.cache
 Homestead.json
 Homestead.yaml
+
+# IDE & Editor settings
+/.idea/
+/.vscode/
+/.fleet/
+/.nova/
+/.zed/
+
+# OS/Editor/Tooling
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+*.sublime-project
+
+# Composer & NPM logs
+composer.lock
 npm-debug.log
 yarn-error.log
+package-lock.json
+
+# Auth & API keys
 /auth.json
-/.fleet
-/.idea
-/.nova
-/.vscode
-/.zed
+
+# Build artifacts
+/public/build/
+/public/hot/
+
+# Backups & misc
+*.bak
+*.backup
+*.sql
+*.sqlite
+*.zip
+*.tar.gz
+
+# Prevent sensitive files from leaking
+*.key
+*.pem
+*.crt
+*.p12
+*.cer
+
+# End of file
