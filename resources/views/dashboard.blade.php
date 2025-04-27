@@ -187,9 +187,9 @@
         /* User dropdown */
         .user-dropdown {
             position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            min-width: 150px;
+            top: 80px;
+            right: 20px;
+            min-width: 180px;
             background-color: var(--bg-white);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -227,6 +227,27 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
+        /* Responsive sidebar */
+        .hamburger-menu {
+            display: none;
+            position: absolute;
+            top: 45px;
+            left: 20px;
+            z-index: 20;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+        }
+
+        .hamburger-line {
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-color);
+            margin: 5px 0;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 1280px) {
             .dashboard-container {
@@ -247,6 +268,29 @@
             }
             .welcome-text {
                 max-width: 90%;
+            }
+            .hamburger-menu {
+                display: block;
+            }
+            .left-panel {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .left-panel.active {
+                transform: translateX(0);
+            }
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: none;
+                z-index: 15;
+            }
+            .sidebar-overlay.active {
+                display: block;
             }
         }
 
@@ -296,8 +340,18 @@
                 </svg>
             </div>
             
+            <!-- Hamburger Menu for Mobile -->
+            <div class="hamburger-menu" id="hamburgerMenu">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </div>
+            
+            <!-- Overlay for Mobile Sidebar -->
+            <div class="sidebar-overlay" id="sidebarOverlay"></div>
+            
             <!-- Sidebar -->
-            <div class="absolute w-[265px] h-[958px] top-[33px] left-[35px] rounded-[28px]">
+            <div class="absolute w-[265px] h-[958px] top-[33px] left-[35px] rounded-[28px] left-panel" id="leftPanel">
                 <div class="flex flex-col w-[265px] h-[958px] items-start gap-9 px-[53px] py-[42px] absolute top-0 left-0 bg-purple rounded-[28px]">
                     <img class="relative w-[158px] h-[150px] object-cover" alt="Logo" src="{{ asset('images/image 1.png') }}" />
                     
@@ -428,19 +482,12 @@
                 <div class="relative w-2 h-2 top-1.5 left-[7px] bg-[#ff0000] rounded"></div>
             </div>
             
-            <!-- User Profile Section -->
-            <div class="user-dropdown-container">
-                <img class="absolute w-12 h-[50px] top-[38px] left-[994px] object-cover cursor-pointer" id="userAvatar" alt="User" src="{{ asset('images/image 2.png') }}" />
-                
-                <p class="absolute h-[38px] top-[47px] left-[1054px] font-normal text-base leading-[19.4px] transition-colors duration-300">
-                    <span class="font-semibold text-[var(--text-color)]">
-                        {{ Auth::user()->name ?? 'Nischal Basavaraju' }}
-                        <br />
-                    </span>
-                    <span class="text-[var(--text-secondary)]">
-                        2nd Year, Btech, CSE
-                    </span>
-                </p>
+            <!-- Settings Icon with Dropdown -->
+            <div class="absolute w-[29px] h-[29px] top-[50px] left-[1363px] text-[var(--text-color)] transition-colors duration-300 cursor-pointer" id="settingsIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
                 
                 <div class="user-dropdown" id="userDropdown">
                     <a href="{{ url('/profile') }}" class="dropdown-item">
@@ -460,14 +507,6 @@
                         Logout
                     </a>
                 </div>
-            </div>
-            
-            <!-- Settings Icon -->
-            <div class="absolute w-[29px] h-[29px] top-[50px] left-[1363px] text-[var(--text-color)] transition-colors duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
             </div>
             
             <!-- Welcome Card -->
@@ -576,20 +615,35 @@
                 localStorage.setItem('theme', newTheme);
             });
             
-            // User dropdown functionality
-            const userAvatar = document.getElementById('userAvatar');
+            // User dropdown functionality - moved to settings icon
+            const settingsIcon = document.getElementById('settingsIcon');
             const userDropdown = document.getElementById('userDropdown');
             
-            userAvatar.addEventListener('click', function(event) {
+            settingsIcon.addEventListener('click', function(event) {
                 event.stopPropagation();
                 userDropdown.classList.toggle('active');
             });
             
             // Close dropdown when clicking outside
             document.addEventListener('click', function(event) {
-                if (!userAvatar.contains(event.target) && !userDropdown.contains(event.target)) {
+                if (!settingsIcon.contains(event.target) && !userDropdown.contains(event.target)) {
                     userDropdown.classList.remove('active');
                 }
+            });
+            
+            // Responsive sidebar functionality
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const leftPanel = document.getElementById('leftPanel');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            hamburgerMenu.addEventListener('click', function() {
+                leftPanel.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            });
+            
+            sidebarOverlay.addEventListener('click', function() {
+                leftPanel.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
             });
         });
     </script>
