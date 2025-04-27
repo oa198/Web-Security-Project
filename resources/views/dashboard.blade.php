@@ -5,26 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Student Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: "rgba(0, 0, 0, 1)",
+                        darkpurple: "rgba(120, 72, 199, 1)",
+                        descedent: "rgba(32, 32, 32, 1)",
+                        purple: "rgba(152, 92, 228, 1)",
+                    },
+                    borderRadius: {
+                        'large': '16px',
+                        'extra-large': '28px',
+                    },
+                },
+            },
+        }
+    </script>
     <style>
         :root {
-            /* Light mode colors */
-            --bg-color: #f6f6f6;
-            --text-color: #333;
-            --secondary-text: #777;
-            --card-bg: white;
-            --card-hover-shadow: rgba(0, 0, 0, 0.1);
-            --sidebar-bg: #985ce4;
-            --sidebar-text: white;
-            --input-bg: #f0f0f0;
-            --circle-bg: #e0e0e0;
-            --section-title: #333;
-            --welcome-card: #985ce4;
-            --toggle-bg: #f0f0f0;
-            --toggle-button: #985ce4;
+            --black: rgba(0, 0, 0, 1);
+            --darkpurple: rgba(120, 72, 199, 1);
+            --descedent: rgba(32, 32, 32, 1);
+            --purple: rgba(152, 92, 228, 1);
+            --shape-corner-extra-large: 28px;
+            --shape-corner-large: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+        
+        .text-purple {
+            color: var(--purple);
+        }
+        
+        .bg-purple {
+            background-color: var(--purple);
         }
         
         [data-theme="dark"] {
-            /* Dark mode colors */
             --bg-color: #121212;
             --text-color: #e0e0e0;
             --secondary-text: #aaa;
@@ -40,188 +66,40 @@
             --toggle-button: #985ce4;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            outline: none;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
         
-        body {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
         }
         
-        .container {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
-        
-        .sidebar {
-            position: fixed;
-            width: 180px;
-            height: 100vh;
-            top: 0;
-            left: 0;
-            background-color: var(--sidebar-bg);
-            padding: 30px 0;
-            display: flex;
-            flex-direction: column;
-            transition: background-color 0.3s, transform 0.3s ease-out;
-            z-index: 100;
-            animation: slideInLeft 0.5s ease-out forwards;
-        }
-        
-        .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-        
-        .badge {
-            position: absolute;
-            top: -5px;
-            right: 15px;
-            background-color: #ff6b00;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 2px 6px;
+        ::-webkit-scrollbar-thumb {
+            background: var(--purple);
             border-radius: 4px;
         }
         
-        .logo {
-            width: 90px;
-            height: 90px;
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--darkpurple);
         }
         
-        .nav-items {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            padding-left: 25px;
-        }
-        
-        .nav-item {
-            color: white;
-            font-size: 15px;
-            text-decoration: none;
-            font-weight: normal;
-            opacity: 0.9;
-            transition: opacity 0.2s, transform 0.2s, color 0.3s;
-            display: block;
-        }
-        
-        .nav-item:hover {
-            opacity: 1;
-            transform: translateX(5px);
-        }
-        
-        .nav-item.active {
-            font-weight: 600;
-            opacity: 1;
-        }
-        
-        .logout-link {
-            margin-top: auto;
-            color: white;
-            font-size: 15px;
-            text-decoration: none;
-            padding: 40px 0 20px 25px;
-            opacity: 0.9;
-        }
-        
-        .main-content {
-            margin-left: 180px;
-            padding: 20px 25px;
-            width: calc(100% - 180px);
-        }
-        
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        
-        .search-bar {
-            width: 400px;
-            height: 40px;
-            background-color: var(--input-bg);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            position: relative;
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-        
-        .search-bar:focus-within {
-            box-shadow: 0 0 0 2px var(--sidebar-bg);
-        }
-        
-        .search-input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            height: 100%;
-            color: var(--text-color);
-            font-size: 14px;
-            outline: none;
-            transition: color 0.3s;
-        }
-        
-        .search-input::placeholder {
-            color: var(--secondary-text);
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-        
-        .search-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .search-button svg {
-            stroke: var(--secondary-text);
-            transition: stroke 0.3s;
-        }
-        
-        .search-badge {
+        /* Notification dot */
+        .notification-dot {
             position: absolute;
-            top: -5px;
-            left: -5px;
-            background-color: #ff6b00;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 4px;
+            top: 1.5px;
+            left: 7px;
+            width: 8px;
+            height: 8px;
+            background-color: #ff0000;
+            border-radius: 50%;
         }
         
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
+        /* Theme toggle */
         .theme-toggle {
             width: 50px;
             height: 24px;
-            background-color: var(--toggle-bg);
+            background-color: var(--toggle-bg, #f0f0f0);
             border-radius: 12px;
             position: relative;
             cursor: pointer;
@@ -229,16 +107,12 @@
             transition: background-color 0.3s, transform 0.2s;
         }
         
-        .theme-toggle:hover {
-            transform: scale(1.05);
-        }
-        
         .theme-toggle-button {
             position: absolute;
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background-color: var(--toggle-button);
+            background-color: var(--toggle-button, var(--purple));
             top: 3px;
             left: 3px;
             transition: transform 0.3s, background-color 0.3s;
@@ -248,87 +122,18 @@
             transform: translateX(26px);
         }
         
-        .theme-toggle-icon {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 14px;
-            height: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .sun-icon {
-            right: 4px;
-            color: #ffc107;
-            opacity: 1;
-        }
-        
-        .moon-icon {
-            left: 4px;
-            color: #384364;
-            opacity: 0.5;
-        }
-        
-        [data-theme="dark"] .sun-icon {
-            opacity: 0.5;
-        }
-        
-        [data-theme="dark"] .moon-icon {
-            opacity: 1;
-            color: #afc8ff;
-        }
-        
-        .user-info {
-            text-align: right;
-        }
-        
-        .username {
-            font-weight: 600;
-            color: var(--text-color);
-            font-size: 15px;
-            transition: color 0.3s;
-        }
-        
-        .user-details {
-            color: var(--secondary-text);
-            font-size: 13px;
-            transition: color 0.3s;
-        }
-        
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            transition: transform 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .user-avatar:hover {
-            transform: scale(1.1);
-        }
-        
-        /* User dropdown styles */
-        .user-dropdown-container {
-            position: relative;
-            z-index: 1000;
-        }
-        
+        /* User dropdown */
         .user-dropdown {
             position: absolute;
             top: calc(100% + 10px);
             right: 0;
             min-width: 150px;
-            background-color: var(--card-bg);
+            background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             display: none;
             flex-direction: column;
             overflow: hidden;
-            transition: all 0.3s ease;
             z-index: 1000;
         }
         
@@ -338,7 +143,7 @@
         
         .dropdown-item {
             padding: 12px 16px;
-            color: var(--text-color);
+            color: #000;
             text-decoration: none;
             font-size: 14px;
             transition: background-color 0.2s;
@@ -350,13 +155,6 @@
             background-color: rgba(152, 92, 228, 0.1);
         }
         
-        .dropdown-item svg {
-            margin-right: 8px;
-            width: 16px;
-            height: 16px;
-            stroke: var(--text-color);
-        }
-        
         .dropdown-divider {
             height: 1px;
             background-color: rgba(0, 0, 0, 0.1);
@@ -366,760 +164,282 @@
         [data-theme="dark"] .dropdown-divider {
             background-color: rgba(255, 255, 255, 0.1);
         }
-        
-        .notification-icon {
-            width: 20px;
-            height: 20px;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .notification-icon:hover {
-            transform: scale(1.15);
-        }
-        
-        .notification-icon svg {
-            stroke: var(--text-color);
-            transition: stroke 0.3s;
-        }
-        
-        .notification-dot {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 8px;
-            height: 8px;
-            background-color: #ff0000;
-            border-radius: 50%;
-        }
-        
-        .settings-icon {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .settings-icon:hover {
-            transform: rotate(45deg);
-        }
-        
-        .welcome-card {
-            background-color: var(--welcome-card);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            position: relative;
-            overflow: hidden;
-            height: 180px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            transition: background-color 0.3s, transform 0.3s;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        
-        .welcome-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .welcome-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: #ff6b00;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        
-        .welcome-date {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: white;
-        }
-        
-        .calendar-badge {
-            position: absolute;
-            top: 15px;
-            left: 130px;
-            background-color: #985ce4;
-            color: white;
-            font-size: 12px;
-            border: 1px solid white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .calendar-icon {
-            width: 14px;
-            height: 14px;
-        }
-        
-        .welcome-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: white;
-            position: relative;
-            opacity: 0;
-            animation: slideInFromLeft 0.5s ease-out forwards;
-        }
-        
-        .welcome-subtitle {
-            font-size: 15px;
-            opacity: 0.9;
-            color: white;
-            position: relative;
-            opacity: 0;
-            animation: slideInFromLeft 0.5s ease-out forwards;
-            animation-delay: 0.1s;
-        }
-        
-        .welcome-image {
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 180px;
-            width: auto;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out 0.3s forwards;
-        }
-        
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            animation: fadeIn 0.5s ease-out 0.2s forwards;
-            opacity: 0;
-        }
-        
-        .info-section {
-            margin-bottom: 25px;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--section-title);
-            transition: color 0.3s;
-        }
-        
-        .see-all {
-            font-size: 14px;
-            color: #985ce4;
-            text-decoration: none;
-        }
-        
-        .info-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
-            animation: fadeInUp 0.6s ease-out forwards;
-            opacity: 0;
-        }
-        
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            font-size: 16px;
-            color: var(--text-color);
-            transition: color 0.3s;
-        }
-        
-        .info-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .info-badge {
-            background-color: #ff6b00;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 10px;
-        }
-        
-        .attendance-circle {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto;
-            position: relative;
-        }
-        
-        .circle-bg {
-            fill: none;
-            stroke: var(--circle-bg);
-            stroke-width: 25;
-            transition: stroke 0.3s;
-        }
-        
-        .circle-progress {
-            fill: none;
-            stroke: #985ce4;
-            stroke-width: 25;
-            stroke-linecap: round;
-            stroke-dasharray: 502;
-            stroke-dashoffset: 48; /* 100% - 90.5% of 502 */
-            transform: rotate(-90deg);
-            transform-origin: center;
-        }
-        
-        .attendance-percent {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text-color);
-            transition: color 0.3s;
-        }
-        
-        .instructors-grid {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .instructor {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            background-color: #c291ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-        }
-        
-        .notice-card {
-            background-color: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
-            animation: fadeInUp 0.8s ease-out forwards;
-            opacity: 0;
-        }
-        
-        .notice-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .notice-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        
-        .notice-text {
-            font-size: 14px;
-            color: #777;
-            margin-bottom: 10px;
-        }
-        
-        .notice-link {
-            font-size: 14px;
-            color: #985ce4;
-            text-decoration: none;
-            transition: color 0.2s, transform 0.2s;
-            display: inline-block;
-        }
-        
-        .notice-link:hover {
-            color: #7f49d3;
-            transform: translateX(5px);
-        }
-        
-        .course-cards {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .course-card {
-            background-color: #f0e6ff;
-            border-radius: 16px;
-            padding: 20px;
-            width: 220px;
-            position: relative;
-            min-height: 120px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: fadeInUp 0.7s ease-out forwards;
-            opacity: 0;
-        }
-        
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(146, 95, 226, 0.2);
-        }
-        
-        .course-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: #985ce4;
-            margin-bottom: 15px;
-            width: 80%;
-        }
-        
-        .view-btn {
-            background-color: #985ce4;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 6px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s;
-        }
-        
-        .view-btn:hover {
-            background-color: #7f49d3;
-            transform: translateY(-2px);
-        }
-        
-        .view-btn:active {
-            transform: translateY(1px);
-        }
-        
-        .course-icon {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 50px;
-            height: 50px;
-            background-color: #985ce4;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-        
-        .flash-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background-color: #985ce4;
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: slideIn 0.3s forwards, fadeOut 0.5s 3s forwards, pulse 1.5s ease-in-out;
-        }
-        
-        @keyframes slideIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-        }
-        
-        @keyframes pulse {
-            0% { transform: translateY(0); }
-            10% { transform: translateY(-5px); }
-            20% { transform: translateY(0); }
-            30% { transform: translateY(-3px); }
-            40% { transform: translateY(0); }
-            100% { transform: translateY(0); }
-        }
-        
-        /* Animation delays for elements */
-        .info-section:nth-child(1) .info-card { animation-delay: 0.1s; }
-        .info-section:nth-child(2) .info-card { animation-delay: 0.2s; }
-        .info-section:nth-child(3) .info-card { animation-delay: 0.3s; }
-        
-        .notice-card:nth-child(1) { animation-delay: 0.4s; }
-        .notice-card:nth-child(2) { animation-delay: 0.5s; }
-        
-        .course-card:nth-child(1) { animation-delay: 0.3s; }
-        .course-card:nth-child(2) { animation-delay: 0.4s; }
-        
-        /* Page load animations */
-        .top-bar {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        
-        .content-grid {
-            animation: fadeIn 0.5s ease-out 0.2s forwards;
-            opacity: 0;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes slideInLeft {
-            from {
-                transform: translateX(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        
-        /* Welcome elements animation */
-        .welcome-title, .welcome-subtitle {
-            position: relative;
-            opacity: 0;
-            animation: slideInFromLeft 0.5s ease-out forwards;
-        }
-        
-        .welcome-subtitle {
-            animation-delay: 0.1s;
-        }
-        
-        @keyframes slideInFromLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .welcome-image {
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 180px;
-            width: auto;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out 0.3s forwards;
-        }
-        
-        /* Theme transition */
-        html {
-            transition: background-color 0.5s ease;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--sidebar-bg);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #7f49d3;
-        }
-        
-        /* Sections appear one by one */
-        .info-section {
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        
-        .info-section:nth-child(1) { animation-delay: 0.1s; }
-        .info-section:nth-child(2) { animation-delay: 0.2s; }
-        .info-section:nth-child(3) { animation-delay: 0.3s; }
     </style>
 </head>
-<body>
+<body class="bg-white">
     @if(session('info'))
-    <div class="flash-message">
+    <div class="fixed top-5 right-5 p-4 bg-purple text-white rounded-lg shadow-lg z-50">
         {{ session('info') }}
     </div>
     @endif
     
-    <div class="container">
-        <div class="sidebar">
-            <div class="logo-container">
-                <img class="logo" alt="Logo" src="{{ asset('images/image 1.png') }}">
-                <span class="badge">576</span>
-            </div>
-            
-            <div class="nav-items">
-                <a href="{{ route('dashboard') }}" class="nav-item active">Dashboard</a>
-                <a href="{{ url('/personal-info') }}" class="nav-item">Personal Info</a>
-                <a href="{{ url('/mess-info') }}" class="nav-item">Mess info</a>
-                <a href="{{ url('/academics') }}" class="nav-item">Academics</a>
-                <a href="{{ url('/clubs') }}" class="nav-item">Clubs</a>
-                <a href="{{ url('/achievements') }}" class="nav-item">Achievements</a>
-                <a href="{{ url('/research') }}" class="nav-item">Research work</a>
-                <a href="{{ url('/internships') }}" class="nav-item">Internships</a>
-                <a href="{{ url('/skills') }}" class="nav-item">Skills</a>
-                <a href="{{ url('/projects') }}" class="nav-item">Projects</a>
-            </div>
-            
-            <a href="{{ route('logout') }}" class="logout-link">Logout</a>
-        </div>
-        
-        <div class="main-content">
-            <div class="top-bar">
-                <form action="{{ url('/search') }}" method="GET" class="search-bar">
-                    <span class="search-badge">156</span>
-                    <input type="text" name="query" placeholder="Search" class="search-input">
-                    <button type="submit" class="search-button">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#787878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                </form>
-                
-                <div class="user-section">
-                    <div class="theme-toggle" id="theme-toggle">
-                        <div class="theme-toggle-button"></div>
-                        <div class="theme-toggle-icon moon-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                            </svg>
-                        </div>
-                        <div class="theme-toggle-icon sun-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="5"></circle>
-                                <line x1="12" y1="1" x2="12" y2="3"></line>
-                                <line x1="12" y1="21" x2="12" y2="23"></line>
-                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                                <line x1="1" y1="12" x2="3" y2="12"></line>
-                                <line x1="21" y1="12" x2="23" y2="12"></line>
-                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                            </svg>
+    <div class="flex flex-row justify-center w-full">
+        <div class="w-[1440px] h-[1024px] relative">
+            <!-- Sidebar -->
+            <div class="absolute w-[265px] h-[958px] top-[33px] left-[35px] rounded-[28px]">
+                <div class="flex flex-col w-[265px] h-[958px] items-start gap-9 px-[53px] py-[42px] absolute top-0 left-0 bg-purple rounded-[28px]">
+                    <img class="relative w-[158px] h-[150px] object-cover" alt="Logo" src="{{ asset('images/image 1.png') }}" />
+                    
+                    <div class="inline-flex flex-col items-center gap-[49px] relative flex-[0_0_auto]">
+                        <div class="w-28 h-[546px] gap-2.5 flex flex-col items-start">
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="font-semibold leading-[22.4px]">
+                                    Dashboard
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="font-light leading-[22.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Personal Info
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Mess info
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Academics
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Clubs
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Achievements
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Research work
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Internships
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Skills
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    <br />
+                                </span>
+                            </p>
+                            <p class="relative self-stretch font-normal text-white text-base leading-4">
+                                <span class="leading-[19.4px]">
+                                    Projects
+                                </span>
+                            </p>
                         </div>
                     </div>
-                    
-                    <p class="user-info">
-                        <span class="username">
-                            {{ Auth::user()->name ?? 'Nischal Basavaraju' }}
-                        </span>
-                        <br>
-                        <span class="user-details">
-                            2nd Year, Btech, CSE
+                </div>
+                
+                <a href="{{ route('logout') }}" class="absolute h-[19px] top-[902px] left-[54px] font-normal text-white text-base leading-[19.4px] whitespace-nowrap">
+                    Logout
+                </a>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="absolute w-[444px] h-[57px] top-[33px] left-[343px] bg-neutral-100 rounded-[28px] shadow-[0px_4px_9.7px_#00000040]">
+                <form action="{{ url('/search') }}" method="GET">
+                    <input type="text" name="query" placeholder="Search" class="absolute h-[19px] top-[18px] left-[20px] w-[90%] font-normal text-[#787878] text-base leading-[19.4px] bg-transparent border-none focus:outline-none">
+                </form>
+            </div>
+            
+            <!-- Notification Icon -->
+            <div class="absolute w-[41px] h-8 top-[47px] left-[1314px] bg-[url(/notifications.svg)] bg-[100%_100%]">
+                <div class="relative w-2 h-2 top-1.5 left-[7px] bg-[#ff0000] rounded"></div>
+            </div>
+            
+            <!-- User Profile Section -->
+            <div class="user-dropdown-container">
+                <img class="absolute w-12 h-[50px] top-[38px] left-[994px] object-cover cursor-pointer" id="userAvatar" alt="User" src="{{ asset('images/image 2.png') }}" />
+                
+                <p class="absolute h-[38px] top-[47px] left-[1054px] font-normal text-base leading-[19.4px]">
+                    <span class="font-semibold text-[#000000]">
+                        {{ Auth::user()->name ?? 'Nischal Basavaraju' }}
+                        <br />
+                    </span>
+                    <span class="text-[#6b6b6b]">
+                        2nd Year, Btech, CSE
+                    </span>
+                </p>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="{{ url('/profile') }}" class="dropdown-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        My Profile
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('logout') }}" class="dropdown-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Settings Icon -->
+            <div class="absolute w-[29px] h-[29px] top-[50px] left-[1363px]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </div>
+            
+            <!-- Welcome Card -->
+            <div class="absolute w-[1056px] h-[235px] top-[119px] left-[343px]">
+                <div class="absolute w-[1049px] h-[235px] top-0 left-0 bg-purple rounded-[16px]"></div>
+                
+                <p class="absolute top-[171px] left-[70px] font-normal text-white text-base leading-[19.4px] whitespace-nowrap">
+                    Always stay updated in your student portal
+                </p>
+                
+                <p class="absolute top-[135px] left-[70px] font-semibold text-white text-2xl leading-[29.2px] whitespace-nowrap">
+                    Welcome back, {{ Auth::user()->name ?? 'Nischal Basavaraju' }}!!
+                </p>
+                
+                <div class="absolute top-[43px] left-[70px] font-normal text-white text-base leading-[19.4px] whitespace-nowrap">
+                    10th October, 2024
+                </div>
+                
+                <div class="absolute top-[37px] left-[233px] flex items-center">
+                    <span class="text-white mr-2">Calendar</span>
+                    <svg width="24" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="4" width="18" height="18" rx="2" stroke="white" stroke-width="2"/>
+                        <path d="M16 2V6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M8 2V6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 10H21" stroke="white" stroke-width="2"/>
+                    </svg>
+                </div>
+                
+                <img class="absolute w-[466px] h-[235px] top-0 left-[590px] object-cover" alt="Welcome" src="{{ asset('images/image 3.png') }}">
+            </div>
+            
+            <!-- Basic Info Section -->
+            <div class="absolute h-6 top-[393px] left-[365px] font-semibold text-[#000000] text-xl leading-[24.3px] whitespace-nowrap">
+                Basic Info
+            </div>
+            
+            <div class="absolute w-[371px] h-[276px] top-[430px] left-[343px] bg-neutral-100 rounded-[28px] shadow-[0px_4px_5.5px_#00000040]">
+                <div class="gap-[7px] relative w-[306px] h-[43px] top-[117px] left-[22px] flex flex-col items-start">
+                    <p class="mb-[-15.00px] relative self-stretch font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                        <span class="font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                            Credits&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;40
+                            <br />
                         </span>
                     </p>
                     
-                    <div class="user-dropdown-container">
-                        <img class="user-avatar" id="userAvatar" alt="User" src="{{ asset('images/image 2.png') }}">
-                        <div class="user-dropdown" id="userDropdown">
-                            <a href="{{ url('/profile') }}" class="dropdown-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                My Profile
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{{ route('logout') }}" class="dropdown-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                    <polyline points="16 17 21 12 16 7"></polyline>
-                                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                                </svg>
-                                Logout
-                            </a>
-                        </div>
-                    </div>
+                    <p class="relative self-stretch font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                        <span class="font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                            <br />
+                        </span>
+                    </p>
                     
-                    <div class="notification-icon">
-                        <img src="{{ asset('images/notifications.svg') }}" alt="Notifications">
-                        <div class="notification-dot"></div>
-                    </div>
+                    <p class="mb-[-15.00px] relative self-stretch font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                        <span class="font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                            CGPA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8.3
+                            <br />
+                        </span>
+                    </p>
                     
-                    <img class="settings-icon" alt="Settings" src="{{ asset('images/settings.svg') }}">
+                    <p class="relative self-stretch font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                        <span class="font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                            <br />
+                        </span>
+                    </p>
+                    
+                    <p class="mb-[-15.00px] relative self-stretch font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                        <span class="font-normal text-[#4d4d4d] text-2xl leading-[29.2px]">
+                            Semester&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            3rd
+                        </span>
+                    </p>
                 </div>
             </div>
             
-            <div class="welcome-card">
-                <span class="welcome-badge">840</span>
-                <div class="welcome-date">
-                    <span>10th October, 2024</span>
-                </div>
-                <div class="calendar-badge">
-                    <span>Calendar</span>
-                    <img class="calendar-icon" alt="Calendar" src="{{ asset('images/Calendar copy.svg') }}">
-                </div>
-                
-                <h1 class="welcome-title">Welcome back, Nischal Basavaraju!!</h1>
-                <p class="welcome-subtitle">Always stay updated in your student portal</p>
-                
-                <img class="welcome-image" alt="Welcome" src="{{ asset('images/image 3.png') }}">
+            <!-- Attendance Section -->
+            <div class="absolute h-6 top-[393px] left-[811px] font-semibold text-[#000000] text-xl leading-[24.3px] whitespace-nowrap">
+                Attendance
             </div>
             
-            <div class="content-grid">
-                <div class="info-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Basic Info</h2>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-row">
-                            <span>Credits</span>
-                            <span>40</span>
-                        </div>
-                        <div class="info-row">
-                            <span>CGPA</span>
-                            <span>8.3 <span class="info-badge">846</span></span>
-                        </div>
-                        <div class="info-row">
-                            <span>Semester</span>
-                            <span>3rd</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="info-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Attendance</h2>
-                    </div>
-                    <div class="info-card">
-                        <div class="attendance-circle">
-                            <svg width="180" height="180" viewBox="0 0 180 180">
-                                <circle class="circle-bg" cx="90" cy="90" r="80"></circle>
-                                <circle class="circle-progress" cx="90" cy="90" r="80"></circle>
-                            </svg>
-                            <div class="attendance-percent">90.5%</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="info-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Course Intructors</h2>
-                        <a href="{{ url('/instructors') }}" class="see-all">See all</a>
-                    </div>
-                    <div class="instructors-grid">
-                        <div class="instructor">JS</div>
-                        <div class="instructor">AB</div>
-                        <div class="instructor">RM</div>
-                    </div>
-                    
-                    <div class="section-header" style="margin-top: 25px;">
-                        <h2 class="section-title">Daily notice</h2>
-                        <a href="{{ url('/notices') }}" class="see-all">See all</a>
-                    </div>
-                    
-                    <div class="notice-card">
-                        <h3 class="notice-title">Prelim payment due</h3>
-                        <p class="notice-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        <a href="{{ url('/notices/payment') }}" class="notice-link">See more</a>
-                    </div>
-                    
-                    <div class="notice-card">
-                        <h3 class="notice-title">Exam schedule</h3>
-                        <p class="notice-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.</p>
-                        <a href="{{ url('/notices/exams') }}" class="notice-link">See more</a>
-                    </div>
+            <div class="absolute w-[293px] h-[286px] top-[428px] left-[734px] bg-purple rounded-full flex items-center justify-center">
+                <div class="w-[230px] h-[230px] bg-white rounded-full flex items-center justify-center">
+                    <div class="font-semibold text-black text-xl">90.5%</div>
                 </div>
             </div>
             
-            <div class="info-section">
-                <div class="section-header">
-                    <h2 class="section-title">Enrolled Courses</h2>
-                    <a href="{{ url('/courses') }}" class="see-all">See all</a>
-                </div>
-                
-                <div class="course-cards">
-                    <div class="course-card">
-                        <h3 class="course-title">Object oriented programming</h3>
-                        <a href="{{ url('/courses/oop') }}"><button class="view-btn">View</button></a>
-                        <div class="course-icon">OOP</div>
-                    </div>
-                    
-                    <div class="course-card">
-                        <h3 class="course-title">Fundamentals of database systems</h3>
-                        <a href="{{ url('/courses/database') }}"><button class="view-btn">View</button></a>
-                        <div class="course-icon">DB</div>
-                    </div>
-                </div>
-            </div>
+            <!-- Other Images -->
+            <img class="absolute w-[328px] h-[599px] top-[377px] left-[1064px] object-cover" alt="Image 4" src="{{ asset('images/image 4.png') }}">
+            <img class="absolute w-[721px] h-[229px] top-[746px] left-[332px] object-cover" alt="Image 5" src="{{ asset('images/image 5.png') }}">
         </div>
     </div>
 
     <script>
         // Theme toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const themeToggle = document.getElementById('theme-toggle');
-            const htmlElement = document.documentElement;
-            
-            // Check if user has a saved preference
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                htmlElement.setAttribute('data-theme', savedTheme);
-            }
-            
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = htmlElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                
-                htmlElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                // Show notification (if you want to add this)
-                // showNotification(newTheme.charAt(0).toUpperCase() + newTheme.slice(1) + ' mode enabled');
-            });
-            
             // User dropdown functionality
             const userAvatar = document.getElementById('userAvatar');
             const userDropdown = document.getElementById('userDropdown');
