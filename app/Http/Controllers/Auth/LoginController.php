@@ -115,6 +115,8 @@ class LoginController extends Controller
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
+                    'google_token' => $googleUser->token,
+                    'google_refresh_token' => $googleUser->refreshToken,
                     'avatar' => $avatar,
                     'email_verified_at' => now(),
                     'password' => null,
@@ -133,6 +135,12 @@ class LoginController extends Controller
                 ]);
                 return redirect()->route('login')->withErrors([
                     'email' => 'The email associated with this Google account has changed. Please update your account settings.',
+                ]);
+            } else {
+                // Update tokens for existing user
+                $user->update([
+                    'google_token' => $googleUser->token,
+                    'google_refresh_token' => $googleUser->refreshToken ?? $user->google_refresh_token,
                 ]);
             }
 
@@ -158,8 +166,15 @@ class LoginController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+            
+            // Provide more specific error message for debugging
+            $errorMessage = 'Unable to login with Google: ' . $e->getMessage();
+            
+            // In production, you might want to use a generic message instead
+            // $errorMessage = 'Unable to login with Google. Please try again later.';
+            
             return redirect()->route('login')->withErrors([
-                'email' => 'Unable to login with Google. Please try again later.',
+                'email' => $errorMessage,
             ]);
         }
     }
@@ -190,11 +205,14 @@ class LoginController extends Controller
 
             if (!$user) {
                 // Check if email is already registered
-                if ($githubUser->getEmail()) {
-                    $existingUser = User::where('email', $githubUser->getEmail())->first();
+                // Note: GitHub might not provide an email if user has set it as private
+                $email = $githubUser->getEmail() ?? null;
+                
+                if ($email) {
+                    $existingUser = User::where('email', $email)->first();
                     if ($existingUser) {
                         Log::warning('GitHub login attempted with registered email', [
-                            'email' => $githubUser->getEmail(),
+                            'email' => $email,
                             'github_id' => $githubUser->getId(),
                         ]);
                         return redirect()->route('login')->withErrors([
@@ -211,11 +229,13 @@ class LoginController extends Controller
 
                 // Create new user
                 $user = User::create([
-                    'name' => $githubUser->getName() ?: $githubUser->getNickname(),
-                    'email' => $githubUser->getEmail(),
+                    'name' => $githubUser->getName() ?? $githubUser->getNickname(),
+                    'email' => $email ?? $githubUser->getId() . '@github.noemail',
                     'github_id' => $githubUser->getId(),
+                    'github_token' => $githubUser->token,
+                    'github_refresh_token' => $githubUser->refreshToken,
                     'avatar' => $avatar,
-                    'email_verified_at' => now(),
+                    'email_verified_at' => $email ? now() : null,
                     'password' => null,
                 ]);
 
@@ -223,15 +243,11 @@ class LoginController extends Controller
                     'email' => $user->email,
                     'github_id' => $user->github_id,
                 ]);
-            } elseif ($user->email !== $githubUser->getEmail() && $githubUser->getEmail()) {
-                // Handle email mismatch (e.g., GitHub account email changed)
-                Log::warning('GitHub login email mismatch', [
-                    'user_id' => $user->id,
-                    'github_email' => $githubUser->getEmail(),
-                    'stored_email' => $user->email,
-                ]);
-                return redirect()->route('login')->withErrors([
-                    'email' => 'The email associated with this GitHub account has changed. Please update your account settings.',
+            } else {
+                // Update tokens for existing user
+                $user->update([
+                    'github_token' => $githubUser->token,
+                    'github_refresh_token' => $githubUser->refreshToken ?? $user->github_refresh_token,
                 ]);
             }
 
@@ -240,7 +256,7 @@ class LoginController extends Controller
             session()->regenerate();
 
             Log::info('User logged in via GitHub', [
-                'user_id' => $user->id,
+                'email' => $user->email,
                 'github_id' => $user->github_id,
             ]);
 
@@ -257,8 +273,15 @@ class LoginController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+            
+            // Provide more specific error message for debugging
+            $errorMessage = 'Unable to login with GitHub: ' . $e->getMessage();
+            
+            // In production, you might want to use a generic message instead
+            // $errorMessage = 'Unable to login with GitHub. Please try again later.';
+            
             return redirect()->route('login')->withErrors([
-                'email' => 'Unable to login with GitHub. Please try again later.',
+                'email' => $errorMessage,
             ]);
         }
     }
@@ -356,8 +379,15 @@ class LoginController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+            
+            // Provide more specific error message for debugging
+            $errorMessage = 'Unable to login with LinkedIn: ' . $e->getMessage();
+            
+            // In production, you might want to use a generic message instead
+            // $errorMessage = 'Unable to login with LinkedIn. Please try again later.';
+            
             return redirect()->route('login')->withErrors([
-                'email' => 'Unable to login with LinkedIn. Please try again later.',
+                'email' => $errorMessage,
             ]);
         }
     }

@@ -1,49 +1,114 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login - Student Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            /* Light mode colors */
-            --bg-color: #f5f5f9;
-            --panel-bg: #ffffff;
-            --text-color: #1c1d21;
-            --text-secondary: rgba(28, 29, 33, 0.7);
-            --text-muted: rgba(28, 29, 33, 0.5);
-            --primary-color: #985ce4;
-            --primary-hover: #8055d0;
-            --button-secondary: #e2e2e2;
-            --button-secondary-hover: #d1d1d1;
-            --separator-color: rgba(28, 29, 33, 0.2);
-            --error-color: #ef4444;
-            --success-color: #22c55e;
-            --social-button-bg: #985ce4;
-            --social-button-border: rgba(152, 92, 228, 0.2);
-            --social-button-shadow: rgba(152, 92, 228, 0.2);
-            --eye-icon-filter: invert(42%) sepia(67%) saturate(823%) hue-rotate(223deg) brightness(91%) contrast(91%);
+        /* Social Login Styles */
+        .social-login-container {
+            margin: 10px 0 10px 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
-        .dark {
+        .social-login-divider {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 8px;
+            margin-top: 0px;
+        }
+        
+        .social-login-divider::before,
+        .social-login-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 70px);
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .social-login-divider::before {
+            left: 0;
+        }
+        
+        .social-login-divider::after {
+            right: 0;
+        }
+        
+        .social-login-divider span {
+            display: inline-block;
+            padding: 0 15px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            background-color: var(--form-bg);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .social-login-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 0px;
+        }
+        
+        .social-login-button {
+            background: #fff;
+            color: #333;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .social-login-button.github {
+            background: #333;
+            color: #fff;
+        }
+        
+        .social-login-button:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .social-icon {
+            width: 38px;
+            height: 38px;
+        }
+        :root {
+            /* Light mode colors */
+            --bg-color: #f6f6f6;
+            --text-color: #333;
+            --card-bg: white;
+            --form-bg: white;
+            --input-bg: #f0f0f0;
+            --primary-color: #925fe2;
+            --primary-dark: #7f49d3;
+            --toggle-bg: #f0f0f0;
+            --toggle-button: #925fe2;
+        }
+        
+        [data-theme="dark"] {
             /* Dark mode colors */
-            --bg-color: #985ce4;
-            --panel-bg: #1c1d21;
-            --text-color: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-muted: rgba(255, 255, 255, 0.5);
-            --primary-color: #985ce4;
-            --primary-hover: #8055d0;
-            --button-secondary: #333437;
-            --button-secondary-hover: #444548;
-            --separator-color: rgba(255, 255, 255, 0.2);
-            --error-color: #ef4444;
-            --success-color: #22c55e;
-            --social-button-bg: #ffffff;
-            --social-button-border: rgba(0, 0, 0, 0.05);
-            --social-button-shadow: rgba(0, 0, 0, 0.1);
+            --bg-color: #1c1d21;
+            --text-color: white;
+            --card-bg: #1c1d21;
+            --form-bg: #1c1d21;
+            --input-bg: #2a2a2a;
+            --primary-color: #925fe2;
+            --primary-dark: #7f49d3;
+            --toggle-bg: #2a2a2a;
+            --toggle-button: #925fe2;
         }
         
         * {
@@ -51,672 +116,754 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
+            outline: none;
+        }
+        
+        /* Remove any focus outlines that might show blue */
+        *:focus {
+            outline: none;
+        }
+        
+        /* Improve the appearance of form elements */
+        input, button {
+            border: none;
+            outline: none;
         }
         
         body {
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            background-color: var(--bg-color);
-            height: 100vh;
-            width: 100vw;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s, color 0.3s;
         }
         
         .container {
+            background-color: var(--bg-color);
             display: flex;
             flex-direction: row;
             justify-content: center;
             width: 100%;
             min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s;
         }
         
         .login-wrapper {
-            width: 100%;
-            max-width: 1440px;
-            height: 100vh;
-            display: flex;
-            flex-direction: row;
+            background-color: var(--card-bg);
+            width: 1440px;
+            height: 1024px;
             position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.5s ease-out;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .content-container {
+            position: relative;
+            height: 1024px;
+            border-radius: 24px;
             overflow: hidden;
         }
         
-        .theme-toggle {
+        .vector-2 {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--panel-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border: none;
-            color: var(--text-color);
-            transition: background-color 0.3s ease;
+            width: 402px;
+            height: 342px;
+            top: 0;
+            left: 1038px;
+            animation: floatAnimation 4s ease-in-out infinite;
         }
         
-        .theme-toggle svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--text-color);
+        .vector-3 {
+            position: absolute;
+            width: 763px;
+            height: 616px;
+            top: 408px;
+            left: 677px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+        
+        .vector-4 {
+            position: absolute;
+            width: 421px;
+            height: 389px;
+            top: 245px;
+            left: 459px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        .vector-5 {
+            position: absolute;
+            width: 177px;
+            height: 200px;
+            top: 175px;
+            left: 1263px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 1.5s;
+        }
+        
+        .vector {
+            position: absolute;
+            width: 297px;
+            height: 221px;
+            top: 0;
+            left: 868px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+        
+        .image-decoration {
+            position: absolute;
+            width: 297px;
+            height: 273px;
+            top: 671px;
+            left: 664px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        .element-copy {
+            position: absolute;
+            width: 770px;
+            height: 100%;
+            top: 0;
+            right: 0;
+            object-fit: cover;
+            z-index: 0;
+            background-color: var(--primary-color);
+            border-radius: 0 24px 24px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .boys-illustration {
+            position: absolute;
+            width: 600px;
+            height: auto;
+            top: 55%;
+            right: 120px;
+            transform: translateY(-40%);
+            z-index: 1;
+            margin-top: 0;
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+        
+        .boys-illustration::after {
+            display: none;
+        }
+        
+        .boys-illustration img {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            height: auto;
         }
         
         .left-panel {
-            position: relative;
-            width: 50%;
-            max-width: 630px;
-            height: 100%;
-            background-color: var(--panel-bg);
-            border-radius: 0 24px 24px 0;
-            overflow: hidden;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
-        }
-        
-        .social-buttons-container {
             position: absolute;
-            left: 128px;
-            top: 748px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            width: 670px;
+            height: 1024px;
+            top: 0;
+            left: 0;
+            background-color: var(--card-bg);
+            border-radius: 24px 0 0 24px;
+            transition: background-color 0.3s;
         }
         
-        .signin-text {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 12px;
-            transition: color 0.3s ease;
-        }
-        
-        .social-buttons {
-            display: flex;
-            gap: 16px;
-        }
-        
-        .social-button {
-            width: 77px;
-            height: 60px;
-            background-color: var(--social-button-bg);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
-            box-shadow: 0 2px 8px var(--social-button-shadow);
-            border: 1px solid var(--social-button-border);
-        }
-        
-        .social-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .social-icon {
-            width: auto;
-            height: auto;
-            max-width: 40px;
-            max-height: 40px;
-            filter: var(--social-icon-filter);
-        }
-        
-        .login-form {
-            display: flex;
+        .login-form-container {
+            display: inline-flex;
             flex-direction: column;
             align-items: flex-start;
             gap: 48px;
             position: absolute;
             top: 314px;
             left: 128px;
-            width: 393px;
+            animation: fadeInUp 0.8s ease-out forwards;
         }
         
-        .form-container {
-            display: flex;
+        .form-content {
+            display: inline-flex;
             flex-direction: column;
             align-items: flex-start;
             gap: 24px;
-            width: 100%;
+            position: relative;
         }
         
-        .form-inner {
-            display: flex;
+        .form-top {
+            display: inline-flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 24px;
-            width: 100%;
+            gap: 48px;
+            position: relative;
         }
         
-        .header {
-            display: flex;
+        .form-title {
+            display: inline-flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 8px;
+            gap: 12px;
+            position: relative;
         }
         
-        .title {
+        .title-text {
             font-weight: 700;
             font-size: 48px;
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
             color: var(--text-color);
-            transition: color 0.3s ease;
+            letter-spacing: 0;
+            transition: color 0.3s;
         }
         
-        .subtitle {
-            font-weight: 500;
-            color: var(--text-secondary);
-            font-size: 16px;
-            transition: color 0.3s ease;
+        .subtitle-text {
+            position: relative;
+            width: fit-content;
+            font-weight: 400;
+            color: var(--text-color);
+            opacity: 0.6;
+            font-size: 20px;
+            letter-spacing: 0;
+            line-height: 1.5;
+            transition: color 0.3s;
         }
         
-        .fields {
-            display: flex;
+        .form-fields {
+            display: inline-flex;
             flex-direction: column;
+            align-items: flex-start;
             gap: 24px;
-            width: 100%;
+            position: relative;
         }
         
-        .field {
+        .field-container {
             display: flex;
             flex-direction: column;
-            width: 100%;
-            gap: 8px;
+            width: 381px;
+            align-items: flex-start;
+            gap: 12px;
+            position: relative;
         }
         
         .field-label {
-            font-weight: 400;
-            color: var(--text-muted);
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-        
-        .field-input-container {
             position: relative;
-            width: 100%;
+            width: fit-content;
+            margin-top: -1px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            letter-spacing: 0;
         }
         
-        .field-input-visible {
+        .field-input {
+            width: 381px;
             background-color: transparent;
             border: none;
-            border-bottom: 1px solid var(--text-muted);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
             padding-bottom: 8px;
-            outline: none;
-            color: var(--text-color);
-            width: 100%;
+            color: white;
             font-size: 16px;
-            transition: border-color 0.3s ease, color 0.3s ease;
+            outline: none;
         }
         
-        .field-header {
-            display: flex;
+        .password-field-header {
+            display: inline-flex;
+            align-items: flex-start;
             justify-content: space-between;
-            align-items: center;
             width: 100%;
+            position: relative;
         }
         
-        .eye-toggle {
+        .toggle-password {
             background: none;
             border: none;
             cursor: pointer;
-            color: var(--text-muted);
-            transition: color 0.3s ease;
         }
         
         .eye-icon {
             width: 24px;
             height: 24px;
-            fill: var(--text-muted);
-            filter: var(--eye-icon-filter);
         }
         
         .forgot-password {
+            position: relative;
+            width: fit-content;
             font-weight: 400;
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 16px;
+            letter-spacing: 0;
             text-decoration: none;
-            margin-top: 16px;
-            transition: color 0.3s ease;
+            cursor: pointer;
         }
         
         .forgot-password:hover {
-            color: var(--primary-color);
-            text-decoration: underline;
+            color: white;
         }
         
         .login-button {
             display: flex;
-            width: 100%;
+            width: 393px;
             align-items: center;
             justify-content: center;
-            padding: 14px 0;
-            background-color: var(--primary-color);
+            gap: 10px;
+            padding: 12px 0;
+            position: relative;
+            background-color: #9c6fe4;
             border-radius: 12px;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
         }
         
         .login-button:hover {
-            background-color: var(--primary-hover);
+            background-color: #8055d0;
         }
         
-        .login-text {
-            font-weight: 500;
+        .button-text {
+            font-weight: 400;
             font-size: 16px;
-            color: white;
-        }
-        
-        .separator {
-            width: 100%;
-            height: 1px;
-            background-color: var(--separator-color);
-            margin: 12px 0;
-            transition: background-color 0.3s ease;
-        }
-        
-        .right-panel {
             position: relative;
-            width: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 0 50px;
+            width: fit-content;
+            margin-top: -1px;
+            color: white;
+            letter-spacing: 0;
         }
         
         .welcome-container {
-            display: flex;
+            display: inline-flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 16px;
-            max-width: 600px;
-            margin-bottom: 50px;
+            gap: 12px;
+            position: absolute;
+            top: 155px;
+            left: 730px;
         }
         
         .welcome-title {
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
             font-weight: 400;
-            color: var(--text-color);
+            color: #eeeeee;
             font-size: 80px;
-            line-height: 1.1;
-            transition: color 0.3s ease;
+            letter-spacing: 0;
+            line-height: 70px;
         }
         
-        .welcome-title .bold {
+        .welcome-bold {
             font-weight: 700;
         }
         
+        .welcome-regular {
+            font-weight: 400;
+        }
+        
         .welcome-subtitle {
+            position: relative;
+            width: fit-content;
             font-weight: 500;
-            color: var(--text-secondary);
+            color: #eeeeee;
             font-size: 16px;
-            transition: color 0.3s ease;
+            letter-spacing: 0;
         }
         
         .signup-container {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 24px;
+            gap: 100px;
             position: absolute;
-            bottom: 48px;
-            left: 128px;
+            top: 925px;
+            left: 130px;
         }
         
         .signup-text {
+            position: relative;
+            width: fit-content;
             font-weight: 400;
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 16px;
-            transition: color 0.3s ease;
+            letter-spacing: 0;
         }
         
         .signup-button {
             display: flex;
+            width: 100px;
             align-items: center;
             justify-content: center;
+            gap: 10px;
             padding: 12px 24px;
-            background-color: var(--button-secondary);
+            position: relative;
+            background-color: #333437;
             border-radius: 8px;
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
         }
         
         .signup-button:hover {
-            background-color: var(--button-secondary-hover);
+            background-color: #444548;
         }
         
         .signup-button-text {
-            font-weight: 500;
-            color: var(--text-color);
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
+            margin-left: -4px;
+            margin-right: -4px;
+            font-weight: 400;
+            color: white;
             font-size: 16px;
-            transition: color 0.3s ease;
+            letter-spacing: 0;
         }
         
-        .illustration {
-            width: 100%;
-            max-width: 767px;
-            height: auto;
-            object-fit: contain;
+        .copy-image {
+            position: absolute;
+            width: 767px;
+            height: 628px;
+            top: 368px;
+            left: 673px;
+            object-fit: cover;
         }
         
         .error-message {
-            color: var(--error-color);
+            color: #ef4444;
             font-size: 14px;
             margin-top: 4px;
         }
         
-        .alert {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: var(--text-color);
-            font-size: 14px;
-            width: 100%;
-            transition: background-color 0.3s ease, color 0.3s ease;
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 790px;
+            width: 50px;
+            height: 24px;
+            background-color: var(--toggle-bg);
+            border-radius: 12px;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s, transform 0.2s;
         }
         
-        .alert-danger {
-            background-color: rgba(239, 68, 68, 0.2);
-            border-left: 4px solid var(--error-color);
+        .theme-toggle:hover {
+            transform: scale(1.05);
         }
         
-        .alert-success {
-            background-color: rgba(34, 197, 94, 0.2);
-            border-left: 4px solid var(--success-color);
+        .theme-toggle-button {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--toggle-button);
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s, background-color 0.3s;
         }
         
-        .alert ul {
-            margin-left: 20px;
+        [data-theme="dark"] .theme-toggle-button {
+            transform: translateX(26px);
         }
         
-        /* Responsive styles */
-        @media (max-width: 1200px) {
-            .login-form {
-                left: 80px;
-                width: calc(100% - 160px);
+        .theme-toggle-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sun-icon {
+            right: 4px;
+            color: #ffc107;
+            opacity: 1;
+        }
+        
+        .moon-icon {
+            left: 4px;
+            color: #384364;
+            opacity: 0.5;
+        }
+        
+        [data-theme="dark"] .sun-icon {
+            opacity: 0.5;
+        }
+        
+        [data-theme="dark"] .moon-icon {
+            opacity: 1;
+            color: #afc8ff;
+        }
+        
+        /* Button hover animations */
+        .login-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Form input animations */
+        .form-input {
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+            background-color: var(--input-bg) !important;
+            color: var(--text-color) !important;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 3px rgba(146, 95, 226, 0.2);
+        }
+        
+        /* Password show/hide hover */
+        .show-password-button:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Footer links hover */
+        .signup-link a:hover, .forgot-password:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            
-            .social-buttons-container {
-                left: 80px;
-            }
-            
-            .signup-container {
-                left: 80px;
-            }
-            
-            .welcome-title {
-                font-size: 60px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
         
-        @media (max-width: 992px) {
-            .login-wrapper {
-                flex-direction: column;
-                height: auto;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
-            
-            .left-panel {
-                width: 100%;
-                max-width: 100%;
-                height: auto;
-                min-height: 100vh;
-                border-radius: 0;
-                padding: 40px 0;
-            }
-            
-            .login-form {
-                position: relative;
-                top: 100px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 80%;
-                max-width: 450px;
-            }
-            
-            .social-buttons-container {
-                position: relative;
-                top: auto;
-                left: 50%;
-                transform: translateX(-50%);
-                margin-top: 580px;
-                align-items: center;
-            }
-            
-            .signup-container {
-                position: relative;
-                bottom: auto;
-                left: 50%;
-                transform: translateX(-50%);
-                margin-top: 40px;
-            }
-            
-            .right-panel {
-                width: 100%;
-                padding: 50px 20px;
-                order: -1;
-            }
-            
-            .welcome-container {
-                align-items: center;
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            
-            .illustration {
-                max-width: 90%;
-                margin-bottom: 30px;
+            to {
+                opacity: 1;
             }
         }
         
-        @media (max-width: 576px) {
-            .login-form {
-                width: 90%;
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translate(40px, -50%);
             }
-            
-            .welcome-title {
-                font-size: 40px;
+            to {
+                opacity: 1;
+                transform: translate(0, -50%);
             }
-            
-            .social-buttons {
-                flex-wrap: wrap;
-                justify-content: center;
+        }
+        
+        @keyframes floatAnimation {
+            0% {
+                transform: translateY(0);
             }
-            
-            .signup-container {
-                flex-direction: column;
-                gap: 16px;
+            50% {
+                transform: translateY(-10px);
             }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        
+        /* Form content animations */
+        .form-input-container {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+        
+        .remember-me-container {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+        
+        .login-button-container {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+        
+        .signup-link {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="login-wrapper">
-            <!-- Theme toggle button -->
-            <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="theme-icon sun-icon">
-                    <path d="M12 3V2m0 20v-1m9-9h1M2 12h1m15.5-6.5L20 4M4 20l1.5-1.5M4 4l1.5 1.5m13 13L20 20M12 5a7 7 0 100 14 7 7 0 000-14z" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <div class="content-container">
+                <!-- Theme toggle -->
+                <div class="theme-toggle" id="theme-toggle">
+                    <div class="theme-toggle-button"></div>
+                    <div class="theme-toggle-icon moon-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                         </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="theme-icon moon-icon" style="display: none;">
-                    <path d="M12 3a9 9 0 109 9 9.75 9.75 0 01-9-9z" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </div>
+                    <div class="theme-toggle-icon sun-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                         </svg>
-            </button>
-
-            <!-- Left panel -->
-            <div class="left-panel">
-                <!-- Login form -->
-                <div class="login-form">
-                    <!-- Alerts -->
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                    </div>
                 </div>
-                    @endif
                 
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
+                <div class="element-copy">
+                    <!-- Background color now handled by the CSS -->
                 </div>
-                    @endif
-
-                    <div class="form-container">
-                        <div class="form-inner">
-                            <div class="header">
-                                <div class="title">Login</div>
-                                <div class="subtitle">Enter your account details</div>
+                
+                <div class="boys-illustration">
+                    <img src="{{ asset('images/boyss.png') }}" alt="Boys illustration">
+                </div>
+                
+                <div class="left-panel"></div>
+                
+                <div class="login-form-container">
+                    <form method="POST" action="{{ route('login.post') }}" class="form-content">
+    @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+                        @csrf
+                        <div class="form-top">
+                            <div class="form-title">
+                                <div class="title-text">Login</div>
+                                <div class="subtitle-text">Enter your account details</div>
                             </div>
                             
-                            <div class="fields">
-                                <form method="POST" action="{{ route('login.post') }}" id="login-form">
-                                    @csrf
-                                    <div class="field">
+                            <div class="form-fields">
+                                <div class="field-container">
                                     <div class="field-label">Username</div>
-                                        <div class="field-input-container">
-                                            <input type="text" name="email" class="field-input-visible" value="{{ old('email') }}" required>
-                                        </div>
+                                    <input type="text" name="email" class="field-input" value="{{ old('email') }}" required>
                                     @error('email')
                                         <span class="error-message">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 
-                                    <div class="field" style="margin-top: 16px;">
-                                        <div class="field-header">
+                                <div class="field-container">
+                                    <div class="password-field-header">
                                         <div class="field-label">Password</div>
-                                            <button type="button" id="togglePassword" class="eye-toggle">
-                                                <img class="eye-icon" src="{{ asset('images/eye-slash-fill.svg') }}" alt="Show/hide password" />
+                                        <button type="button" id="togglePassword" class="toggle-password">
+                                            <img class="eye-icon" alt="Eye slash fill" src="{{ asset('images/eye-slash-fill.svg') }}">
                                         </button>
                                     </div>
-                                        <div class="field-input-container">
-                                            <input type="password" id="password" name="password" class="field-input-visible" required>
-                                        </div>
+                                    <input type="password" name="password" id="password" class="field-input" required>
                                     @error('password')
                                         <span class="error-message">{{ $message }}</span>
                                     @enderror
                                 </div>
-
-                                    <a href="{{ route('password.forgot') }}" class="forgot-password">Forgot Password?</a>
-
-                                    <button type="submit" class="login-button" style="margin-top: 24px;">
-                                        <span class="login-text">Login</span>
-                                    </button>
-                                </form>
                             </div>
                         </div>
-                    </div>
+                        
+                        <a href="{{ route('password.forgot') }}" class="forgot-password">Forgot Password?</a>
+                        
+                        <div class="social-login-container">
+                            <div class="social-login-divider">
+                                <span>or sign in with</span>
+                            </div>
+                            <div class="social-login-buttons">
+                                <a href="{{ route('google.login') }}" class="social-login-button" title="Sign in with Google">
+                                    <img src="{{ asset('images/Social/google.png') }}" alt="Google Logo" class="social-icon">
+                                </a>
+                                <a href="{{ route('github.login') }}" class="social-login-button github" title="Sign in with GitHub">
+                                    <img src="{{ asset('images/Social/github.png') }}" alt="GitHub Logo" class="social-icon">
+                                </a>
+                                <a href="{{ route('linkedin.login') }}" class="social-login-button" title="Sign in with LinkedIn">
+                                    <img src="{{ asset('images/Social/linkedin.png') }}" alt="LinkedIn Logo" class="social-icon">
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="login-button">
+                            <div class="button-text">Login</div>
+                        </button>
+                    </form>
                 </div>
                 
-                <!-- Social login -->
-                <div class="social-buttons-container">
-                    <div class="signin-text">sign-in with</div>
-                    <div class="separator"></div>
-                    <div class="social-buttons">
-                        <a href="{{ route('google.login') }}" class="social-button">
-                            <object data="{{ asset('images/google.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </a>
-                        <a href="{{ route('github.login') }}" class="social-button">
-                            <object data="{{ asset('images/Github.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </a>
-                        <a href="{{ route('linkedin.login') }}" class="social-button">
-                            <object data="{{ asset('images/LinkedIn.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </a>
-                    </div>
+                <div class="welcome-container">
+                    <p class="welcome-title">
+                        <span class="welcome-bold">Welcome to <br></span>
+                        <span class="welcome-regular">student portal</span>
+                    </p>
+                    <p class="welcome-subtitle">Login to access your account</p>
                 </div>
                 
-                <!-- Signup container -->
                 <div class="signup-container">
                     <div class="signup-text">Don't have an account?</div>
                     <a href="{{ route('register') }}" class="signup-button">
-                        <span class="signup-button-text">Sign up</span>
+                        <div class="signup-button-text">Sign up</div>
                     </a>
                 </div>
-            </div>
-
-            <!-- Right panel -->
-            <div class="right-panel">
-                <div class="welcome-container">
-                    <h1 class="welcome-title">
-                        <span class="bold">Welcome to </span><br>
-                        <span>student portal</span>
-                    </h1>
-                    <p class="welcome-subtitle">Login to access your account</p>
-                </div>
-                <img class="illustration" src="{{ asset('images/boyss.png') }}" alt="Students illustration" onerror="this.src='{{ asset('images/1100924-01-copy-1.png') }}'; this.onerror='';">
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle functionality
-            const themeToggle = document.getElementById('theme-toggle');
-            const htmlEl = document.documentElement;
-            const sunIcon = document.querySelector('.sun-icon');
-            const moonIcon = document.querySelector('.moon-icon');
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
             
-            // Check for saved theme preference or use system preference
+            // Change the eye icon based on password visibility
+            const eyeIcon = this.querySelector('img');
+            if (type === 'text') {
+                eyeIcon.src = "{{ asset('images/eye-fill.svg') }}";
+            } else {
+                eyeIcon.src = "{{ asset('images/eye-slash-fill.svg') }}";
+            }
+        });
+
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Check if user has a saved preference
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
-                htmlEl.className = savedTheme;
-                updateThemeIcon(savedTheme);
-            } else {
-                // Check system preference
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                htmlEl.className = prefersDark ? 'dark' : '';
-                updateThemeIcon(prefersDark ? 'dark' : '');
-            }
-            
-            function updateThemeIcon(theme) {
-                if (theme === 'dark') {
-                    sunIcon.style.display = 'block';
-                    moonIcon.style.display = 'none';
-                } else {
-                    sunIcon.style.display = 'none';
-                    moonIcon.style.display = 'block';
-                }
+                htmlElement.setAttribute('data-theme', savedTheme);
             }
             
             themeToggle.addEventListener('click', function() {
-                if (htmlEl.classList.contains('dark')) {
-                    htmlEl.classList.remove('dark');
-                    localStorage.setItem('theme', '');
-                    updateThemeIcon('');
-                } else {
-                    htmlEl.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                    updateThemeIcon('dark');
-                }
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
             });
-            
-            // Toggle password visibility
-            const togglePassword = document.getElementById('togglePassword');
-            const passwordField = document.getElementById('password');
-            
-            if (togglePassword && passwordField) {
-                togglePassword.addEventListener('click', function() {
-                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordField.setAttribute('type', type);
-                    
-                    // Change eye icon
-                    const eyeIcon = this.querySelector('img');
-                    if (eyeIcon) {
-                        if (type === 'text') {
-                            eyeIcon.src = "{{ asset('images/eye-fill.svg') }}";
-                        } else {
-                            eyeIcon.src = "{{ asset('images/eye-slash-fill.svg') }}";
-                        }
-                    }
-                });
-            }
         });
     </script>
 </body>
