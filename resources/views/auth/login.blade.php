@@ -542,10 +542,10 @@
             <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="theme-icon sun-icon">
                     <path d="M12 3V2m0 20v-1m9-9h1M2 12h1m15.5-6.5L20 4M4 20l1.5-1.5M4 4l1.5 1.5m13 13L20 20M12 5a7 7 0 100 14 7 7 0 000-14z" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                        </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="theme-icon moon-icon" style="display: none;">
                     <path d="M12 3a9 9 0 109 9 9.75 9.75 0 01-9-9z" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                        </svg>
             </button>
 
             <!-- Left panel -->
@@ -560,13 +560,13 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div>
+                </div>
                     @endif
-                    
+                
                     @if (session('status'))
                         <div class="alert alert-success">
                             {{ session('status') }}
-                        </div>
+                </div>
                     @endif
 
                     <div class="form-container">
@@ -575,34 +575,34 @@
                                 <div class="title">Login</div>
                                 <div class="subtitle">Enter your account details</div>
                             </div>
-
+                            
                             <div class="fields">
                                 <form method="POST" action="{{ route('login.post') }}" id="login-form">
                                     @csrf
                                     <div class="field">
-                                        <div class="field-label">Username</div>
+                                    <div class="field-label">Username</div>
                                         <div class="field-input-container">
                                             <input type="text" name="email" class="field-input-visible" value="{{ old('email') }}" required>
                                         </div>
-                                        @error('email')
-                                            <span class="error-message">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
+                                    @error('email')
+                                        <span class="error-message">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                
                                     <div class="field" style="margin-top: 16px;">
                                         <div class="field-header">
-                                            <div class="field-label">Password</div>
+                                        <div class="field-label">Password</div>
                                             <button type="button" id="togglePassword" class="eye-toggle">
                                                 <img class="eye-icon" src="{{ asset('images/eye-slash-fill.svg') }}" alt="Show/hide password" />
-                                            </button>
-                                        </div>
+                                        </button>
+                                    </div>
                                         <div class="field-input-container">
                                             <input type="password" id="password" name="password" class="field-input-visible" required>
                                         </div>
-                                        @error('password')
-                                            <span class="error-message">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+                                    @error('password')
+                                        <span class="error-message">{{ $message }}</span>
+                                    @enderror
+                                </div>
 
                                     <a href="{{ route('password.forgot') }}" class="forgot-password">Forgot Password?</a>
 
@@ -614,24 +614,24 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Social login -->
                 <div class="social-buttons-container">
                     <div class="signin-text">sign-in with</div>
                     <div class="separator"></div>
                     <div class="social-buttons">
-                        <div class="social-button">
+                        <a href="{{ route('google.login') }}" class="social-button">
                             <object data="{{ asset('images/google.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </div>
-                        <div class="social-button">
+                        </a>
+                        <a href="{{ route('github.login') }}" class="social-button">
                             <object data="{{ asset('images/Github.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </div>
-                        <div class="social-button">
+                        </a>
+                        <a href="{{ route('linkedin.login') }}" class="social-button">
                             <object data="{{ asset('images/LinkedIn.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </div>
+                        </a>
                     </div>
                 </div>
-
+                
                 <!-- Signup container -->
                 <div class="signup-container">
                     <div class="signup-text">Don't have an account?</div>

@@ -167,19 +167,19 @@
             height: 14px;
             top: 5px;
         }
-
+        
         .sun-icon {
             right: 5px;
         }
-
+        
         .moon-icon {
             left: 5px;
         }
-
+        
         [data-theme="dark"] .sun-icon {
             opacity: 0.5;
         }
-
+        
         [data-theme="light"] .moon-icon {
             opacity: 0.5;
         }
@@ -187,9 +187,9 @@
         /* User dropdown */
         .user-dropdown {
             position: absolute;
-            top: 80px;
-            right: 20px;
-            min-width: 180px;
+            top: calc(100% + 10px);
+            right: 0;
+            min-width: 150px;
             background-color: var(--bg-white);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -227,27 +227,6 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Responsive sidebar */
-        .hamburger-menu {
-            display: none;
-            position: absolute;
-            top: 45px;
-            left: 20px;
-            z-index: 20;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-        }
-
-        .hamburger-line {
-            width: 100%;
-            height: 3px;
-            background-color: var(--text-color);
-            margin: 5px 0;
-            border-radius: 2px;
-            transition: 0.3s;
-        }
-
         /* Responsive adjustments */
         @media (max-width: 1280px) {
             .dashboard-container {
@@ -268,29 +247,6 @@
             }
             .welcome-text {
                 max-width: 90%;
-            }
-            .hamburger-menu {
-                display: block;
-            }
-            .left-panel {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease-in-out;
-            }
-            .left-panel.active {
-                transform: translateX(0);
-            }
-            .sidebar-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                display: none;
-                z-index: 15;
-            }
-            .sidebar-overlay.active {
-                display: block;
             }
         }
 
@@ -325,33 +281,23 @@
         <div class="w-[1440px] h-[1024px] relative dashboard-container">
             <!-- Theme Toggle Button -->
             <div class="theme-toggle" id="themeToggle">
-                <div class="theme-toggle-button"></div>
+                        <div class="theme-toggle-button"></div>
                 <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
                 </svg>
                 <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
+                            </svg>
             </div>
-            
-            <!-- Hamburger Menu for Mobile -->
-            <div class="hamburger-menu" id="hamburgerMenu">
-                <div class="hamburger-line"></div>
-                <div class="hamburger-line"></div>
-                <div class="hamburger-line"></div>
-            </div>
-            
-            <!-- Overlay for Mobile Sidebar -->
-            <div class="sidebar-overlay" id="sidebarOverlay"></div>
             
             <!-- Sidebar -->
-            <div class="absolute w-[265px] h-[958px] top-[33px] left-[35px] rounded-[28px] left-panel" id="leftPanel">
+            <div class="absolute w-[265px] h-[958px] top-[33px] left-[35px] rounded-[28px]">
                 <div class="flex flex-col w-[265px] h-[958px] items-start gap-9 px-[53px] py-[42px] absolute top-0 left-0 bg-purple rounded-[28px]">
                     <img class="relative w-[158px] h-[150px] object-cover" alt="Logo" src="{{ asset('images/image 1.png') }}" />
                     
@@ -482,13 +428,20 @@
                 <div class="relative w-2 h-2 top-1.5 left-[7px] bg-[#ff0000] rounded"></div>
             </div>
             
-            <!-- Settings Icon with Dropdown -->
-            <div class="absolute w-[29px] h-[29px] top-[50px] left-[1363px] text-[var(--text-color)] transition-colors duration-300 cursor-pointer" id="settingsIcon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
+            <!-- User Profile Section -->
+            <div class="user-dropdown-container">
+                <img class="absolute w-12 h-[50px] top-[38px] left-[994px] object-cover cursor-pointer" id="userAvatar" alt="User" src="{{ asset('images/image 2.png') }}" />
                 
+                <p class="absolute h-[38px] top-[47px] left-[1054px] font-normal text-base leading-[19.4px] transition-colors duration-300">
+                    <span class="font-semibold text-[var(--text-color)]">
+                            {{ Auth::user()->name ?? 'Nischal Basavaraju' }}
+                        <br />
+                        </span>
+                    <span class="text-[var(--text-secondary)]">
+                            2nd Year, Btech, CSE
+                        </span>
+                    </p>
+                    
                 <div class="user-dropdown" id="userDropdown">
                     <a href="{{ url('/profile') }}" class="dropdown-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
@@ -508,6 +461,14 @@
                     </a>
                 </div>
             </div>
+            
+            <!-- Settings Icon -->
+            <div class="absolute w-[29px] h-[29px] top-[50px] left-[1363px] text-[var(--text-color)] transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                </div>
             
             <!-- Welcome Card -->
             <div class="absolute w-[1056px] h-[235px] top-[119px] left-[343px]">
@@ -532,16 +493,16 @@
                         <path d="M16 2V6" stroke="white" stroke-width="2" stroke-linecap="round"/>
                         <path d="M8 2V6" stroke="white" stroke-width="2" stroke-linecap="round"/>
                         <path d="M3 10H21" stroke="white" stroke-width="2"/>
-                    </svg>
+                            </svg>
                 </div>
                 
                 <img class="absolute w-[466px] h-[235px] top-0 left-[590px] object-cover welcome-image" alt="Welcome" src="{{ asset('images/image 3.png') }}">
-            </div>
+                    </div>
             
             <!-- Basic Info Section -->
             <div class="absolute h-6 top-[393px] left-[365px] font-semibold text-[var(--text-color)] text-xl leading-[24.3px] whitespace-nowrap transition-colors duration-300">
                 Basic Info
-            </div>
+                    </div>
             
             <div class="absolute w-[371px] h-[276px] top-[430px] left-[343px] bg-neutral-100 rounded-[28px] shadow-[0px_4px_5.5px_#00000040] transition-colors duration-300">
                 <div class="gap-[7px] relative w-[306px] h-[43px] top-[117px] left-[22px] flex flex-col items-start">
@@ -583,8 +544,8 @@
             <!-- Attendance Section -->
             <div class="absolute h-6 top-[393px] left-[811px] font-semibold text-[var(--text-color)] text-xl leading-[24.3px] whitespace-nowrap transition-colors duration-300">
                 Attendance
-            </div>
-            
+                </div>
+                
             <div class="absolute w-[293px] h-[286px] top-[428px] left-[734px] bg-purple rounded-full flex items-center justify-center">
                 <div class="w-[230px] h-[230px] bg-[var(--bg-white)] rounded-full flex items-center justify-center transition-colors duration-300">
                     <div class="font-semibold text-[var(--text-color)] text-xl transition-colors duration-300">90.5%</div>
@@ -605,7 +566,7 @@
             
             // Check if user has a saved preference
             const savedTheme = localStorage.getItem('theme') || 'light';
-            htmlElement.setAttribute('data-theme', savedTheme);
+                htmlElement.setAttribute('data-theme', savedTheme);
             
             themeToggle.addEventListener('click', function() {
                 const currentTheme = htmlElement.getAttribute('data-theme');
@@ -615,35 +576,20 @@
                 localStorage.setItem('theme', newTheme);
             });
             
-            // User dropdown functionality - moved to settings icon
-            const settingsIcon = document.getElementById('settingsIcon');
+            // User dropdown functionality
+            const userAvatar = document.getElementById('userAvatar');
             const userDropdown = document.getElementById('userDropdown');
             
-            settingsIcon.addEventListener('click', function(event) {
+            userAvatar.addEventListener('click', function(event) {
                 event.stopPropagation();
                 userDropdown.classList.toggle('active');
             });
             
             // Close dropdown when clicking outside
             document.addEventListener('click', function(event) {
-                if (!settingsIcon.contains(event.target) && !userDropdown.contains(event.target)) {
+                if (!userAvatar.contains(event.target) && !userDropdown.contains(event.target)) {
                     userDropdown.classList.remove('active');
                 }
-            });
-            
-            // Responsive sidebar functionality
-            const hamburgerMenu = document.getElementById('hamburgerMenu');
-            const leftPanel = document.getElementById('leftPanel');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
-            hamburgerMenu.addEventListener('click', function() {
-                leftPanel.classList.toggle('active');
-                sidebarOverlay.classList.toggle('active');
-            });
-            
-            sidebarOverlay.addEventListener('click', function() {
-                leftPanel.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
             });
         });
     </script>

@@ -335,7 +335,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+<div class="container">
         <div class="verify-wrapper">
             <!-- Theme toggle button -->
             <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
@@ -359,15 +359,15 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div>
+                </div>
                     @endif
-                    
+                
                     @if (session('status'))
                         <div class="alert alert-success">
                             {{ session('status') }}
                         </div>
                     @endif
-
+                    
                     <div class="form-container">
                         <div class="form-inner">
                             <div class="header">
@@ -380,12 +380,12 @@
                                 If you didn't receive the email, we will gladly send you another.
                             </p>
 
-                            <form method="POST" action="{{ route('verification.send') }}">
-                                @csrf
+                        <form method="POST" action="{{ route('verification.send') }}">
+                            @csrf
                                 <button type="submit" class="verify-button">
                                     <span class="button-text">Resend Verification Email</span>
-                                </button>
-                            </form>
+                            </button>
+                        </form>
                         </div>
                     </div>
                 </div>

@@ -678,15 +678,15 @@
                     <div class="signin-text">sign-in with</div>
                     <div class="separator"></div>
                     <div class="social-buttons">
-                        <div class="social-button">
+                        <a href="{{ route('google.login') }}" class="social-button">
                             <object data="{{ asset('images/google.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </div>
-                        <div class="social-button">
+                        </a>
+                        <a href="{{ route('github.login') }}" class="social-button">
                             <object data="{{ asset('images/Github.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </div>
-                        <div class="social-button">
+                        </a>
+                        <a href="{{ route('linkedin.login') }}" class="social-button">
                             <object data="{{ asset('images/LinkedIn.svg') }}" type="image/svg+xml" width="40" height="40" class="social-icon"></object>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 

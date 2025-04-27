@@ -22,7 +22,9 @@ The system must include:
   - A role editor for admins to define and manage roles dynamically.
 - **Authentication**:
   - Login, registration, email verification, and password reset.
-  - Social login support (e.g., Google, GitHub, etc.) using **Laravel Socialite**.
+  - Social login support (e.g., Google, GitHub, LinkedIn) using **Laravel Socialite**.
+  - Unified authentication experience with dark/light mode support.
+  - Secure OAuth integration with providers following best practices.
 - **Security**:
   - Hosted locally with **SSL** for secure communication.
   - Secure APIs for mobile interaction (customer-facing, i.e., for students).
@@ -86,6 +88,30 @@ The system must include:
      php artisan key:generate
      ```
 
+   - **Setting up OAuth Providers**:
+   
+     - **Google OAuth**:
+       1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+       2. Create a new project
+       3. Navigate to "APIs & Services" > "Credentials"
+       4. Configure the OAuth consent screen
+       5. Create OAuth 2.0 credentials
+       6. Add the redirect URI as `http://project.localhost.com/auth/google/callback`
+       7. Copy the Client ID and Secret to your `.env` file
+
+     - **GitHub OAuth**:
+       1. Go to your [GitHub Developer Settings](https://github.com/settings/developers)
+       2. Create a new OAuth App
+       3. Set the Authorization callback URL to `http://project.localhost.com/auth/github/callback`
+       4. Copy the Client ID and Client Secret to your `.env` file
+       
+     - **LinkedIn OAuth**:
+       1. Go to the [LinkedIn Developer Portal](https://www.linkedin.com/developers/)
+       2. Create a new app
+       3. Request the necessary permissions
+       4. Add the redirect URL: `http://project.localhost.com/auth/linkedin/callback`
+       5. Copy the Client ID and Client Secret to your `.env` file
+
 4. **Set Up Database**:
 
    - Create a MySQL database (e.g., `university_system`) in phpMyAdmin.
@@ -98,7 +124,7 @@ The system must include:
 
 5. **Enable SSL Locally**:
 
-   - Use XAMPP’s Apache configuration to enable HTTPS.
+   - Use XAMPP's Apache configuration to enable HTTPS.
    - Generate a self-signed SSL certificate using OpenSSL or a tool like `mkcert`.
    - Update `.env` to reflect the HTTPS URL (e.g., `APP_URL=https://localhost`).
 
@@ -169,7 +195,7 @@ The system must include:
 
 ## Security Considerations
 
-- Use **Laravel’s built-in security features** (e.g., CSRF protection, input validation).
+- Use **Laravel's built-in security features** (e.g., CSRF protection, input validation).
 - Sanitize all user inputs to prevent XSS and SQL injection.
 - Secure APIs with **Laravel Sanctum** or **API tokens** for student access.
 - Store sensitive data (e.g., API keys, social login credentials) in `.env`.
