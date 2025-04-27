@@ -47,6 +47,7 @@ class StudentsController extends Controller
     /**
      * Display the specified resource.
      */
+    
     public function show(string $id)
     {
         $student = User::findOrFail($id);
