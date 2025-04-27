@@ -13,14 +13,14 @@
             --secondary-text: #777;
             --card-bg: white;
             --card-hover-shadow: rgba(0, 0, 0, 0.1);
-            --sidebar-bg: #925fe2;
+            --sidebar-bg: #985ce4;
             --sidebar-text: white;
             --input-bg: #f0f0f0;
             --circle-bg: #e0e0e0;
             --section-title: #333;
-            --welcome-card: #925fe2;
+            --welcome-card: #985ce4;
             --toggle-bg: #f0f0f0;
-            --toggle-button: #925fe2;
+            --toggle-button: #985ce4;
         }
         
         [data-theme="dark"] {
@@ -30,14 +30,14 @@
             --secondary-text: #aaa;
             --card-bg: #1e1e1e;
             --card-hover-shadow: rgba(255, 255, 255, 0.1);
-            --sidebar-bg: #7149c6;
+            --sidebar-bg: #985ce4;
             --sidebar-text: #f0f0f0;
             --input-bg: #2a2a2a;
             --circle-bg: #333;
             --section-title: #e0e0e0;
-            --welcome-card: #7149c6;
+            --welcome-card: #985ce4;
             --toggle-bg: #2a2a2a;
-            --toggle-button: #925fe2;
+            --toggle-button: #985ce4;
         }
         
         * {
@@ -304,10 +304,67 @@
             object-fit: cover;
             transition: transform 0.2s;
             cursor: pointer;
+            position: relative;
         }
         
         .user-avatar:hover {
             transform: scale(1.1);
+        }
+        
+        /* User dropdown styles */
+        .user-dropdown-container {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            min-width: 150px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .user-dropdown.active {
+            display: flex;
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(152, 92, 228, 0.1);
+        }
+        
+        .dropdown-item svg {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-color);
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 0;
+        }
+        
+        [data-theme="dark"] .dropdown-divider {
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
         .notification-icon {
@@ -392,7 +449,7 @@
             position: absolute;
             top: 15px;
             left: 130px;
-            background-color: #925fe2;
+            background-color: #985ce4;
             color: white;
             font-size: 12px;
             border: 1px solid white;
@@ -468,7 +525,7 @@
         
         .see-all {
             font-size: 14px;
-            color: #925fe2;
+            color: #985ce4;
             text-decoration: none;
         }
         
@@ -526,7 +583,7 @@
         
         .circle-progress {
             fill: none;
-            stroke: #925fe2;
+            stroke: #985ce4;
             stroke-width: 25;
             stroke-linecap: round;
             stroke-dasharray: 502;
@@ -596,7 +653,7 @@
         
         .notice-link {
             font-size: 14px;
-            color: #925fe2;
+            color: #985ce4;
             text-decoration: none;
             transition: color 0.2s, transform 0.2s;
             display: inline-block;
@@ -632,13 +689,13 @@
         .course-title {
             font-size: 16px;
             font-weight: 500;
-            color: #925fe2;
+            color: #985ce4;
             margin-bottom: 15px;
             width: 80%;
         }
         
         .view-btn {
-            background-color: #925fe2;
+            background-color: #985ce4;
             color: white;
             border: none;
             border-radius: 20px;
@@ -663,7 +720,7 @@
             right: 15px;
             width: 50px;
             height: 50px;
-            background-color: #925fe2;
+            background-color: #985ce4;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -678,7 +735,7 @@
             top: 20px;
             right: 20px;
             padding: 15px 25px;
-            background-color: #925fe2;
+            background-color: #985ce4;
             color: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -904,7 +961,27 @@
                         </span>
                     </p>
                     
-                    <img class="user-avatar" alt="User" src="{{ asset('images/image 2.png') }}">
+                    <div class="user-dropdown-container">
+                        <img class="user-avatar" id="userAvatar" alt="User" src="{{ asset('images/image 2.png') }}">
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="{{ url('/profile') }}" class="dropdown-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                My Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ route('logout') }}" class="dropdown-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
                     
                     <div class="notification-icon">
                         <img src="{{ asset('images/notifications.svg') }}" alt="Notifications">
@@ -1041,6 +1118,22 @@
                 
                 // Show notification (if you want to add this)
                 // showNotification(newTheme.charAt(0).toUpperCase() + newTheme.slice(1) + ' mode enabled');
+            });
+            
+            // User dropdown functionality
+            const userAvatar = document.getElementById('userAvatar');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            userAvatar.addEventListener('click', function(event) {
+                event.stopPropagation();
+                userDropdown.classList.toggle('active');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!userAvatar.contains(event.target) && !userDropdown.contains(event.target)) {
+                    userDropdown.classList.remove('active');
+                }
             });
         });
     </script>
