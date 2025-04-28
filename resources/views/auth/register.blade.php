@@ -684,7 +684,7 @@
                 </div>
 
                 <div class="register-form-container">
-                    <form method="POST" action="{{ route('register.post') }}" id="register-form">
+                    <form method="POST" action="{{ route('register.post') }}" id="register-form" onsubmit="return checkFormSubmission(event);">
                         @csrf
                         @if (session('google_email_conflict'))
                             <div class="alert alert-danger">
@@ -717,7 +717,7 @@
                                 <div class="form-fields">
                                     <div class="field-container">
                                         <label for="name" class="field-label">Full Name</label>
-                                        <input type="text" id="name" name="name" class="field-input" value="{{ old('name') }}" required>
+                                        <input type="text" id="name" name="name" class="field-input" value="{{ old('name') }}" required onclick="event.stopPropagation();">
                                         @error('name')
                                             <span class="error-message">{{ $message }}</span>
                                         @enderror
@@ -725,7 +725,7 @@
 
                                     <div class="field-container">
                                         <label for="email" class="field-label">Email</label>
-                                        <input type="email" id="email" name="email" class="field-input" value="{{ old('email') }}" required>
+                                        <input type="email" id="email" name="email" class="field-input" value="{{ old('email') }}" required onclick="event.stopPropagation();">
                                         @error('email')
                                             <span class="error-message">{{ $message }}</span>
                                         @enderror
@@ -734,11 +734,11 @@
                                     <div class="field-container">
                                         <div class="password-field-header">
                                             <label for="password" class="field-label">Password</label>
-                                            <button type="button" id="togglePassword" class="toggle-password" aria-label="Toggle password visibility">
+                                            <button type="button" id="togglePassword" class="toggle-password" aria-label="Toggle password visibility" onclick="event.preventDefault(); event.stopPropagation();">
                                                 <img class="eye-icon" alt="Toggle password visibility" src="{{ asset('images/eye-slash-fill.svg') }}">
                                             </button>
                                         </div>
-                                        <input type="password" id="password" name="password" class="field-input" required>
+                                        <input type="password" id="password" name="password" class="field-input" required onclick="event.stopPropagation();">
                                         @error('password')
                                             <span class="error-message">{{ $message }}</span>
                                         @enderror
@@ -747,11 +747,11 @@
                                     <div class="field-container">
                                         <div class="password-field-header">
                                             <label for="password_confirmation" class="field-label">Confirm Password</label>
-                                            <button type="button" id="toggleConfirmPassword" class="toggle-password" aria-label="Toggle confirm password visibility">
+                                            <button type="button" id="toggleConfirmPassword" class="toggle-password" aria-label="Toggle confirm password visibility" onclick="event.preventDefault(); event.stopPropagation();">
                                                 <img class="eye-icon" alt="Toggle confirm password visibility" src="{{ asset('images/eye-slash-fill.svg') }}">
                                             </button>
                                         </div>
-                                        <input type="password" id="password_confirmation" name="password_confirmation" class="field-input" required>
+                                        <input type="password" id="password_confirmation" name="password_confirmation" class="field-input" required onclick="event.stopPropagation();">
                                     </div>
                                     
                                     <!-- Hidden Turnstile token field -->
@@ -763,7 +763,7 @@
                             </div>
                         </div>
 
-                        <button type="button" id="pre-submit-button" class="register-button">
+                        <button type="button" id="pre-submit-button" class="register-button" onclick="event.preventDefault(); showCaptcha();">
                             <div class="button-text">Register</div>
                         </button>
                         
@@ -813,6 +813,34 @@
     </div>
 
     <script>
+        // Flag to prevent multiple form submissions
+        let isSubmitting = false;
+        
+        // Function to show the captcha overlay
+        function showCaptcha() {
+            document.getElementById('captcha-overlay').style.display = 'flex';
+            
+            // Ensure the Turnstile widget is reset if it was previously loaded
+            if (typeof turnstile !== 'undefined') {
+                turnstile.reset();
+            }
+        }
+        
+        // Check if form should be submitted
+        function checkFormSubmission(event) {
+            // If already submitting or captcha verified, allow submission
+            if (isSubmitting || sessionStorage.getItem('captcha_verified') === 'true') {
+                // Clear the verification flag
+                sessionStorage.removeItem('captcha_verified');
+                return true;
+            }
+            
+            // Otherwise prevent default form submission and show captcha
+            event.preventDefault();
+            showCaptcha();
+            return false;
+        }
+        
         // Cloudflare Turnstile callback
         function turnstileCallback(token) {
             console.log('Turnstile callback received token:', token);
@@ -820,6 +848,7 @@
             
             // Set a flag in session storage to indicate verification was completed
             sessionStorage.setItem('captcha_verified', 'true');
+            isSubmitting = true;
             
             // Hide overlay after verification
             document.getElementById('captcha-overlay').style.display = 'none';
@@ -827,37 +856,40 @@
             // Submit the form automatically after verification
             document.getElementById('register-form').submit();
         }
-        
-        // Pre-submit button click handler
-        document.getElementById('pre-submit-button').addEventListener('click', function() {
-            // Show the captcha overlay
-            const overlay = document.getElementById('captcha-overlay');
-            overlay.style.display = 'flex';
+
+        // Prevent any accidental form submissions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Disable the default behavior of Enter key in inputs
+            const allInputs = document.querySelectorAll('input');
+            allInputs.forEach(function(input) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                // Explicitly stop propagation on the click event
+                input.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
             
-            // Ensure the Turnstile widget is reset if it was previously loaded
-            if (typeof turnstile !== 'undefined') {
-                turnstile.reset();
-            }
-        });
-        
-        // Listen for form submission to ensure CAPTCHA is validated
-        document.getElementById('register-form').addEventListener('submit', function(e) {
-            // Check if this is a programmatic submission after CAPTCHA
-            if (sessionStorage.getItem('captcha_verified') === 'true') {
-                // Allow the submission and clear the flag
-                sessionStorage.removeItem('captcha_verified');
-                return true;
-            }
-            
-            // Otherwise, check if token exists
-            const token = document.getElementById('cf-turnstile-response').value;
-            if (!token) {
-                e.preventDefault();
-                document.getElementById('captcha-overlay').style.display = 'flex';
-            }
+            // Add a capture phase click handler to the form to prevent clicks from reaching the form
+            document.getElementById('register-form').addEventListener('click', function(e) {
+                // Only stop if this is the form itself being clicked, not a child element
+                if (e.target === this) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
         });
 
-        document.getElementById('togglePassword').addEventListener('click', function() {
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const passwordInput = document.getElementById('password');
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
@@ -871,7 +903,11 @@
             }
         });
 
-        document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+        // Toggle confirm password visibility
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const passwordInput = document.getElementById('password_confirmation');
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
