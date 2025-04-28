@@ -817,12 +817,15 @@
         function turnstileCallback(token) {
             console.log('Turnstile callback received token:', token);
             document.getElementById('cf-turnstile-response').value = token;
+            
+            // Set a flag in session storage to indicate verification was completed
+            sessionStorage.setItem('captcha_verified', 'true');
+            
             // Hide overlay after verification
-            setTimeout(function() {
-                document.getElementById('captcha-overlay').style.display = 'none';
-                // Submit the form automatically after verification
-                document.getElementById('register-form').submit();
-            }, 500);
+            document.getElementById('captcha-overlay').style.display = 'none';
+            
+            // Submit the form automatically after verification
+            document.getElementById('register-form').submit();
         }
         
         // Pre-submit button click handler
@@ -839,10 +842,17 @@
         
         // Listen for form submission to ensure CAPTCHA is validated
         document.getElementById('register-form').addEventListener('submit', function(e) {
+            // Check if this is a programmatic submission after CAPTCHA
+            if (sessionStorage.getItem('captcha_verified') === 'true') {
+                // Allow the submission and clear the flag
+                sessionStorage.removeItem('captcha_verified');
+                return true;
+            }
+            
+            // Otherwise, check if token exists
             const token = document.getElementById('cf-turnstile-response').value;
             if (!token) {
                 e.preventDefault();
-                alert('Please complete the CAPTCHA verification');
                 document.getElementById('captcha-overlay').style.display = 'flex';
             }
         });
