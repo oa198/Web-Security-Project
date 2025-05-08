@@ -1,0 +1,79 @@
+* [33m486cffe[m[33m ([m[1;36mHEAD[m[33m)[m Build Backend Base Part 1
+[31m|[m * [33m7503f9b[m[33m ([m[1;32mmain[m[33m)[m Create Courses Pages With React
+[31m|[m * [33m0dab616[m Financial & Grades Backend WO Front
+[31m|[m[31m/[m  
+* [33mbc3b717[m Build The Base Part 1
+* [33m4b9975e[m Install React dependencies and prepare files for frontend migration
+* [33m430ed60[m Change verification link to 6-digit code for account creation
+* [33m8db3ae6[m improve signup process
+* [33m69060bd[m Solve Login page isuss
+* [33m96c5b04[m Blade explorer and some updates
+* [33me3fbcda[m CRUD Courses
+* [33ma1ea907[m Login via Github
+* [33me1a2152[m solve google isuss & improve login page
+* [33mf6903cd[m solve Login page UI isuss
+* [33mf370ea0[m Build Model Structure
+* [33mc551e22[m Build Structure 2
+* [33m1d6e34d[m Build Structure 1
+* [33ma7bbd49[m Securing OAuth
+* [33m1653031[m Login via Google
+* [33md2f2bd7[m Email Verification
+* [33m87d05fc[m Student
+* [33md754604[m Add reCAPTCHA to Registration
+* [33m307134d[m Implemented rate limiting and brute force protection for your registration and password reset
+* [33m9642e8a[m Add Forget Password
+* [33m1204dd1[m Add Verification
+* [33m5dc5d4c[m User & Admin portals
+[32m|[m * [33mc49b798[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Install React dependencies and prepare files for frontend migration
+[32m|[m * [33m5843769[m Change verification link to 6-digit code for account creation
+[32m|[m * [33mcabf8be[m improve signup process
+[32m|[m * [33m61dff52[m Solve Login page isuss
+[32m|[m *   [33m4afffa3[m Merge pull request #9 from mohamed230102535/main
+[32m|[m [34m|[m[35m\[m  
+[32m|[m [34m|[m * [33mc82196d[m Blade explorer and some updates
+[32m|[m [34m|[m * [33m4e9824e[m CRUD Courses
+[32m|[m [34m|[m[34m/[m  
+[32m|[m * [33m0b69def[m Login via Github
+[32m|[m * [33mc5e24bb[m solve google isuss & improve login page
+[32m|[m * [33m271f54e[m solve Login page UI isuss
+[32m|[m *   [33m60d66b5[m Merge pull request #8 from mohamed230102535/main
+[32m|[m [36m|[m[1;31m\[m  
+[32m|[m [36m|[m * [33m91d6d6e[m Build Model Structure
+[32m|[m [36m|[m * [33m07b2f21[m Build Structure 2
+[32m|[m [36m|[m * [33mee50227[m Build Structure 1
+[32m|[m [36m|[m[36m/[m  
+[32m|[m * [33m7202ec8[m Securing OAuth
+[32m|[m * [33m87c29c1[m Login via Google
+[32m|[m * [33mdde105a[m Email Verification
+[32m|[m *   [33ma5388b9[m Merge pull request #7 from oa198/main
+[32m|[m [1;32m|[m[1;33m\[m  
+[32m|[m [1;32m|[m * [33mc9ce087[m Student
+[32m|[m [1;32m|[m[1;32m/[m  
+[32m|[m * [33m6859db6[m Add reCAPTCHA to Registration
+[32m|[m *   [33me406ce4[m Merge pull request #6 from mohamed230102535/main
+[32m|[m [1;34m|[m[1;35m\[m  
+[32m|[m [1;34m|[m * [33m0d83fd6[m Implemented rate limiting and brute force protection for your registration and password reset
+[32m|[m * [1;35m|[m [33m32b0265[m Add Forget Password
+[32m|[m [1;36m|[m[1;35m\[m[1;35m|[m 
+[32m|[m [1;36m|[m * [33m15339fe[m Add Forget Password
+[32m|[m * [31m|[m [33mfafd15c[m Add Verification
+[32m|[m [32m|[m[31m\[m[31m|[m 
+[32m|[m [32m|[m * [33m0b46703[m Add Verification
+[32m|[m [32m|[m[32m/[m  
+[32m|[m *   [33mab6e972[m User & Admin portals & Auth
+[32m|[m [34m|[m[35m\[m  
+[32m|[m [34m|[m * [33mbb4a0c9[m User & Admin portals
+[32m|[m [34m|[m[34m/[m  
+[32m|[m *   [33m3fac365[m Welcome and the layouts
+[32m|[m [36m|[m[32m\[m  
+[32m|[m [36m|[m[32m/[m  
+[32m|[m[32m/[m[36m|[m   
+* [36m|[m [33m16cc32f[m a
+* [36m|[m [33ma3e88fc[m Welcome and the layouts
+[36m|[m[36m/[m  
+* [33me7dba7b[m Prepare the .env, .htaccess, .gitignore, layout folder
+* [33m8ceae93[m add bootstrap locally
+* [33m88d07bf[m init the laravel structure
+* [33ma7876b5[m Update README.md
+* [33mddaee35[m Update README.md
+* [33m9efb32a[m Initial commit
