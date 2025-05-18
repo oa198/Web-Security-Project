@@ -9,109 +9,183 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $courses = Course::with(['professor', 'students'])->get();
-        return view('courses.index', compact('courses'));
+        // Get courses from database
+        $currentSemester = 'Fall 2023';
+        
+        $currentCourses = Course::where('semester', $currentSemester)
+                               ->where('status', 'in_progress')
+                               ->get();
+        
+        $completedCourses = Course::where('status', 'completed')->get();
+        
+        $semesters = Course::distinct()->pluck('semester')->toArray();
+        $departments = Course::distinct()->pluck('department')->toArray();
+        
+        return view('courses.index', compact('currentCourses', 'completedCourses', 'currentSemester', 'semesters', 'departments'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
-        // Get all users who can be professors (you can modify this based on your needs)
-        $professors = User::all();
-        return view('courses.create', compact('professors'));
+        return view('courses.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'code' => 'required|string|max:20|unique:courses',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:20',
+            'professor' => 'required|string|max:255',
+            'schedule' => 'nullable|string',
+            'location' => 'nullable|string',
             'credits' => 'required|integer|min:1',
-            'professor_id' => 'nullable|exists:users,id',
+            'semester' => 'required|string',
+            'department' => 'required|string',
         ]);
-
-        $course = Course::create($validated);
-
-        // If a professor is assigned, create the relationship
-        if ($request->professor_id) {
-            $course->professor()->attach($request->professor_id, ['role_type' => 'professor']);
-        }
-
+        
+        Course::create($validated);
+        
         return redirect()->route('courses.index')
             ->with('success', 'Course created successfully.');
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        $course = Course::with(['professor', 'students', 'grades'])->findOrFail($id);
-        return view('courses.show', compact('course'));
+        // For demo, return to index
+        return redirect()->route('courses.index');
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function edit($id)
     {
-        $course = Course::findOrFail($id);
-        $professors = User::all();
-        return view('courses.edit', compact('course', 'professors'));
+        // For demo, return to index
+        return redirect()->route('courses.index');
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
-        $course = Course::findOrFail($id);
-
-        $validated = $request->validate([
-            'code' => 'required|string|max:20|unique:courses,code,' . $id,
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'credits' => 'required|integer|min:1',
-            'professor_id' => 'nullable|exists:users,id',
-        ]);
-
-        $course->update($validated);
-
-        // Update professor relationship
-        if ($request->professor_id) {
-            $course->professor()->sync([$request->professor_id => ['role_type' => 'professor']]);
-        } else {
-            $course->professor()->detach();
-        }
-
-        return redirect()->route('courses.index')
-            ->with('success', 'Course updated successfully.');
+        // For demo, return to index
+        return redirect()->route('courses.index');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
-        $course = Course::findOrFail($id);
-        
-        // Detach all relationships before deleting
-        $course->professor()->detach();
-        $course->students()->detach();
-        
-        $course->delete();
-
-        return redirect()->route('courses.index')
-            ->with('success', 'Course deleted successfully.');
+        // For demo, return to index
+        return redirect()->route('courses.index');
     }
 
+    /**
+     * Display the specified resource's students.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function students($id)
     {
-        $course = Course::with(['students' => function($query) {
-            $query->with('grades');
-        }])->findOrFail($id);
-        
-        return view('courses.students', compact('course'));
+        // For demo, return to index
+        return redirect()->route('courses.index');
     }
 
+    /**
+     * Display the specified resource's grades.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function grades($id)
     {
-        $course = Course::with(['students' => function($query) {
-            $query->with(['grades' => function($query) {
-                $query->where('course_id', $id);
-            }]);
-        }])->findOrFail($id);
-        
-        return view('courses.grades', compact('course'));
+        // For demo, return to index
+        return redirect()->route('courses.index');
+    }
+
+    /**
+     * Display the specified resource's schedule.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function schedule($id)
+    {
+        // For demo, return to index
+        return redirect()->route('courses.index');
+    }
+
+    /**
+     * Filter courses based on criteria.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function filter(Request $request)
+    {
+        // For now, just redirect back to index
+        return redirect()->route('courses.index')
+            ->with('info', 'Courses filtered. This is a demo feature.');
+    }
+
+    /**
+     * Search for courses.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        // For now, just redirect back to index
+        return redirect()->route('courses.index')
+            ->with('info', 'Course search performed. This is a demo feature.');
+    }
+
+    /**
+     * Display completed courses.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function completed()
+    {
+        // For now, just redirect back to index
+        return redirect()->route('courses.index')
+            ->with('info', 'Viewing all completed courses. This is a demo feature.');
     }
 } 

@@ -1,0 +1,18 @@
+Instructions for updating your hosts file:
+
+1. Open Notepad as administrator (right-click on Notepad in Start menu and select "Run as administrator")
+2. Open the file: C:\Windows\System32\drivers\etc\hosts
+3. Add these lines at the end of the file:
+
+127.0.0.1 project.localhost.com
+127.0.0.1 websec.local.com
+
+4. Save the file and close Notepad
+5. Start XAMPP Control Panel as administrator
+6. Click "Start" for Apache
+
+After these changes, access your sites at:
+http://project.localhost.com:8080
+http://websec.local.com:8080
+
+Note: We've changed Apache to use port 8080 instead of 80 to avoid conflicts. 
