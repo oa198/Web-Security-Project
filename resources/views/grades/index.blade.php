@@ -1,208 +1,202 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
 @section('title', 'Grades - Student Portal')
 
-@section('page-title', 'Grades')
+@section('page_title', 'Grades')
 
 @section('content')
-<div class="mb-6">
-    <h2 class="text-2xl font-bold text-gray-900">My Grades</h2>
-    <p class="text-gray-600 mt-1">
-        View your academic performance across all courses.
-    </p>
-</div>
+<div class="space-y-6">
+    <!-- Sample Grades Data - Replace with dynamic data in a real application -->
+    @php
+        $grades = [
+            [
+                'courseId' => 1,
+                'courseCode' => 'CS 4750',
+                'courseName' => 'Database Systems',
+                'credits' => 4,
+                'grade' => 'A',
+                'semester' => 'Fall',
+                'year' => '2023'
+            ],
+            [
+                'courseId' => 2,
+                'courseCode' => 'CS 3240',
+                'courseName' => 'Web Development',
+                'credits' => 3,
+                'grade' => 'B+',
+                'semester' => 'Fall',
+                'year' => '2023'
+            ],
+            [
+                'courseId' => 3,
+                'courseCode' => 'CS 2150',
+                'courseName' => 'Data Structures',
+                'credits' => 4,
+                'grade' => 'A-',
+                'semester' => 'Spring',
+                'year' => '2023'
+            ],
+            [
+                'courseId' => 4,
+                'courseCode' => 'CS 3140',
+                'courseName' => 'Software Engineering',
+                'credits' => 3,
+                'grade' => 'B',
+                'semester' => 'Spring',
+                'year' => '2023'
+            ],
+            [
+                'courseId' => 5,
+                'courseCode' => 'CS 2110',
+                'courseName' => 'Computer Organization',
+                'credits' => 3,
+                'grade' => 'A',
+                'semester' => 'Fall',
+                'year' => '2022'
+            ],
+            [
+                'courseId' => 6,
+                'courseCode' => 'MATH 3351',
+                'courseName' => 'Linear Algebra',
+                'credits' => 3,
+                'grade' => 'B-',
+                'semester' => 'Fall',
+                'year' => '2022'
+            ]
+        ];
 
-<!-- Overall Stats -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white rounded-lg p-5 shadow-sm border">
-        <h3 class="text-sm font-medium text-gray-500">Overall GPA</h3>
-        <div class="mt-2 flex items-baseline">
-            <p class="text-3xl font-bold text-gray-900">3.8</p>
-            <p class="ml-2 text-sm text-green-600 font-medium">+0.2</p>
-        </div>
-        <p class="mt-1 text-xs text-gray-500">From previous semester</p>
-    </div>
-    
-    <div class="bg-white rounded-lg p-5 shadow-sm border">
-        <h3 class="text-sm font-medium text-gray-500">Total Credits</h3>
-        <div class="mt-2 flex items-baseline">
-            <p class="text-3xl font-bold text-gray-900">72</p>
-            <p class="ml-2 text-sm text-green-600 font-medium">+18</p>
-        </div>
-        <p class="mt-1 text-xs text-gray-500">Current semester</p>
-    </div>
-    
-    <div class="bg-white rounded-lg p-5 shadow-sm border">
-        <h3 class="text-sm font-medium text-gray-500">Credits Remaining</h3>
-        <div class="mt-2 flex items-baseline">
-            <p class="text-3xl font-bold text-gray-900">48</p>
-            <p class="ml-2 text-sm text-gray-600 font-medium">to graduate</p>
-        </div>
-        <p class="mt-1 text-xs text-gray-500">For degree completion</p>
-    </div>
-</div>
+        // Group grades by semester
+        $gradesBySemester = [];
+        foreach ($grades as $grade) {
+            $key = $grade['semester'] . ' ' . $grade['year'];
+            if (!isset($gradesBySemester[$key])) {
+                $gradesBySemester[$key] = [];
+            }
+            $gradesBySemester[$key][] = $grade;
+        }
 
-<!-- Grade Distribution -->
-<div class="bg-white rounded-lg shadow-sm border p-5 mb-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Grade Distribution</h3>
-    <div class="grid grid-cols-5 gap-2">
-        <div class="flex flex-col items-center">
-            <div class="h-32 w-full bg-gray-100 rounded-t-lg relative">
-                <div class="absolute bottom-0 w-full bg-green-500 rounded-t-lg" style="height: 75%"></div>
-            </div>
-            <div class="mt-2 text-sm font-medium text-gray-700">A</div>
-            <div class="text-xs text-gray-500">9 courses</div>
-        </div>
-        <div class="flex flex-col items-center">
-            <div class="h-32 w-full bg-gray-100 rounded-t-lg relative">
-                <div class="absolute bottom-0 w-full bg-green-400 rounded-t-lg" style="height: 60%"></div>
-            </div>
-            <div class="mt-2 text-sm font-medium text-gray-700">B</div>
-            <div class="text-xs text-gray-500">6 courses</div>
-        </div>
-        <div class="flex flex-col items-center">
-            <div class="h-32 w-full bg-gray-100 rounded-t-lg relative">
-                <div class="absolute bottom-0 w-full bg-yellow-400 rounded-t-lg" style="height: 35%"></div>
-            </div>
-            <div class="mt-2 text-sm font-medium text-gray-700">C</div>
-            <div class="text-xs text-gray-500">4 courses</div>
-        </div>
-        <div class="flex flex-col items-center">
-            <div class="h-32 w-full bg-gray-100 rounded-t-lg relative">
-                <div class="absolute bottom-0 w-full bg-orange-400 rounded-t-lg" style="height: 15%"></div>
-            </div>
-            <div class="mt-2 text-sm font-medium text-gray-700">D</div>
-            <div class="text-xs text-gray-500">2 courses</div>
-        </div>
-        <div class="flex flex-col items-center">
-            <div class="h-32 w-full bg-gray-100 rounded-t-lg relative">
-                <div class="absolute bottom-0 w-full bg-red-500 rounded-t-lg" style="height: 5%"></div>
-            </div>
-            <div class="mt-2 text-sm font-medium text-gray-700">F</div>
-            <div class="text-xs text-gray-500">1 course</div>
-        </div>
-    </div>
-</div>
+        // Calculate GPA
+        function calculateGPA($grades) {
+            $gradePoints = [
+                'A+' => 4.0, 'A' => 4.0, 'A-' => 3.7,
+                'B+' => 3.3, 'B' => 3.0, 'B-' => 2.7,
+                'C+' => 2.3, 'C' => 2.0, 'C-' => 1.7,
+                'D+' => 1.3, 'D' => 1.0, 'D-' => 0.7,
+                'F' => 0.0
+            ];
 
-<!-- Current Semester Grades -->
-<div class="bg-white rounded-lg shadow-sm border p-5 mb-6">
-    <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900">Current Semester</h3>
-        <div>
-            <select class="text-sm border-gray-200 rounded-md">
-                <option>Spring 2023</option>
-                <option>Fall 2022</option>
-                <option>Spring 2022</option>
-            </select>
+            $totalPoints = 0;
+            $totalCredits = 0;
+
+            foreach ($grades as $grade) {
+                $totalPoints += $gradePoints[$grade['grade']] * $grade['credits'];
+                $totalCredits += $grade['credits'];
+            }
+
+            return number_format($totalPoints / $totalCredits, 2);
+        }
+
+        function getGradeColor($grade) {
+            if (strpos($grade, 'A') === 0) return 'bg-green-100 text-green-800';
+            if (strpos($grade, 'B') === 0) return 'bg-primary-100 text-primary-800';
+            if (strpos($grade, 'C') === 0) return 'bg-yellow-100 text-yellow-800';
+            return 'bg-red-100 text-red-800';
+        }
+    @endphp
+
+    <!-- GPA Overview -->
+    <div class="bg-gradient-to-r from-primary-500 to-primary-700 text-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-2xl font-bold">Current GPA</h3>
+                <p class="text-primary-100">Overall academic performance</p>
+            </div>
+            <div class="text-4xl font-bold">{{ calculateGPA($grades) }}</div>
         </div>
     </div>
-    
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credits</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Database Systems</div>
-                        <div class="text-xs text-gray-500">Prof. Johnson</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">CS 3200</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">A (92.4%)</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Web Development</div>
-                        <div class="text-xs text-gray-500">Prof. Smith</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">CS 4550</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">B+ (87.2%)</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Computer Networks</div>
-                        <div class="text-xs text-gray-500">Prof. Williams</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">CS 3700</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-yellow-600">C (74.8%)</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Software Engineering</div>
-                        <div class="text-xs text-gray-500">Prof. Davis</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">CS 4500</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-400">--</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">In Progress</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Data Science</div>
-                        <div class="text-xs text-gray-500">Prof. Miller</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">DS 3000</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-400">--</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">In Progress</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 
-<!-- GPA Trend -->
-<div class="bg-white rounded-lg shadow-sm border p-5">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">GPA Trend</h3>
-    <div class="h-64 w-full">
-        <div class="flex items-end h-48 w-full justify-between px-4">
-            <div class="w-1/5 flex flex-col items-center">
-                <div class="h-24 w-12 bg-primary-500 rounded-t-lg"></div>
-                <div class="mt-2 text-xs text-gray-500">Fall 2021</div>
-                <div class="text-sm font-medium text-gray-700">3.4</div>
+    <!-- Grades by Semester -->
+    @foreach($gradesBySemester as $semester => $semesterGrades)
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ $semester }}</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 px-4">Course Code</th>
+                            <th class="text-left py-3 px-4">Course Name</th>
+                            <th class="text-left py-3 px-4">Credits</th>
+                            <th class="text-left py-3 px-4">Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($semesterGrades as $grade)
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4">{{ $grade['courseCode'] }}</td>
+                                <td class="py-3 px-4">{{ $grade['courseName'] }}</td>
+                                <td class="py-3 px-4">{{ $grade['credits'] }}</td>
+                                <td class="py-3 px-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ getGradeColor($grade['grade']) }}">
+                                        {{ $grade['grade'] }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-            <div class="w-1/5 flex flex-col items-center">
-                <div class="h-28 w-12 bg-primary-500 rounded-t-lg"></div>
-                <div class="mt-2 text-xs text-gray-500">Spring 2022</div>
-                <div class="text-sm font-medium text-gray-700">3.5</div>
+        </div>
+    @endforeach
+
+    <!-- Grade Distribution -->
+    <div class="bg-white rounded-lg shadow-sm border p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Grade Distribution</h3>
+        <div class="relative h-10 bg-gray-200 rounded-full overflow-hidden">
+            @php
+                $gradeDistribution = [
+                    'A' => 0, 'B' => 0, 'C' => 0, 'D' => 0, 'F' => 0
+                ];
+                
+                foreach ($grades as $grade) {
+                    $letterGrade = substr($grade['grade'], 0, 1);
+                    $gradeDistribution[$letterGrade]++;
+                }
+                
+                $totalCourses = count($grades);
+                $percentages = [
+                    'A' => ($gradeDistribution['A'] / $totalCourses) * 100,
+                    'B' => ($gradeDistribution['B'] / $totalCourses) * 100,
+                    'C' => ($gradeDistribution['C'] / $totalCourses) * 100,
+                    'D' => ($gradeDistribution['D'] / $totalCourses) * 100,
+                    'F' => ($gradeDistribution['F'] / $totalCourses) * 100
+                ];
+            @endphp
+            <div class="absolute top-0 left-0 h-full bg-green-500" style="width: {{ $percentages['A'] }}%"></div>
+            <div class="absolute top-0 left-{{ $percentages['A'] }}% h-full bg-primary-500" style="width: {{ $percentages['B'] }}%"></div>
+            <div class="absolute top-0 left-{{ $percentages['A'] + $percentages['B'] }}% h-full bg-yellow-500" style="width: {{ $percentages['C'] }}%"></div>
+            <div class="absolute top-0 left-{{ $percentages['A'] + $percentages['B'] + $percentages['C'] }}% h-full bg-orange-500" style="width: {{ $percentages['D'] }}%"></div>
+            <div class="absolute top-0 left-{{ $percentages['A'] + $percentages['B'] + $percentages['C'] + $percentages['D'] }}% h-full bg-red-500" style="width: {{ $percentages['F'] }}%"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-gray-500">
+            <div class="flex items-center">
+                <div class="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
+                <span>A ({{ $gradeDistribution['A'] }})</span>
             </div>
-            <div class="w-1/5 flex flex-col items-center">
-                <div class="h-32 w-12 bg-primary-500 rounded-t-lg"></div>
-                <div class="mt-2 text-xs text-gray-500">Fall 2022</div>
-                <div class="text-sm font-medium text-gray-700">3.6</div>
+            <div class="flex items-center">
+                <div class="w-3 h-3 bg-primary-500 rounded-full mr-1"></div>
+                <span>B ({{ $gradeDistribution['B'] }})</span>
             </div>
-            <div class="w-1/5 flex flex-col items-center">
-                <div class="h-36 w-12 bg-primary-500 rounded-t-lg"></div>
-                <div class="mt-2 text-xs text-gray-500">Spring 2023</div>
-                <div class="text-sm font-medium text-gray-700">3.8</div>
+            <div class="flex items-center">
+                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-1"></div>
+                <span>C ({{ $gradeDistribution['C'] }})</span>
             </div>
-            <div class="w-1/5 flex flex-col items-center">
-                <div class="h-36 w-12 bg-gray-300 rounded-t-lg opacity-50"></div>
-                <div class="mt-2 text-xs text-gray-500">Fall 2023</div>
-                <div class="text-sm font-medium text-gray-400">--</div>
+            <div class="flex items-center">
+                <div class="w-3 h-3 bg-orange-500 rounded-full mr-1"></div>
+                <span>D ({{ $gradeDistribution['D'] }})</span>
+            </div>
+            <div class="flex items-center">
+                <div class="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
+                <span>F ({{ $gradeDistribution['F'] }})</span>
             </div>
         </div>
     </div>

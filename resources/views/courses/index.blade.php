@@ -1,221 +1,254 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
 @section('title', 'Courses - Student Portal')
 
-@section('page-title', 'Courses')
+@section('page_title', 'Courses')
 
 @section('content')
-<div class="mb-6">
-    <h2 class="text-2xl font-bold text-gray-900">My Courses</h2>
-    <p class="text-gray-600 mt-1">
-        View and manage your enrolled courses
-    </p>
-</div>
-
-<!-- Course Filters -->
-<div class="bg-white rounded-lg shadow-sm border p-5 mb-6">
-    <div class="flex flex-wrap items-center justify-between gap-4">
-        <div class="flex flex-wrap items-center gap-4">
-            <div>
-                <label for="semester" class="block text-sm font-medium text-gray-700 mb-1">Semester</label>
-                <select id="semester" name="semester" form="course-filter-form" class="text-sm border-gray-200 rounded-md w-40">
-                    <option value="all">All Semesters</option>
-                    @foreach ($semesters ?? ['Fall 2023', 'Spring 2023', 'Fall 2022'] as $semester)
-                        <option value="{{ $semester }}">{{ $semester }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="department" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                <select id="department" name="department" form="course-filter-form" class="text-sm border-gray-200 rounded-md w-44">
-                    <option value="all">All Departments</option>
-                    @foreach ($departments ?? ['Computer Science', 'Mathematics', 'Physics', 'Biology'] as $department)
-                        <option value="{{ $department }}">{{ $department }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select id="status" name="status" form="course-filter-form" class="text-sm border-gray-200 rounded-md w-40">
-                    <option value="all">All Status</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                </select>
-            </div>
-            <div class="mt-6">
-                <form id="course-filter-form" action="{{ route('courses.filter') }}" method="GET">
-                    <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                        Apply Filters
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="relative">
-            <form action="{{ route('courses.search') }}" method="GET">
-                <input type="text" name="q" placeholder="Search courses..." class="pl-8 pr-4 py-2 border border-gray-200 rounded-md w-64">
-                <button type="submit" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Current Semester Courses -->
-<div class="mb-8">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Current Semester: {{ $currentSemester ?? 'Fall 2023' }}</h3>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @forelse($currentCourses ?? [] as $course)
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                <div class="h-2 
-                    @if($course['progress'] < 25) bg-red-500
-                    @elseif($course['progress'] < 50) bg-amber-500
-                    @elseif($course['progress'] < 75) bg-blue-500
-                    @else bg-green-500 @endif" 
-                    style="width: {{ $course['progress'] }}%">
-                </div>
-                <div class="p-5">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="text-lg font-semibold text-gray-900">{{ $course['name'] }}</h4>
-                        <span class="text-xs font-medium bg-gray-100 text-gray-800 px-2 py-1 rounded">
-                            {{ $course['credits'] }} Credits
-                        </span>
-                    </div>
-                    <p class="text-gray-500 text-sm">{{ $course['code'] }}</p>
-                    
-                    <div class="mt-4 space-y-2">
-                        <div class="flex items-center text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            <span class="text-gray-700">{{ $course['professor'] }}</span>
-                        </div>
-                        <div class="flex items-center text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <span class="text-gray-700">{{ $course['schedule'] }}</span>
-                        </div>
-                        <div class="flex items-center text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span class="text-gray-700">{{ $course['location'] }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
-                        <div>
-                            <div class="text-sm font-medium text-gray-700">Progress</div>
-                            <div class="text-xs text-gray-500">{{ $course['progress'] }}% Complete</div>
-                        </div>
-                        <a href="{{ route('courses.show', $course['id']) }}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
-                            View Course
-                        </a>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="col-span-3 p-5 bg-white rounded-lg border border-gray-200 shadow-sm text-center text-gray-500">
-                No courses found for the current semester.
-            </div>
-        @endforelse
-    </div>
-    
-    @if(!isset($currentCourses) || count($currentCourses) > 3)
-        <div class="mt-4 text-center">
-            <button class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                Show More
+<div class="space-y-6">
+    <!-- Filters and Search -->
+    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div class="flex gap-2">
+            <button id="all-btn" class="px-4 py-2 rounded-lg font-medium bg-primary-600 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                All Courses
+            </button>
+            <button id="enrolled-btn" class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                Enrolled
+            </button>
+            <button id="available-btn" class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                Available
             </button>
         </div>
-    @endif
-</div>
-
-<!-- Completed Courses -->
-<div>
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Completed Courses</h3>
-    
-    <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Course Name
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Code
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Semester
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Instructor
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Grade
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Credits
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($completedCourses ?? [] as $course)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ $course['name'] }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $course['code'] }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $course['semester'] }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $course['instructor'] }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    @if($course['grade'] == 'A' || $course['grade'] == 'A-') bg-green-100 text-green-800 
-                                    @elseif($course['grade'] == 'B+' || $course['grade'] == 'B' || $course['grade'] == 'B-') bg-blue-100 text-blue-800
-                                    @elseif($course['grade'] == 'C+' || $course['grade'] == 'C' || $course['grade'] == 'C-') bg-yellow-100 text-yellow-800
-                                    @else bg-red-100 text-red-800 @endif">
-                                    {{ $course['grade'] }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $course['credits'] }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('courses.show', $course['id']) }}" class="text-primary-600 hover:text-primary-700">Details</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No completed courses found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <div class="w-full sm:w-64">
+            <input
+                type="text"
+                id="course-search"
+                placeholder="Search courses..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            />
         </div>
     </div>
-    
-    @if(!isset($completedCourses) || count($completedCourses) > 5)
-        <div class="mt-4 text-center">
-            <a href="{{ route('courses.completed') }}" class="inline-block px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                View All Completed Courses
-            </a>
-        </div>
-    @endif
+
+    <!-- Course Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="courses-container">
+        <!-- Sample Courses - Replace with dynamic data in a real application -->
+        @php
+            $courses = [
+                [
+                    'id' => 1,
+                    'name' => 'Database Systems',
+                    'code' => 'CS 4750',
+                    'enrolled' => true,
+                    'instructor' => 'Dr. Smith',
+                    'credits' => 4,
+                    'schedule' => [
+                        'days' => ['Mon', 'Wed'],
+                        'startTime' => '10:00 AM',
+                        'endTime' => '11:30 AM',
+                        'location' => 'Room 305'
+                    ]
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'Web Development',
+                    'code' => 'CS 3240',
+                    'enrolled' => true,
+                    'instructor' => 'Prof. Johnson',
+                    'credits' => 3,
+                    'schedule' => [
+                        'days' => ['Tue', 'Thu'],
+                        'startTime' => '1:00 PM',
+                        'endTime' => '2:30 PM',
+                        'location' => 'Room 201'
+                    ]
+                ],
+                [
+                    'id' => 3,
+                    'name' => 'Artificial Intelligence',
+                    'code' => 'CS 4670',
+                    'enrolled' => false,
+                    'instructor' => 'Dr. Williams',
+                    'credits' => 4,
+                    'schedule' => [
+                        'days' => ['Mon', 'Wed', 'Fri'],
+                        'startTime' => '2:00 PM',
+                        'endTime' => '3:00 PM',
+                        'location' => 'Room 401'
+                    ]
+                ],
+                [
+                    'id' => 4,
+                    'name' => 'Data Structures',
+                    'code' => 'CS 2150',
+                    'enrolled' => true,
+                    'instructor' => 'Dr. Davis',
+                    'credits' => 4,
+                    'schedule' => [
+                        'days' => ['Tue', 'Thu'],
+                        'startTime' => '9:30 AM',
+                        'endTime' => '11:00 AM',
+                        'location' => 'Room 202'
+                    ]
+                ],
+                [
+                    'id' => 5,
+                    'name' => 'Computer Architecture',
+                    'code' => 'CS 3330',
+                    'enrolled' => false,
+                    'instructor' => 'Prof. Wilson',
+                    'credits' => 3,
+                    'schedule' => [
+                        'days' => ['Mon', 'Wed'],
+                        'startTime' => '3:30 PM',
+                        'endTime' => '5:00 PM',
+                        'location' => 'Room 105'
+                    ]
+                ],
+                [
+                    'id' => 6,
+                    'name' => 'Machine Learning',
+                    'code' => 'CS 4774',
+                    'enrolled' => false,
+                    'instructor' => 'Dr. Martinez',
+                    'credits' => 3,
+                    'schedule' => [
+                        'days' => ['Wed', 'Fri'],
+                        'startTime' => '11:00 AM',
+                        'endTime' => '12:30 PM',
+                        'location' => 'Room 310'
+                    ]
+                ]
+            ];
+        @endphp
+
+        @foreach($courses as $course)
+            <div class="bg-white rounded-lg shadow-sm border p-5 hover:shadow-md transition-shadow duration-200 course-card {{ $course['enrolled'] ? 'enrolled' : 'available' }}">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">{{ $course['name'] }}</h3>
+                        <p class="text-sm text-gray-500">{{ $course['code'] }}</p>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $course['enrolled'] ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                        {{ $course['enrolled'] ? 'Enrolled' : 'Available' }}
+                    </span>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span class="text-sm">{{ $course['instructor'] }}</span>
+                    </div>
+                    <div class="flex items-center text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span class="text-sm">{{ $course['credits'] }} Credits</span>
+                    </div>
+                    <div class="flex items-center text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="text-sm">
+                            {{ implode(', ', $course['schedule']['days']) }} • {{ $course['schedule']['startTime'] }} - {{ $course['schedule']['endTime'] }}
+                        </span>
+                    </div>
+                    <div class="flex items-center text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="text-sm">{{ $course['schedule']['location'] }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <button class="w-full py-2 px-4 rounded-lg font-medium {{ $course['enrolled'] ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-primary-600 text-white hover:bg-primary-700' }} focus:outline-none focus:ring-2 focus:ring-offset-2 {{ $course['enrolled'] ? 'focus:ring-red-500' : 'focus:ring-primary-500' }}">
+                        {{ $course['enrolled'] ? 'Drop Course' : 'Enroll' }}
+                    </button>
+                </div>
+            </div>
+        @endforeach
+    </div>
 </div>
+
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const allBtn = document.getElementById('all-btn');
+        const enrolledBtn = document.getElementById('enrolled-btn');
+        const availableBtn = document.getElementById('available-btn');
+        const searchInput = document.getElementById('course-search');
+        const coursesContainer = document.getElementById('courses-container');
+        const courseCards = document.querySelectorAll('.course-card');
+
+        // Filter functionality
+        const updateFilters = (filter) => {
+            // Update button styles
+            allBtn.classList.remove('bg-primary-600', 'text-white');
+            enrolledBtn.classList.remove('bg-primary-600', 'text-white');
+            availableBtn.classList.remove('bg-primary-600', 'text-white');
+            
+            allBtn.classList.add('text-gray-700', 'hover:bg-gray-100');
+            enrolledBtn.classList.add('text-gray-700', 'hover:bg-gray-100');
+            availableBtn.classList.add('text-gray-700', 'hover:bg-gray-100');
+            
+            if (filter === 'all') {
+                allBtn.classList.remove('text-gray-700', 'hover:bg-gray-100');
+                allBtn.classList.add('bg-primary-600', 'text-white');
+            } else if (filter === 'enrolled') {
+                enrolledBtn.classList.remove('text-gray-700', 'hover:bg-gray-100');
+                enrolledBtn.classList.add('bg-primary-600', 'text-white');
+            } else if (filter === 'available') {
+                availableBtn.classList.remove('text-gray-700', 'hover:bg-gray-100');
+                availableBtn.classList.add('bg-primary-600', 'text-white');
+            }
+            
+            // Filter cards
+            filterCards();
+        };
+        
+        // Search and filter combined
+        const filterCards = () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filter = document.querySelector('.bg-primary-600').textContent.trim().toLowerCase();
+            
+            courseCards.forEach(card => {
+                const courseName = card.querySelector('h3').textContent.toLowerCase();
+                const courseCode = card.querySelector('p').textContent.toLowerCase();
+                const instructor = card.querySelectorAll('.text-sm')[0].textContent.toLowerCase();
+                
+                const isEnrolled = card.classList.contains('enrolled');
+                
+                // Check if it matches the filter
+                const matchesFilter = 
+                    filter === 'all courses' || 
+                    (filter === 'enrolled' && isEnrolled) ||
+                    (filter === 'available' && !isEnrolled);
+                
+                // Check if it matches the search term
+                const matchesSearch = 
+                    courseName.includes(searchTerm) ||
+                    courseCode.includes(searchTerm) ||
+                    instructor.includes(searchTerm);
+                
+                // Show/hide based on both conditions
+                if (matchesFilter && matchesSearch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        };
+        
+        // Event listeners
+        allBtn.addEventListener('click', () => updateFilters('all'));
+        enrolledBtn.addEventListener('click', () => updateFilters('enrolled'));
+        availableBtn.addEventListener('click', () => updateFilters('available'));
+        searchInput.addEventListener('input', filterCards);
+    });
+</script>
 @endsection 

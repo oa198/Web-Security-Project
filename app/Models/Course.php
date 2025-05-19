@@ -12,19 +12,14 @@ class Course extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'code',
-        'professor',
-        'schedule',
-        'location',
+        'title',
+        'description',
         'credits',
-        'semester',
-        'department',
-        'progress',
-        'status',
+        'professor_id',
     ];
 
     /**

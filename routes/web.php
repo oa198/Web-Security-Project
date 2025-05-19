@@ -6,11 +6,6 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
-use App\Http\Controllers\Web\DashboardController;
-use App\Http\Controllers\Web\NotificationController;
-use App\Http\Controllers\Web\AssignmentController;
-use App\Http\Controllers\Web\ScheduleController;
-use App\Http\Controllers\Web\FinancialController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
@@ -69,41 +64,46 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 // Protected routes that require authentication
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard routes
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/assignments', [DashboardController::class, 'viewAllAssignments'])->name('dashboard.assignments');
-    Route::get('/dashboard/courses', [DashboardController::class, 'viewAllCourses'])->name('dashboard.courses');
-    Route::get('/dashboard/schedule', [DashboardController::class, 'viewFullSchedule'])->name('dashboard.schedule');
-    Route::get('/dashboard/notifications', [DashboardController::class, 'viewAllNotifications'])->name('dashboard.notifications');
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-    // Assignment routes
-    Route::get('/assignments', [AssignmentController::class, 'index'])->name('assignments.index');
-    Route::get('/assignments/submit/{id}', [AssignmentController::class, 'submit'])->name('assignments.submit');
-    Route::get('/assignments/start/{id}', [AssignmentController::class, 'start'])->name('assignments.start');
-    Route::get('/assignments/filter', [AssignmentController::class, 'filter'])->name('assignments.filter');
+    // Pages from the design
+    Route::get('/courses', function () {
+        return view('courses.index');
+    })->name('courses.index');
 
-    // Schedule routes
-    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
-    Route::get('/schedule/term/{term}', [ScheduleController::class, 'term'])->name('schedule.term');
-    Route::get('/schedule/view/{view}', [ScheduleController::class, 'changeView'])->name('schedule.view');
-    Route::get('/schedule/navigate/{date}', [ScheduleController::class, 'navigate'])->name('schedule.navigate');
+    Route::get('/grades', function () {
+        return view('grades.index');
+    })->name('grades.index');
 
-    // Financial routes
-    Route::get('/financial', [FinancialController::class, 'index'])->name('financial.index');
-    Route::get('/financial/payment', [FinancialController::class, 'payment'])->name('financial.payment');
-    Route::post('/financial/process-payment', [FinancialController::class, 'processPayment'])->name('financial.process-payment');
+    Route::get('/schedule', function () {
+        return view('schedule.index');
+    })->name('schedule.index');
 
-    // Document routes
-    Route::get('/documents', [App\Http\Controllers\Web\DocumentController::class, 'index'])->name('documents.index');
-    Route::get('/documents/{id}', [App\Http\Controllers\Web\DocumentController::class, 'show'])->name('documents.show');
-    Route::get('/documents/{id}/download', [App\Http\Controllers\Web\DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/assignments', function () {
+        return view('assignments.index');
+    })->name('assignments.index');
 
-    // Notification routes
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/notifications/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
-    Route::get('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
-    Route::get('/notifications/show/{id}', [NotificationController::class, 'show'])->name('notifications.show');
-    Route::post('/notifications/settings', [NotificationController::class, 'updateSettings'])->name('notifications.settings');
+    Route::get('/notifications', function () {
+        return view('notifications.index');
+    })->name('notifications.index');
+
+    Route::get('/financial', function () {
+        return view('financial.index');
+    })->name('financial.index');
+
+    Route::get('/documents', function () {
+        return view('documents.index');
+    })->name('documents.index');
+
+    Route::get('/settings', function () {
+        return view('settings.index');
+    })->name('settings');
+
+    Route::get('/profile/edit', function () {
+        return view('profile.edit');
+    })->name('profile.edit');
 
     // Other protected routes...
     Route::get('/personal-info', function () {
@@ -172,9 +172,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/courses/{course}/students', [App\Http\Controllers\Web\CourseController::class, 'students'])->name('courses.students');
     Route::get('/courses/{course}/grades', [App\Http\Controllers\Web\CourseController::class, 'grades'])->name('courses.grades');
     Route::get('/courses/{course}/schedule', [App\Http\Controllers\Web\CourseController::class, 'schedule'])->name('courses.schedule');
-    Route::get('/courses/filter', [App\Http\Controllers\Web\CourseController::class, 'filter'])->name('courses.filter');
-    Route::get('/courses/search', [App\Http\Controllers\Web\CourseController::class, 'search'])->name('courses.search');
-    Route::get('/courses/completed', [App\Http\Controllers\Web\CourseController::class, 'completed'])->name('courses.completed');
 
     // Search route
     Route::get('/search', function () {
