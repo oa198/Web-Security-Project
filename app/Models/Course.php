@@ -16,9 +16,12 @@ class Course extends Model
      */
     protected $fillable = [
         'code',
+        'name',
         'title',
         'description',
         'credits',
+        'semester',
+        'year',
         'professor_id',
     ];
 
@@ -29,6 +32,7 @@ class Course extends Model
      */
     protected $casts = [
         'credits' => 'integer',
+        'year' => 'integer',
         'professor_id' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

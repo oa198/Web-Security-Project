@@ -6,12 +6,80 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::with(['professor', 'students'])->get();
+        $user = Auth::user();
+        
+        // Get all courses
+        $rawCourses = Course::with(['professor', 'students'])->get();
+        
+        // Format courses for the view
+        $courses = [];
+        foreach ($rawCourses as $course) {
+            // Check if current user is enrolled in this course
+            $isEnrolled = $user->enrolledCourses->contains($course->id);
+            
+            // Get professor name
+            $professorName = '';
+            if (is_object($course->professor) && method_exists($course->professor, 'count') && $course->professor->count() > 0) {
+                $professorName = $course->professor->first()->name;
+            } elseif (is_string($course->professor)) {
+                $professorName = $course->professor;
+            }
+            
+            // Format schedule (if available)
+            $scheduleData = [];
+            if ($course->schedule) {
+                // Parse schedule string or use default format
+                // Example format: "Mon,Wed 10:00 AM - 11:30 AM Room 305"
+                $parts = explode(' ', $course->schedule);
+                if (count($parts) >= 5) {
+                    $days = explode(',', $parts[0]);
+                    $startTime = $parts[1] . ' ' . $parts[2]; // e.g., "10:00 AM"
+                    $endTime = $parts[4] . ' ' . $parts[5];   // e.g., "11:30 AM"
+                    $location = isset($parts[6]) ? implode(' ', array_slice($parts, 6)) : $course->location ?? 'TBA';
+                    
+                    $scheduleData = [
+                        'days' => $days,
+                        'startTime' => $startTime,
+                        'endTime' => $endTime,
+                        'location' => $location
+                    ];
+                } else {
+                    // If schedule string doesn't match expected format
+                    $scheduleData = [
+                        'days' => ['TBA'],
+                        'startTime' => 'TBA',
+                        'endTime' => 'TBA',
+                        'location' => $course->location ?? 'TBA'
+                    ];
+                }
+            } else {
+                // Default schedule if none is set
+                $scheduleData = [
+                    'days' => ['TBA'],
+                    'startTime' => 'TBA',
+                    'endTime' => 'TBA',
+                    'location' => $course->location ?? 'TBA'
+                ];
+            }
+            
+            // Add course to formatted array
+            $courses[] = [
+                'id' => $course->id,
+                'name' => $course->name ?? $course->title,
+                'code' => $course->code,
+                'enrolled' => $isEnrolled,
+                'instructor' => $professorName,
+                'credits' => $course->credits,
+                'schedule' => $scheduleData
+            ];
+        }
+        
         return view('courses.index', compact('courses'));
     }
 
