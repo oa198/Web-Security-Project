@@ -1,33 +1,24 @@
-# Disable directory listing
 Options -Indexes
-
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
     RewriteEngine On
-
+    RewriteBase /
+    
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
+    
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Skip rewriting if the file or directory exists
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # Redirect everything else to public/
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [L]
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
 </IfModule>
 
-# PHP 7 settings
+# PHP Configuration
 <IfModule mod_php7.c>
     php_value upload_max_filesize 64M
     php_value post_max_size 64M
@@ -36,9 +27,12 @@ Options -Indexes
     php_value memory_limit 256M
 </IfModule>
 
-# Charset and PHP handler
+# Disable index listing
+Options -Indexes
+
+# Set default character set
 AddDefaultCharset UTF-8
 
 <IfModule mime_module>
-    AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
+  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
 </IfModule>

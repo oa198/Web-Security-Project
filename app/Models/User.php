@@ -12,54 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
-    
-    /**
-     * Generate and save a verification code for the user
-     * 
-     * @return string
-     */
-    public function generateVerificationCode()
-    {
-        // Generate a random 6-digit code
-        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
-        // Save the code and set expiration time (30 minutes from now)
-        $this->verification_code = $code;
-        $this->verification_code_expires_at = now()->addMinutes(30);
-        $this->save();
-        
-        return $code;
-    }
-    
-    /**
-     * Verify the email with the provided code
-     * 
-     * @param string $code
-     * @return bool
-     * @throws \Exception
-     */
-    public function verifyEmailWithCode($code)
-    {
-        // Check if the code matches and is not expired
-        if ($this->verification_code !== $code) {
-            throw new \Exception('Invalid verification code.');
-        }
-        
-        if ($this->verification_code_expires_at < now()) {
-            throw new \Exception('Verification code has expired. Please request a new one.');
-        }
-        
-        // Mark email as verified
-        $this->email_verified_at = now();
-        $this->verification_code = null;
-        $this->verification_code_expires_at = null;
-        $this->save();
-        
-        return true;
-    }
-    
-
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -79,6 +32,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'github_id',
         'github_token',
         'github_refresh_token',
+        'linkedin_id',
+        'avatar',
     ];
 
     /**
@@ -116,5 +71,35 @@ class User extends Authenticatable implements MustVerifyEmail
         
         // Send the notification with the code
         $this->notify(new \App\Notifications\VerificationCodeNotification($code));
+    }
+
+    /**
+     * Get the courses where the user is a professor.
+     */
+    public function taughtCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->wherePivot('role_type', 'professor')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the courses where the user is a student.
+     */
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->wherePivot('role_type', 'student')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the courses where the user is a teaching assistant.
+     */
+    public function assistedCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->wherePivot('role_type', 'teaching_assistant')
+            ->withTimestamps();
     }
 }

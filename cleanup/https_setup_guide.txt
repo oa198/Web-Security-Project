@@ -1,0 +1,47 @@
+HTTPS SETUP FOR YOUR DOMAINS
+
+I've set up HTTPS for both your domains. Here's what I did:
+
+1. Enabled Apache SSL modules:
+   - Added LoadModule ssl_module modules/mod_ssl.so
+   - Added LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
+
+2. Added SSL configuration inclusion:
+   - Added Include conf/extra/httpd-ssl.conf to httpd.conf
+
+3. Added Listen 443 directive to enable HTTPS port
+
+4. Created SSL virtual hosts for both domains:
+   - https://project.localhost.com
+   - https://websec.local.com
+
+STEPS TO COMPLETE THE SETUP:
+
+1. XAMPP comes with a self-signed certificate, but if you want to create a new one:
+   - Open Command Prompt as Administrator
+   - Run the following commands:
+     cd C:\xampp\apache\bin
+     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ..\conf\ssl.key\server.key -out ..\conf\ssl.crt\server.crt
+
+2. Restart Apache from XAMPP Control Panel:
+   - Stop Apache
+   - Start Apache
+
+3. Access your sites using HTTPS:
+   - https://project.localhost.com
+   - https://websec.local.com
+
+NOTE: Since you're using self-signed certificates, your browser will show a security warning. 
+This is normal for local development. You can:
+- Click "Advanced" and then "Proceed to site" (Chrome)
+- Click "Accept the Risk and Continue" (Firefox)
+- Or add a security exception in your browser
+
+TROUBLESHOOTING:
+
+If Apache fails to start:
+1. Check the Apache error log in XAMPP
+2. Make sure port 443 is not in use by another application
+3. Verify that the SSL certificate and key files exist:
+   - C:\xampp\apache\conf\ssl.crt\server.crt
+   - C:\xampp\apache\conf\ssl.key\server.key 

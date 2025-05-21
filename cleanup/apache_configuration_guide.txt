@@ -1,0 +1,36 @@
+APACHE CONFIGURATION GUIDE
+=======================
+
+We've fixed your Apache configuration to work with simple HTTP (port 8080). Here's what we did:
+
+1. Created a simplified httpd.conf with minimal modules
+2. Set up virtual hosts for your domains on port 8080:
+   - http://project.localhost.com:8080
+   - http://websec.local.com:8080
+
+To make everything work:
+
+1. ADD THESE ENTRIES TO YOUR HOSTS FILE (C:\Windows\System32\drivers\etc\hosts):
+   127.0.0.1 project.localhost.com
+   127.0.0.1 websec.local.com
+
+2. RUN THE RESTART SCRIPT:
+   Double-click the "restart_apache.bat" file we created
+
+3. ACCESS YOUR SITES:
+   - http://project.localhost.com:8080
+   - http://websec.local.com:8080
+
+If you still want to enable HTTPS later, please follow these steps once the HTTP version is working:
+
+1. Create self-signed certificates
+2. Enable the SSL module in Apache
+3. Configure SSL virtual hosts
+
+For now, let's make sure the basic HTTP configuration works first.
+
+TROUBLESHOOTING
+==============
+- If Apache won't start, check the error log at C:\xampp\apache\logs\error.log
+- Make sure port 8080 is not in use by another application
+- Ensure you have the correct file permissions on your web directories 

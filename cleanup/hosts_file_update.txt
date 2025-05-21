@@ -1,0 +1,15 @@
+HOSTS FILE UPDATE (IMPORTANT):
+
+1. Run Notepad as Administrator (right-click Notepad > Run as administrator)
+
+2. Open file: C:\Windows\System32\drivers\etc\hosts
+
+3. Make sure these EXACT lines are added at the end of the file:
+
+127.0.0.1 localhost
+127.0.0.1 project.localhost.com
+127.0.0.1 websec.local.com
+
+4. Save the file (if you can't save, make sure Notepad is running as Administrator)
+
+5. Restart your computer to clear DNS cache 

@@ -104,6 +104,12 @@ class LoginController extends Controller
                     ]);
                 }
 
+                // Validate avatar URL
+                $avatar = $googleUser->getAvatar();
+                if ($avatar && !Str::startsWith($avatar, 'https://lh3.googleusercontent.com/')) {
+                    $avatar = null;
+                }
+
                 // Create new user
                 $user = User::create([
                     'name' => $googleUser->getName(),
@@ -111,6 +117,7 @@ class LoginController extends Controller
                     'google_id' => $googleUser->getId(),
                     'google_token' => $googleUser->token,
                     'google_refresh_token' => $googleUser->refreshToken,
+                    'avatar' => $avatar,
                     'email_verified_at' => now(),
                     'password' => null,
                 ]);
@@ -129,24 +136,24 @@ class LoginController extends Controller
                 return redirect()->route('login')->withErrors([
                     'email' => 'The email associated with this Google account has changed. Please update your account settings.',
                 ]);
-        } else {
-            // Update tokens for existing user
-            $user->update([
-                'google_token' => $googleUser->token,
-                'google_refresh_token' => $googleUser->refreshToken ?? $user->google_refresh_token,
+            } else {
+                // Update tokens for existing user
+                $user->update([
+                    'google_token' => $googleUser->token,
+                    'google_refresh_token' => $googleUser->refreshToken ?? $user->google_refresh_token,
+                ]);
+            }
+
+            // Log in the user and regenerate session
+            Auth::login($user, true);
+            session()->regenerate();
+
+            Log::info('User logged in via Google', [
+                'email' => $user->email,
+                'google_id' => $user->google_id,
             ]);
-        }
 
-        // Log in the user and regenerate session
-        Auth::login($user, true);
-        session()->regenerate();
-
-        Log::info('User logged in via Google', [
-            'email' => $user->email,
-            'google_id' => $user->google_id,
-        ]);
-
-        return redirect()->route('dashboard');
+            return redirect()->route('dashboard');
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             Log::warning('Invalid OAuth state during Google login', [
                 'error' => $e->getMessage(),
@@ -214,6 +221,12 @@ class LoginController extends Controller
                     }
                 }
 
+                // Validate avatar URL
+                $avatar = $githubUser->getAvatar();
+                if ($avatar && !Str::startsWith($avatar, 'https://avatars.githubusercontent.com/')) {
+                    $avatar = null;
+                }
+
                 // Create new user
                 $user = User::create([
                     'name' => $githubUser->getName() ?? $githubUser->getNickname(),
@@ -221,6 +234,7 @@ class LoginController extends Controller
                     'github_id' => $githubUser->getId(),
                     'github_token' => $githubUser->token,
                     'github_refresh_token' => $githubUser->refreshToken,
+                    'avatar' => $avatar,
                     'email_verified_at' => $email ? now() : null,
                     'password' => null,
                 ]);
@@ -265,6 +279,112 @@ class LoginController extends Controller
             
             // In production, you might want to use a generic message instead
             // $errorMessage = 'Unable to login with GitHub. Please try again later.';
+            
+            return redirect()->route('login')->withErrors([
+                'email' => $errorMessage,
+            ]);
+        }
+    }
+
+    /**
+     * Redirect the user to LinkedIn's OAuth consent screen.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function redirectToLinkedin()
+    {
+        return Socialite::driver('linkedin')->redirect();
+    }
+
+    /**
+     * Handle the callback from LinkedIn after OAuth consent.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function handleLinkedinCallback()
+    {
+        try {
+            // Retrieve LinkedIn user data with state validation
+            $linkedinUser = Socialite::driver('linkedin')->user();
+
+            // Find user by linkedin_id
+            $user = User::where('linkedin_id', $linkedinUser->getId())->first();
+
+            if (!$user) {
+                // Check if email is already registered
+                if ($linkedinUser->getEmail()) {
+                    $existingUser = User::where('email', $linkedinUser->getEmail())->first();
+                    if ($existingUser) {
+                        Log::warning('LinkedIn login attempted with registered email', [
+                            'email' => $linkedinUser->getEmail(),
+                            'linkedin_id' => $linkedinUser->getId(),
+                        ]);
+                        return redirect()->route('login')->withErrors([
+                            'email' => 'This email is already registered. Please link your LinkedIn account in settings or use your existing login method.',
+                        ]);
+                    }
+                }
+
+                // Validate avatar URL
+                $avatar = $linkedinUser->getAvatar();
+                if ($avatar && !Str::startsWith($avatar, 'https://media.licdn.com/')) {
+                    $avatar = null;
+                }
+
+                // Create new user
+                $user = User::create([
+                    'name' => $linkedinUser->getName(),
+                    'email' => $linkedinUser->getEmail(),
+                    'linkedin_id' => $linkedinUser->getId(),
+                    'avatar' => $avatar,
+                    'email_verified_at' => now(),
+                    'password' => null,
+                ]);
+
+                Log::info('New user created via LinkedIn login', [
+                    'email' => $user->email,
+                    'linkedin_id' => $user->linkedin_id,
+                ]);
+            } elseif ($user->email !== $linkedinUser->getEmail() && $linkedinUser->getEmail()) {
+                // Handle email mismatch (e.g., LinkedIn account email changed)
+                Log::warning('LinkedIn login email mismatch', [
+                    'user_id' => $user->id,
+                    'linkedin_email' => $linkedinUser->getEmail(),
+                    'stored_email' => $user->email,
+                ]);
+                return redirect()->route('login')->withErrors([
+                    'email' => 'The email associated with this LinkedIn account has changed. Please update your account settings.',
+                ]);
+            }
+
+            // Log in the user and regenerate session
+            Auth::login($user, true);
+            session()->regenerate();
+
+            Log::info('User logged in via LinkedIn', [
+                'user_id' => $user->id,
+                'linkedin_id' => $user->linkedin_id,
+            ]);
+
+            return redirect()->route('dashboard');
+        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+            Log::warning('Invalid OAuth state during LinkedIn login', [
+                'error' => $e->getMessage(),
+            ]);
+            return redirect()->route('login')->withErrors([
+                'email' => 'Invalid login attempt. Please try again.',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('LinkedIn login failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
+            // Provide more specific error message for debugging
+            $errorMessage = 'Unable to login with LinkedIn: ' . $e->getMessage();
+            
+            // In production, you might want to use a generic message instead
+            // $errorMessage = 'Unable to login with LinkedIn. Please try again later.';
             
             return redirect()->route('login')->withErrors([
                 'email' => $errorMessage,

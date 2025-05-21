@@ -1,0 +1,255 @@
+@extends('layouts.app')
+
+@section('title', 'Financial Information - Student Portal')
+
+@section('page_title', 'Financial Information')
+
+@section('content')
+<div class="space-y-6">
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-sm border p-5">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-primary-100 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Current Balance</p>
+                    <p class="text-2xl font-bold text-red-600">$1,250.00</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border p-5">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-red-100 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Total Charges</p>
+                    <p class="text-2xl font-bold text-gray-900">$12,500.00</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border p-5">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-green-100 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Total Credits</p>
+                    <p class="text-2xl font-bold text-gray-900">$11,250.00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="bg-white rounded-lg shadow-sm border p-5">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Transaction History</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-200">
+                        <th class="text-left py-3 px-4">Date</th>
+                        <th class="text-left py-3 px-4">Type</th>
+                        <th class="text-left py-3 px-4">Description</th>
+                        <th class="text-left py-3 px-4">Amount</th>
+                        <th class="text-left py-3 px-4">Status</th>
+                        <th class="text-left py-3 px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">05/15/2023</td>
+                        <td class="py-3 px-4">Tuition</td>
+                        <td class="py-3 px-4">Spring 2023 Semester</td>
+                        <td class="py-3 px-4">
+                            <span class="text-red-600">$5,500.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Due</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">05/10/2023</td>
+                        <td class="py-3 px-4">Housing</td>
+                        <td class="py-3 px-4">Campus Housing - Spring 2023</td>
+                        <td class="py-3 px-4">
+                            <span class="text-red-600">$3,200.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">05/05/2023</td>
+                        <td class="py-3 px-4">Scholarship</td>
+                        <td class="py-3 px-4">Academic Achievement Scholarship</td>
+                        <td class="py-3 px-4">
+                            <span class="text-green-600">-$3,500.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Processed</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">04/28/2023</td>
+                        <td class="py-3 px-4">Fee</td>
+                        <td class="py-3 px-4">Technology and Lab Access Fee</td>
+                        <td class="py-3 px-4">
+                            <span class="text-red-600">$850.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">04/15/2023</td>
+                        <td class="py-3 px-4">Payment</td>
+                        <td class="py-3 px-4">Student Payment</td>
+                        <td class="py-3 px-4">
+                            <span class="text-green-600">-$2,500.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Processed</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">03/20/2023</td>
+                        <td class="py-3 px-4">Fee</td>
+                        <td class="py-3 px-4">Student Activity Fee</td>
+                        <td class="py-3 px-4">
+                            <span class="text-red-600">$250.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">03/15/2023</td>
+                        <td class="py-3 px-4">Grant</td>
+                        <td class="py-3 px-4">Federal Student Aid</td>
+                        <td class="py-3 px-4">
+                            <span class="text-green-600">-$4,500.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Processed</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">02/15/2023</td>
+                        <td class="py-3 px-4">Books</td>
+                        <td class="py-3 px-4">Course Materials - Spring 2023</td>
+                        <td class="py-3 px-4">
+                            <span class="text-red-600">$750.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">02/01/2023</td>
+                        <td class="py-3 px-4">Parking</td>
+                        <td class="py-3 px-4">Parking Permit - Spring 2023</td>
+                        <td class="py-3 px-4">
+                            <span class="text-red-600">$200.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-4">01/20/2023</td>
+                        <td class="py-3 px-4">Tuition</td>
+                        <td class="py-3 px-4">Spring 2023 Registration Deposit</td>
+                        <td class="py-3 px-4">
+                            <span class="text-red-600">$1,000.00</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button class="text-primary-600 hover:text-primary-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection 

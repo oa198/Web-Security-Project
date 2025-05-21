@@ -33,6 +33,11 @@ Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallbac
 // GitHub OAuth routes
 Route::get('auth/github', [LoginController::class, 'redirectToGithub'])->name('github.login')->middleware('throttle:60,1');
 Route::get('auth/github/callback', [LoginController::class, 'handleGithubCallback'])->middleware('throttle:60,1');
+
+// LinkedIn OAuth routes
+Route::get('auth/linkedin', [LoginController::class, 'redirectToLinkedin'])->name('linkedin.login')->middleware('throttle:60,1');
+Route::get('auth/linkedin/callback', [LoginController::class, 'handleLinkedinCallback'])->middleware('throttle:60,1');
+
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'doRegister'])->name('register.post');
 Route::get('/verify', [RegisterController::class, 'verify'])->name('verify');
@@ -63,6 +68,43 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    // Pages from the design
+    Route::get('/courses', function () {
+        return view('courses.index');
+    })->name('courses.index');
+
+    Route::get('/grades', function () {
+        return view('grades.index');
+    })->name('grades.index');
+
+    Route::get('/schedule', function () {
+        return view('schedule.index');
+    })->name('schedule.index');
+
+    Route::get('/assignments', function () {
+        return view('assignments.index');
+    })->name('assignments.index');
+
+    Route::get('/notifications', function () {
+        return view('notifications.index');
+    })->name('notifications.index');
+
+    Route::get('/financial', function () {
+        return view('financial.index');
+    })->name('financial.index');
+
+    Route::get('/documents', function () {
+        return view('documents.index');
+    })->name('documents.index');
+
+    Route::get('/settings', function () {
+        return view('settings.index');
+    })->name('settings');
+
+    Route::get('/profile/edit', function () {
+        return view('profile.edit');
+    })->name('profile.edit');
 
     // Other protected routes...
     Route::get('/personal-info', function () {
