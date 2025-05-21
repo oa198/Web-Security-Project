@@ -72,4 +72,34 @@ class User extends Authenticatable implements MustVerifyEmail
         // Send the notification with the code
         $this->notify(new \App\Notifications\VerificationCodeNotification($code));
     }
+
+    /**
+     * Get the courses where the user is a professor.
+     */
+    public function taughtCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->wherePivot('role_type', 'professor')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the courses where the user is a student.
+     */
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->wherePivot('role_type', 'student')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the courses where the user is a teaching assistant.
+     */
+    public function assistedCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->wherePivot('role_type', 'teaching_assistant')
+            ->withTimestamps();
+    }
 }
