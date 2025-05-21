@@ -23,6 +23,16 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'phone',
+        'two_factor_enabled',
+        'theme',
+        'font_size',
+        'language',
+        'timezone',
+        'date_format',
+        'high_contrast',
+        'reduced_motion',
+        'screen_reader',
         'email_verified_at',
         'verification_code',
         'verification_code_expires_at',
@@ -51,13 +61,14 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'two_factor_enabled' => 'boolean',
+        'high_contrast' => 'boolean',
+        'reduced_motion' => 'boolean',
+        'screen_reader' => 'boolean',
+    ];
     
     /**
      * Send the email verification notification.
@@ -101,5 +112,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Course::class, 'course_user')
             ->wherePivot('role_type', 'teaching_assistant')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the user's active sessions.
+     */
+    public function sessions()
+    {
+        return $this->hasMany(\App\Models\Session::class);
     }
 }

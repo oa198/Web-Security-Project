@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Web\SettingsController;
 
 
 Route::get('/', function () {
@@ -98,9 +99,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('documents.index');
     })->name('documents.index');
 
-    Route::get('/settings', function () {
-        return view('settings.index');
-    })->name('settings');
+   
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.profile');
+    Route::get('/settings/security', [SettingsController::class, 'security'])->name('settings.security');
+    Route::get('/settings/preferences', [SettingsController::class, 'preferences'])->name('settings.preferences');
+    
+    // Form submission routes
+    Route::put('/profile', [SettingsController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password.update');
+    Route::put('/2fa/toggle', [SettingsController::class, 'toggle2FA'])->name('2fa.toggle');
+    Route::delete('/sessions/{session}', [SettingsController::class, 'destroySession'])->name('sessions.destroy');
+    Route::put('/preferences', [SettingsController::class, 'updatePreferences'])->name('preferences.update');
+
 
     Route::get('/profile/edit', function () {
         return view('profile.edit');
