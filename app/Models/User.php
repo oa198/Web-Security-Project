@@ -12,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'email_verified_at',
+        'verification_code',
+        'verification_code_expires_at',
         'google_id',
         'google_token',
         'google_refresh_token',
@@ -64,6 +66,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new CustomVerifyEmail);
+        // Generate a new verification code
+        $code = $this->generateVerificationCode();
+        
+        // Send the notification with the code
+        $this->notify(new \App\Notifications\VerificationCodeNotification($code));
     }
 }

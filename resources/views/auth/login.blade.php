@@ -1,177 +1,838 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Student Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* Social Login Styles */
+        .social-login-container {
+            margin: 10px 0 10px 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .social-login-divider {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 8px;
+            margin-top: 0px;
+        }
+        
+        .social-login-divider::before,
+        .social-login-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 70px);
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .social-login-divider::before {
+            left: 0;
+        }
+        
+        .social-login-divider::after {
+            right: 0;
+        }
+        
+        .social-login-divider span {
+            display: inline-block;
+            padding: 0 15px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            background-color: var(--form-bg);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .social-login-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 0px;
+        }
+        
+        .social-login-button {
+            background: #fff;
+            color: #333;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .social-login-button.github {
+            background: #333;
+            color: #fff;
+        }
+        
+        .social-login-button:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .social-icon {
+            width: 38px;
+            height: 38px;
+        }
         :root {
+            /* Light mode colors */
+            --bg-color: #f6f6f6;
+            --text-color: #333;
+            --card-bg: white;
+            --form-bg: white;
+            --input-bg: #f0f0f0;
             --primary-color: #925fe2;
             --primary-dark: #7f49d3;
+            --toggle-bg: #f0f0f0;
+            --toggle-button: #925fe2;
+        }
+        
+        [data-theme="dark"] {
+            /* Dark mode colors */
+            --bg-color: #1c1d21;
+            --text-color: white;
+            --card-bg: #1c1d21;
+            --form-bg: #1c1d21;
+            --input-bg: #2a2a2a;
+            --primary-color: #925fe2;
+            --primary-dark: #7f49d3;
+            --toggle-bg: #2a2a2a;
+            --toggle-button: #925fe2;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
         }
         
-        .focus-ring {
-            @apply focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors;
+        /* Remove any focus outlines that might show blue */
+        *:focus {
+            outline: none;
+        }
+        
+        /* Improve the appearance of form elements */
+        input, button {
+            border: none;
+            outline: none;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .login-wrapper {
+            background-color: var(--card-bg);
+            width: 1440px;
+            height: 1024px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.5s ease-out;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .content-container {
+            position: relative;
+            height: 1024px;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        
+        .vector-2 {
+            position: absolute;
+            width: 402px;
+            height: 342px;
+            top: 0;
+            left: 1038px;
+            animation: floatAnimation 4s ease-in-out infinite;
+        }
+        
+        .vector-3 {
+            position: absolute;
+            width: 763px;
+            height: 616px;
+            top: 408px;
+            left: 677px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+        
+        .vector-4 {
+            position: absolute;
+            width: 421px;
+            height: 389px;
+            top: 245px;
+            left: 459px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        .vector-5 {
+            position: absolute;
+            width: 177px;
+            height: 200px;
+            top: 175px;
+            left: 1263px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 1.5s;
+        }
+        
+        .vector {
+            position: absolute;
+            width: 297px;
+            height: 221px;
+            top: 0;
+            left: 868px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+        
+        .image-decoration {
+            position: absolute;
+            width: 297px;
+            height: 273px;
+            top: 671px;
+            left: 664px;
+            animation: floatAnimation 4s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        .element-copy {
+            position: absolute;
+            width: 770px;
+            height: 100%;
+            top: 0;
+            right: 0;
+            object-fit: cover;
+            z-index: 0;
+            background-color: var(--primary-color);
+            border-radius: 0 24px 24px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .boys-illustration {
+            position: absolute;
+            width: 600px;
+            height: auto;
+            top: 55%;
+            right: 120px;
+            transform: translateY(-40%);
+            z-index: 1;
+            margin-top: 0;
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+        
+        .boys-illustration::after {
+            display: none;
+        }
+        
+        .boys-illustration img {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        
+        .left-panel {
+            position: absolute;
+            width: 670px;
+            height: 1024px;
+            top: 0;
+            left: 0;
+            background-color: var(--card-bg);
+            border-radius: 24px 0 0 24px;
+            transition: background-color 0.3s;
+        }
+        
+        .login-form-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 48px;
+            position: absolute;
+            top: 314px;
+            left: 128px;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .form-content {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 24px;
+            position: relative;
+        }
+        
+        .form-top {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 48px;
+            position: relative;
+        }
+        
+        .form-title {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            position: relative;
+        }
+        
+        .title-text {
+            font-weight: 700;
+            font-size: 48px;
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
+            color: var(--text-color);
+            letter-spacing: 0;
+            transition: color 0.3s;
+        }
+        
+        .subtitle-text {
+            position: relative;
+            width: fit-content;
+            font-weight: 400;
+            color: var(--text-color);
+            opacity: 0.6;
+            font-size: 20px;
+            letter-spacing: 0;
+            line-height: 1.5;
+            transition: color 0.3s;
+        }
+        
+        .form-fields {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 24px;
+            position: relative;
+        }
+        
+        .field-container {
+            display: flex;
+            flex-direction: column;
+            width: 381px;
+            align-items: flex-start;
+            gap: 12px;
+            position: relative;
+        }
+        
+        .field-label {
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            letter-spacing: 0;
+        }
+        
+        .field-input {
+            width: 381px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            padding-bottom: 8px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .password-field-header {
+            display: inline-flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+        }
+        
+        .toggle-password {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .eye-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .forgot-password {
+            position: relative;
+            width: fit-content;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            letter-spacing: 0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .forgot-password:hover {
+            color: white;
+        }
+        
+        .login-button {
+            display: flex;
+            width: 393px;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 0;
+            position: relative;
+            background-color: #9c6fe4;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-button:hover {
+            background-color: #8055d0;
+        }
+        
+        .button-text {
+            font-weight: 400;
+            font-size: 16px;
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
+            color: white;
+            letter-spacing: 0;
+        }
+        
+        .welcome-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            position: absolute;
+            top: 155px;
+            left: 730px;
+        }
+        
+        .welcome-title {
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
+            font-weight: 400;
+            color: #eeeeee;
+            font-size: 80px;
+            letter-spacing: 0;
+            line-height: 70px;
+        }
+        
+        .welcome-bold {
+            font-weight: 700;
+        }
+        
+        .welcome-regular {
+            font-weight: 400;
+        }
+        
+        .welcome-subtitle {
+            position: relative;
+            width: fit-content;
+            font-weight: 500;
+            color: #eeeeee;
+            font-size: 16px;
+            letter-spacing: 0;
+        }
+        
+        .signup-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 100px;
+            position: absolute;
+            top: 925px;
+            left: 130px;
+        }
+        
+        .signup-text {
+            position: relative;
+            width: fit-content;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            letter-spacing: 0;
+        }
+        
+        .signup-button {
+            display: flex;
+            width: 100px;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            position: relative;
+            background-color: #333437;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .signup-button:hover {
+            background-color: #444548;
+        }
+        
+        .signup-button-text {
+            position: relative;
+            width: fit-content;
+            margin-top: -1px;
+            margin-left: -4px;
+            margin-right: -4px;
+            font-weight: 400;
+            color: white;
+            font-size: 16px;
+            letter-spacing: 0;
+        }
+        
+        .copy-image {
+            position: absolute;
+            width: 767px;
+            height: 628px;
+            top: 368px;
+            left: 673px;
+            object-fit: cover;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 790px;
+            width: 50px;
+            height: 24px;
+            background-color: var(--toggle-bg);
+            border-radius: 12px;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+        
+        .theme-toggle-button {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--toggle-button);
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        [data-theme="dark"] .theme-toggle-button {
+            transform: translateX(26px);
+        }
+        
+        .theme-toggle-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sun-icon {
+            right: 4px;
+            color: #ffc107;
+            opacity: 1;
+        }
+        
+        .moon-icon {
+            left: 4px;
+            color: #384364;
+            opacity: 0.5;
+        }
+        
+        [data-theme="dark"] .sun-icon {
+            opacity: 0.5;
+        }
+        
+        [data-theme="dark"] .moon-icon {
+            opacity: 1;
+            color: #afc8ff;
+        }
+        
+        /* Button hover animations */
+        .login-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Form input animations */
+        .form-input {
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+            background-color: var(--input-bg) !important;
+            color: var(--text-color) !important;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 3px rgba(146, 95, 226, 0.2);
+        }
+        
+        /* Password show/hide hover */
+        .show-password-button:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Footer links hover */
+        .signup-link a:hover, .forgot-password:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translate(40px, -50%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(0, -50%);
+            }
+        }
+        
+        @keyframes floatAnimation {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        
+        /* Form content animations */
+        .form-input-container {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+        
+        .remember-me-container {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+        
+        .login-button-container {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+        
+        .signup-link {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen flex">
-        <!-- Left Panel - Login Form -->
-        <div class="flex-1 flex items-center justify-center p-8">
-            <div class="w-full max-w-md">
-                <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900">Login</h1>
-                    <p class="text-gray-600 mt-2">Welcome back! Please enter your credentials</p>
+<body>
+    <div class="container">
+        <div class="login-wrapper">
+            <div class="content-container">
+                <!-- Theme toggle -->
+                <div class="theme-toggle" id="theme-toggle">
+                    <div class="theme-toggle-button"></div>
+                    <div class="theme-toggle-icon moon-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </div>
+                    <div class="theme-toggle-icon sun-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </div>
                 </div>
                 
-                @if($errors->any())
-                <div class="bg-red-50 text-red-500 px-4 py-3 rounded-lg mb-6">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="element-copy">
+                    <!-- Background color now handled by the CSS -->
                 </div>
-                @endif
                 
-                <form action="{{ route('login.post') }}" method="POST">
-                    @csrf
-                    <div class="space-y-4">
-                        <!-- Email Input -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                                Email address
-                            </label>
-                            <input
-                                id="email"
-                                type="email"
-                                name="email"
-                                value="{{ old('email') }}"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus-ring"
-                                placeholder="Enter your email"
-                                required
-                            />
-                        </div>
+                <div class="boys-illustration">
+                    <img src="{{ asset('images/boyss.png') }}" alt="Boys illustration">
+                </div>
+                
+                <div class="left-panel"></div>
+                
+                <div class="login-form-container">
+                    <form method="POST" action="{{ route('login.post') }}" class="form-content">
+    @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+                        @csrf
+                        <div class="form-top">
+                            <div class="form-title">
+                                <div class="title-text">Login</div>
+                                <div class="subtitle-text">Enter your account details</div>
+                            </div>
+                            
+                            <div class="form-fields">
+                                <div class="field-container">
+                                    <div class="field-label">Username</div>
+                                    <input type="text" name="email" class="field-input" value="{{ old('email') }}" required>
+                                    @error('email')
+                                        <span class="error-message">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                
+                                <div class="field-container">
+                                    <div class="password-field-header">
+                                        <div class="field-label">Password</div>
+                                        <button type="button" id="togglePassword" class="toggle-password">
+                                            <img class="eye-icon" alt="Eye slash fill" src="{{ asset('images/eye-slash-fill.svg') }}">
+                                        </button>
+                                    </div>
+                                    <input type="password" name="password" id="password" class="field-input" required>
+                                    @error('password')
+                                        <span class="error-message">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            </form>
                         
-                        <!-- Password Input -->
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                                Password
-                            </label>
-                            <div class="relative">
-                                <input
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus-ring"
-                                    placeholder="Enter your password"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 toggle-password"
-                                    onclick="togglePasswordVisibility()"
-                                >
-                                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                    </svg>
-                                    <svg id="eyeOffIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-                                    </svg>
-                                </button>
+                        <a href="{{ route('password.forgot') }}" class="forgot-password">Forgot Password?</a>
+                        
+                        <div class="social-login-container">
+                            <div class="social-login-divider">
+                                <span>or sign in with</span>
+                            </div>
+                            <div class="social-login-buttons">
+                                <a href="{{ route('google.login') }}" class="social-login-button" title="Sign in with Google">
+                                    <img src="{{ asset('images/Social/google.png') }}" alt="Google Logo" class="social-icon">
+                                </a>
+                                <a href="{{ route('github.login') }}" class="social-login-button github" title="Sign in with GitHub">
+                                    <img src="{{ asset('images/Social/github.png') }}" alt="GitHub Logo" class="social-icon">
+                                </a>
+                                <a href="#" class="social-login-button" title="Sign in with LinkedIn">
+                                    <img src="{{ asset('images/Social/linkedin.png') }}" alt="LinkedIn Logo" class="social-icon">
+                                </a>
                             </div>
                         </div>
                         
-                        <!-- Forgot Password -->
-                        <div class="flex justify-end">
-                            <a href="{{ route('password.forgot') }}" class="text-sm text-purple-600 hover:underline">
-                                Forgot Password?
-                            </a>
-                        </div>
-                        
-                        <!-- Login Button -->
-                        <button 
-                            type="submit" 
-                            class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                        >
-                            Login
+                        <button type="submit" class="login-button">
+                            <div class="button-text">Login</div>
                         </button>
-                    </div>
-                </form>
-                
-                <!-- Divider -->
-                <div class="flex items-center my-6">
-                    <div class="flex-1 border-t border-gray-300"></div>
-                    <div class="px-4 text-sm text-gray-500">or sign in with</div>
-                    <div class="flex-1 border-t border-gray-300"></div>
+                    </form>
                 </div>
                 
-                <!-- Social Login Buttons -->
-                <div class="flex space-x-3">
-                    <a href="{{ route('google.login') }}" class="flex-1 flex justify-center items-center py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                        </svg>
-                    </a>
-                    <a href="{{ route('github.login') }}" class="flex-1 flex justify-center items-center py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                    <a href="{{ route('linkedin.login') }}" class="flex-1 flex justify-center items-center py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-                        </svg>
-                    </a>
-                </div>
-                
-                <!-- Sign Up -->
-                <div class="mt-8 text-center">
-                    <p class="text-gray-600">
-                        Don't have an account?
-                        <a href="{{ route('register') }}" class="text-purple-600 font-medium hover:underline">
-                            Sign up
-                        </a>
+                <div class="welcome-container">
+                    <p class="welcome-title">
+                        <span class="welcome-bold">Welcome to <br></span>
+                        <span class="welcome-regular">student portal</span>
                     </p>
+                    <p class="welcome-subtitle">Login to access your account</p>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Right Panel - Welcome Banner -->
-        <div class="hidden md:flex md:flex-1 bg-purple-600 text-white p-8 items-center justify-center">
-            <div class="max-w-md">
-                <h1 class="text-4xl font-bold mb-4">
-                    Welcome to Student Portal
-                </h1>
-                <p class="text-purple-100 text-lg mb-8">
-                    Login to access your account and student resources
-                </p>
                 
-                <!-- Illustration -->
-                <div class="flex justify-center">
-                    <img 
-                        src="https://images.pexels.com/photos/8471767/pexels-photo-8471767.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                        alt="Students working on laptops" 
-                        class="max-w-full h-auto rounded-lg"
-                    />
+                <div class="signup-container">
+                    <div class="signup-text">Don't have an account?</div>
+                    <a href="{{ route('register') }}" class="signup-button">
+                        <div class="signup-button-text">Sign up</div>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         function togglePasswordVisibility() {
@@ -179,16 +840,34 @@
             const eyeIcon = document.getElementById('eyeIcon');
             const eyeOffIcon = document.getElementById('eyeOffIcon');
             
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.add('hidden');
-                eyeOffIcon.classList.remove('hidden');
+            // Change the eye icon based on password visibility
+            const eyeIcon = this.querySelector('img');
+            if (type === 'text') {
+                eyeIcon.src = "{{ asset('images/eye-fill.svg') }}";
             } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('hidden');
-                eyeOffIcon.classList.add('hidden');
+                eyeIcon.src = "{{ asset('images/eye-slash-fill.svg') }}";
             }
-        }
+        });
+
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Check if user has a saved preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                htmlElement.setAttribute('data-theme', savedTheme);
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        });
     </script>
 </body>
 </html> 
