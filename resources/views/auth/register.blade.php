@@ -763,18 +763,11 @@
                                 </div>
                             </div>
                             
-                        <!-- Register Button -->
-                        <button 
-                            type="submit" 
-                            class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                        >
-                            Create Account
+                            <!-- Single Register Button -->
+                            <button type="button" id="register-button" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                                Create Account
                             </button>
                         </div>
-
-                        <button type="button" id="pre-submit-button" class="register-button">
-                            <div class="button-text">Register</div>
-                        </button>
                     </form>
                 </div>
 
@@ -810,15 +803,13 @@
             console.log('Turnstile callback received token:', token);
             document.getElementById('cf-turnstile-response').value = token;
             // Hide overlay after verification
-            setTimeout(function() {
-                document.getElementById('captcha-overlay').style.display = 'none';
-                // Submit the form automatically after verification
-                document.getElementById('register-form').submit();
-            }, 500);
+            document.getElementById('captcha-overlay').style.display = 'none';
+            // Submit the form
+            document.getElementById('register-form').submit();
         }
         
-        // Pre-submit button click handler
-        document.getElementById('pre-submit-button').addEventListener('click', function() {
+        // Register button click handler
+        document.getElementById('register-button').addEventListener('click', function() {
             // Show the captcha overlay
             const overlay = document.getElementById('captcha-overlay');
             overlay.style.display = 'flex';
@@ -826,16 +817,6 @@
             // Ensure the Turnstile widget is reset if it was previously loaded
             if (typeof turnstile !== 'undefined') {
                 turnstile.reset();
-            }
-        });
-        
-        // Listen for form submission to ensure CAPTCHA is validated
-        document.getElementById('register-form').addEventListener('submit', function(e) {
-            const token = document.getElementById('cf-turnstile-response').value;
-            if (!token) {
-                e.preventDefault();
-                alert('Please complete the CAPTCHA verification');
-                document.getElementById('captcha-overlay').style.display = 'flex';
             }
         });
 

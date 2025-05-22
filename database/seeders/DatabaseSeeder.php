@@ -25,5 +25,9 @@ class DatabaseSeeder extends Seeder
 
         // Create courses and assign users to them
         $this->call(CourseUserSeeder::class);
+
+        $this->call([
+            DepartmentSeeder::class,
+        ]);
     }
 }

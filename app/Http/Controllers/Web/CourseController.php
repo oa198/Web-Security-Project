@@ -73,6 +73,7 @@ class CourseController extends Controller
                 'id' => $course->id,
                 'name' => $course->name ?? $course->title,
                 'code' => $course->code,
+                'section_id' => $course->section_id,
                 'enrolled' => $isEnrolled,
                 'instructor' => $professorName,
                 'credits' => $course->credits,

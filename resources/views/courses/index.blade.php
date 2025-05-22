@@ -9,7 +9,7 @@
     <!-- Filters and Search -->
     <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div class="flex gap-2">
-            <button id="all-btn" class="px-4 py-2 rounded-lg font-medium bg-primary-600 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+            <button id="all-btn" class="px-4 py-2 rounded-lg font-medium bg-primary-600 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                 All Courses
             </button>
             <button id="enrolled-btn" class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
@@ -32,7 +32,7 @@
     <!-- Course Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="courses-container">
         @foreach($courses as $course)
-            <div class="bg-white rounded-lg shadow-sm border p-5 hover:shadow-md transition-shadow duration-200 course-card {{ $course['enrolled'] ? 'enrolled' : 'available' }}">
+            <div class="bg-white rounded-lg shadow-sm border p-5 hover:shadow-md transition-shadow duration-200 course-card {{ $course['enrolled'] ? 'enrolled' : 'available' }}" data-course-id="{{ $course['id'] }}" data-section-id="{{ $course['section_id'] }}">
                 <div class="flex items-start justify-between mb-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">{{ $course['name'] }}</h3>
@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="mt-4 pt-4 border-t border-gray-100">
-                    <button class="w-full py-2 px-4 rounded-lg font-medium {{ $course['enrolled'] ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-primary-600 text-white hover:bg-primary-700' }} focus:outline-none focus:ring-2 focus:ring-offset-2 {{ $course['enrolled'] ? 'focus:ring-red-500' : 'focus:ring-primary-500' }}">
+                    <button class="w-full py-2 px-4 rounded-lg font-medium enroll-btn {{ $course['enrolled'] ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-primary-600 text-white hover:bg-primary-700' }} focus:outline-none focus:ring-2 focus:ring-offset-2 {{ $course['enrolled'] ? 'focus:ring-red-500' : 'focus:ring-primary-500' }}" {{ $course['enrolled'] ? 'disabled' : '' }}>
                         {{ $course['enrolled'] ? 'Drop Course' : 'Enroll' }}
                     </button>
                 </div>
@@ -92,20 +92,19 @@
         const enrolledBtn = document.getElementById('enrolled-btn');
         const availableBtn = document.getElementById('available-btn');
         const searchInput = document.getElementById('course-search');
-        const coursesContainer = document.getElementById('courses-container');
         const courseCards = document.querySelectorAll('.course-card');
 
         // Filter functionality
         const updateFilters = (filter) => {
-            // Update button styles
+            // Remove active classes from all
             allBtn.classList.remove('bg-primary-600', 'text-white');
             enrolledBtn.classList.remove('bg-primary-600', 'text-white');
             availableBtn.classList.remove('bg-primary-600', 'text-white');
-            
             allBtn.classList.add('text-gray-700', 'hover:bg-gray-100');
             enrolledBtn.classList.add('text-gray-700', 'hover:bg-gray-100');
             availableBtn.classList.add('text-gray-700', 'hover:bg-gray-100');
-            
+
+            // Set active button
             if (filter === 'all') {
                 allBtn.classList.remove('text-gray-700', 'hover:bg-gray-100');
                 allBtn.classList.add('bg-primary-600', 'text-white');
@@ -116,36 +115,30 @@
                 availableBtn.classList.remove('text-gray-700', 'hover:bg-gray-100');
                 availableBtn.classList.add('bg-primary-600', 'text-white');
             }
-            
-            // Filter cards
             filterCards();
         };
-        
+
         // Search and filter combined
         const filterCards = () => {
             const searchTerm = searchInput.value.toLowerCase();
-            const filter = document.querySelector('.bg-primary-600').textContent.trim().toLowerCase();
-            
+            let filter = 'all';
+            if (allBtn.classList.contains('bg-primary-600')) filter = 'all';
+            else if (enrolledBtn.classList.contains('bg-primary-600')) filter = 'enrolled';
+            else if (availableBtn.classList.contains('bg-primary-600')) filter = 'available';
+
             courseCards.forEach(card => {
                 const courseName = card.querySelector('h3').textContent.toLowerCase();
                 const courseCode = card.querySelector('p').textContent.toLowerCase();
                 const instructor = card.querySelectorAll('.text-sm')[0].textContent.toLowerCase();
-                
                 const isEnrolled = card.classList.contains('enrolled');
-                
-                // Check if it matches the filter
-                const matchesFilter = 
-                    filter === 'all courses' || 
+                const matchesFilter =
+                    filter === 'all' ||
                     (filter === 'enrolled' && isEnrolled) ||
                     (filter === 'available' && !isEnrolled);
-                
-                // Check if it matches the search term
-                const matchesSearch = 
+                const matchesSearch =
                     courseName.includes(searchTerm) ||
                     courseCode.includes(searchTerm) ||
                     instructor.includes(searchTerm);
-                
-                // Show/hide based on both conditions
                 if (matchesFilter && matchesSearch) {
                     card.style.display = 'block';
                 } else {
@@ -153,12 +146,58 @@
                 }
             });
         };
-        
+
         // Event listeners
         allBtn.addEventListener('click', () => updateFilters('all'));
         enrolledBtn.addEventListener('click', () => updateFilters('enrolled'));
         availableBtn.addEventListener('click', () => updateFilters('available'));
         searchInput.addEventListener('input', filterCards);
+
+        // Initial filter on page load
+        updateFilters('all');
+
+        // Enroll button AJAX
+        document.querySelectorAll('.enroll-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = btn.closest('.course-card');
+                const courseId = card.getAttribute('data-course-id');
+                const sectionId = card.getAttribute('data-section-id');
+                btn.disabled = true;
+                btn.textContent = 'Enrolling...';
+                fetch("{{ route('enrollments.store') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        course_id: courseId,
+                        section_id: sectionId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success || data.message?.includes('success')) {
+                        btn.textContent = 'Enrolled';
+                        btn.classList.remove('bg-primary-600', 'hover:bg-primary-700', 'text-white');
+                        btn.classList.add('bg-green-100', 'text-green-700');
+                        card.classList.remove('available');
+                        card.classList.add('enrolled');
+                    } else {
+                        btn.textContent = 'Enroll';
+                        btn.disabled = false;
+                        alert(data.message || 'Could not enroll.');
+                    }
+                })
+                .catch(() => {
+                    btn.textContent = 'Enroll';
+                    btn.disabled = false;
+                    alert('Could not enroll.');
+                });
+            });
+        });
     });
 </script>
 @endsection 

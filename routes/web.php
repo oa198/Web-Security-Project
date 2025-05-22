@@ -9,7 +9,19 @@ use App\Http\Controllers\StudentsController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Web\SettingsController;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Document;
 
+if (!function_exists('formatFileSize')) {
+    function formatFileSize($bytes) {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+        return round($bytes, 2) . ' ' . $units[$pow];
+    }
+}
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -42,7 +54,11 @@ Route::get('auth/linkedin/callback', [LoginController::class, 'handleLinkedinCal
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'doRegister'])->name('register.post');
 Route::get('/verify', [RegisterController::class, 'verify'])->name('verify');
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Move logout route inside auth middleware group
+Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+});
 
 // Password reset routes
 Route::get('/password/forgot', [RegisterController::class, 'showForgotForm'])->name('password.forgot');
@@ -70,6 +86,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+    // Profile routes
+    Route::get('/profile', function () {
+        return view('profile.index');
+    })->name('profile.index');
+
     // Pages from the design
     Route::get('/courses', function () {
         return view('courses.index');
@@ -83,29 +104,127 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('schedule.index');
     })->name('schedule.index');
 
-    Route::get('/assignments', function () {
-        return view('assignments.index');
-    })->name('assignments.index');
-
     Route::get('/notifications', function () {
-        return view('notifications.index');
+        $notifications = auth()->user()->notifications->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'title' => $notification->data['title'] ?? 'Notification',
+                'message' => $notification->data['message'] ?? '',
+                'type' => $notification->data['type'] ?? 'info',
+                'is_read' => $notification->read_at !== null,
+                'created_at' => $notification->created_at->format('M d, Y h:i A'),
+            ];
+        });
+        return view('notifications.index', compact('notifications'));
     })->name('notifications.index');
 
+    Route::post('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return redirect()->back()->with('success', 'All notifications marked as read');
+    })->name('notifications.mark-all-read');
+
     Route::get('/financial', function () {
-        return view('financial.index');
+        $student = auth()->user()->student;
+        $financialRecords = $student ? $student->financialRecords()->orderByDesc('created_at')->get() : collect();
+        $currentBalance = $student ? $student->getCurrentBalance() : 0.0;
+        $totalCharges = $financialRecords->where('amount', '>', 0)->sum('amount');
+        $totalCredits = $financialRecords->where('amount', '<', 0)->sum('amount');
+
+        return view('financial.index', [
+            'financialRecords' => $financialRecords,
+            'currentBalance' => $currentBalance,
+            'totalCharges' => $totalCharges,
+            'totalCredits' => $totalCredits,
+        ]);
     })->name('financial.index');
 
     Route::get('/documents', function () {
-        return view('documents.index');
+        $student = auth()->user()->student;
+        $documents = $student ? $student->documents()->latest()->get() : collect();
+        return view('documents.index', compact('documents'));
     })->name('documents.index');
 
-   
+    Route::post('/documents/upload', function (Request $request) {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:transcript,form,certificate',
+            'document' => 'required|file|max:10240', // 10MB max
+        ]);
+
+        $student = auth()->user()->student;
+        if (!$student) {
+            return redirect()->back()->with('error', 'Student record not found.');
+        }
+
+        $file = $request->file('document');
+        $path = $file->store('documents', 'public');
+        
+        $document = $student->documents()->create([
+            'title' => $request->title,
+            'type' => $request->type,
+            'file_path' => $path,
+            'file_size' => formatFileSize($file->getSize()),
+            'uploaded_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Document uploaded successfully.');
+    })->name('documents.upload');
+
+    Route::delete('/documents/{document}', function (Document $document) {
+        if ($document->student_id !== auth()->user()->student->id) {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
+
+        Storage::disk('public')->delete($document->file_path);
+        $document->delete();
+
+        return redirect()->back()->with('success', 'Document deleted successfully.');
+    })->name('documents.destroy');
+
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.profile');
     Route::get('/settings/security', [SettingsController::class, 'security'])->name('settings.security');
     Route::get('/settings/preferences', [SettingsController::class, 'preferences'])->name('settings.preferences');
     
     // Form submission routes
-    Route::put('/profile', [SettingsController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile', function (Request $request) {
+        $validated = $request->validate([
+            'student_id' => 'required|string|max:20|unique:students,student_id,' . (auth()->user()->student->id ?? 'NULL') . ',id',
+            'date_of_birth' => 'required|date',
+            'gender' => 'required|in:male,female,other',
+            'address' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:20',
+            'emergency_contact' => 'required|string|max:20',
+            'department_id' => 'required|exists:departments,id',
+            'program' => 'required|string|max:100',
+            'admission_date' => 'required|date',
+        ]);
+
+        // Set default level based on program
+        $level = 'Freshman'; // Default level
+        if (str_contains(strtolower($validated['program']), 'master')) {
+            $level = 'Graduate';
+        } elseif (str_contains(strtolower($validated['program']), 'phd')) {
+            $level = 'Doctoral';
+        }
+
+        if (!auth()->user()->student) {
+            // Create new student profile
+            auth()->user()->student()->create(array_merge($validated, [
+                'level' => $level,
+                'credits_completed' => 0,
+                'gpa' => 0.00,
+                'academic_standing' => 'Good',
+                'financial_hold' => false,
+                'academic_hold' => false,
+                'expected_graduation_date' => now()->addYears(4),
+            ]));
+        } else {
+            // Update existing student profile
+            auth()->user()->student->update($validated);
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Profile updated successfully.');
+    })->name('profile.update');
     Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password.update');
     Route::put('/2fa/toggle', [SettingsController::class, 'toggle2FA'])->name('2fa.toggle');
     Route::delete('/sessions/{session}', [SettingsController::class, 'destroySession'])->name('sessions.destroy');
@@ -232,6 +351,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'results' => $filteredResults
         ]);
     })->name('search');
+
+    Route::post('/enrollments', [App\Http\Controllers\Web\EnrollmentController::class, 'store'])->name('enrollments.store');
+    Route::post('/enrollments/{enrollment}/approve', [App\Http\Controllers\Web\EnrollmentController::class, 'approve'])->name('enrollments.approve');
+    Route::post('/enrollments/{enrollment}/reject', [App\Http\Controllers\Web\EnrollmentController::class, 'reject'])->name('enrollments.reject');
 });
 
 // Admin routes
@@ -240,7 +363,7 @@ Route::post('/admin/login', [App\Http\Controllers\AdminController::class, 'login
 
 Route::middleware(['auth:admin', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('logout');
+    Route::post('/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('logout');
 
     // User management routes
     Route::get('/users', [App\Http\Controllers\AdminController::class, 'showUsers'])->name('users');
@@ -297,11 +420,13 @@ Route::resource('grades', \App\Http\Controllers\Web\GradeController::class);
 Route::get('grades/statistics', [\App\Http\Controllers\Web\GradeController::class, 'statistics'])->name('grades.statistics');
 Route::get('grades/report', [\App\Http\Controllers\Web\GradeController::class, 'report'])->name('grades.report');
 
-
-
-
-
-
+// Notifications route
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', function () {
+        $notifications = auth()->user()->notifications;
+        return view('notifications.index', compact('notifications'));
+    })->name('notifications.index');
+});
 
 //============================================================================================================================
 

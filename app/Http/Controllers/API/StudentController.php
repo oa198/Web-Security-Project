@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Exception;
+use App\Models\Enrollment;
+use App\Models\Course;
+use App\Models\Grade;
+use App\Models\Attendance;
+use App\Models\Document;
+use App\Models\FinancialRecord;
 
 class StudentController extends Controller
 {
@@ -541,5 +547,117 @@ class StudentController extends Controller
                 'message' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function getProfile()
+    {
+        $student = auth()->user()->student;
+        return response()->json($student);
+    }
+
+    public function getCourses()
+    {
+        $enrollments = auth()->user()->student->enrollments()
+            ->with(['section.course', 'section.instructor'])
+            ->where('status', 'active')
+            ->get()
+            ->map(function($enrollment) {
+                $course = $enrollment->section->course;
+                return [
+                    'id' => $course->id,
+                    'code' => $course->code,
+                    'name' => $course->title,
+                    'instructor' => $enrollment->section->instructor->name,
+                    'credits' => $course->credits,
+                    'department' => $course->department->name,
+                    'schedule' => [
+                        'days' => str_split($enrollment->section->days),
+                        'startTime' => $enrollment->section->start_time,
+                        'endTime' => $enrollment->section->end_time,
+                        'location' => $enrollment->section->room
+                    ],
+                    'enrolled' => true
+                ];
+            });
+
+        return response()->json($enrollments);
+    }
+
+    public function getGrades()
+    {
+        $grades = auth()->user()->student->enrollments()
+            ->with(['course', 'grades'])
+            ->get()
+            ->map(function($enrollment) {
+                return [
+                    'courseId' => $enrollment->course->id,
+                    'courseName' => $enrollment->course->title,
+                    'courseCode' => $enrollment->course->code,
+                    'grade' => $enrollment->grades->first()?->grade ?? 'N/A',
+                    'credits' => $enrollment->course->credits,
+                    'semester' => $enrollment->semester,
+                    'year' => $enrollment->academic_year
+                ];
+            });
+
+        return response()->json($grades);
+    }
+
+    public function getAttendance()
+    {
+        $attendance = auth()->user()->student->enrollments()
+            ->with(['section.course', 'attendances'])
+            ->get()
+            ->flatMap(function($enrollment) {
+                return $enrollment->attendances->map(function($attendance) use ($enrollment) {
+                    return [
+                        'courseId' => $enrollment->course->id,
+                        'courseName' => $enrollment->course->title,
+                        'courseCode' => $enrollment->course->code,
+                        'date' => $attendance->date,
+                        'status' => $attendance->status
+                    ];
+                });
+            });
+
+        return response()->json($attendance);
+    }
+
+    public function getDocuments()
+    {
+        $documents = auth()->user()->student->documents()
+            ->get()
+            ->map(function($document) {
+                return [
+                    'id' => $document->id,
+                    'name' => $document->name,
+                    'type' => $document->type,
+                    'uploadDate' => $document->created_at->format('Y-m-d'),
+                    'size' => $document->size,
+                    'url' => $document->url
+                ];
+            });
+
+        return response()->json($documents);
+    }
+
+    public function getFinancialRecords()
+    {
+        $records = auth()->user()->student->financialRecords()
+            ->get()
+            ->map(function($record) {
+                return [
+                    'id' => $record->id,
+                    'type' => $record->type,
+                    'amount' => $record->amount,
+                    'date' => $record->date->format('Y-m-d'),
+                    'semester' => $record->semester,
+                    'year' => $record->year,
+                    'status' => $record->status,
+                    'description' => $record->description
+                ];
+            });
+
+        return response()->json($records);
     }
 }

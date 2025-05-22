@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-500">Current Balance</p>
-                    <p class="text-2xl font-bold text-red-600">$1,250.00</p>
+                    <p class="text-2xl font-bold text-red-600">${{ number_format($currentBalance, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-500">Total Charges</p>
-                    <p class="text-2xl font-bold text-gray-900">$12,500.00</p>
+                    <p class="text-2xl font-bold text-gray-900">${{ number_format($totalCharges, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-500">Total Credits</p>
-                    <p class="text-2xl font-bold text-gray-900">$11,250.00</p>
+                    <p class="text-2xl font-bold text-gray-900">${{ number_format(abs($totalCredits), 2) }}</p>
                 </div>
             </div>
         </div>
@@ -67,186 +67,44 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">05/15/2023</td>
-                        <td class="py-3 px-4">Tuition</td>
-                        <td class="py-3 px-4">Spring 2023 Semester</td>
-                        <td class="py-3 px-4">
-                            <span class="text-red-600">$5,500.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Due</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">05/10/2023</td>
-                        <td class="py-3 px-4">Housing</td>
-                        <td class="py-3 px-4">Campus Housing - Spring 2023</td>
-                        <td class="py-3 px-4">
-                            <span class="text-red-600">$3,200.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">05/05/2023</td>
-                        <td class="py-3 px-4">Scholarship</td>
-                        <td class="py-3 px-4">Academic Achievement Scholarship</td>
-                        <td class="py-3 px-4">
-                            <span class="text-green-600">-$3,500.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Processed</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">04/28/2023</td>
-                        <td class="py-3 px-4">Fee</td>
-                        <td class="py-3 px-4">Technology and Lab Access Fee</td>
-                        <td class="py-3 px-4">
-                            <span class="text-red-600">$850.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">04/15/2023</td>
-                        <td class="py-3 px-4">Payment</td>
-                        <td class="py-3 px-4">Student Payment</td>
-                        <td class="py-3 px-4">
-                            <span class="text-green-600">-$2,500.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Processed</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">03/20/2023</td>
-                        <td class="py-3 px-4">Fee</td>
-                        <td class="py-3 px-4">Student Activity Fee</td>
-                        <td class="py-3 px-4">
-                            <span class="text-red-600">$250.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">03/15/2023</td>
-                        <td class="py-3 px-4">Grant</td>
-                        <td class="py-3 px-4">Federal Student Aid</td>
-                        <td class="py-3 px-4">
-                            <span class="text-green-600">-$4,500.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Processed</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">02/15/2023</td>
-                        <td class="py-3 px-4">Books</td>
-                        <td class="py-3 px-4">Course Materials - Spring 2023</td>
-                        <td class="py-3 px-4">
-                            <span class="text-red-600">$750.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">02/01/2023</td>
-                        <td class="py-3 px-4">Parking</td>
-                        <td class="py-3 px-4">Parking Permit - Spring 2023</td>
-                        <td class="py-3 px-4">
-                            <span class="text-red-600">$200.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100">
-                        <td class="py-3 px-4">01/20/2023</td>
-                        <td class="py-3 px-4">Tuition</td>
-                        <td class="py-3 px-4">Spring 2023 Registration Deposit</td>
-                        <td class="py-3 px-4">
-                            <span class="text-red-600">$1,000.00</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-primary-600 hover:text-primary-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
+                    @forelse($financialRecords as $record)
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 px-4">{{ $record->payment_date ? $record->payment_date->format('m/d/Y') : ($record->due_date ? $record->due_date->format('m/d/Y') : $record->created_at->format('m/d/Y')) }}</td>
+                            <td class="py-3 px-4">{{ ucfirst($record->type) }}</td>
+                            <td class="py-3 px-4">{{ $record->description }}</td>
+                            <td class="py-3 px-4">
+                                @if($record->amount < 0)
+                                    <span class="text-green-600">${{ number_format($record->amount, 2) }}</span>
+                                @else
+                                    <span class="text-red-600">${{ number_format($record->amount, 2) }}</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4">
+                                @php
+                                    $statusClass = match($record->status) {
+                                        'pending' => 'bg-yellow-100 text-yellow-800',
+                                        'paid' => 'bg-green-100 text-green-800',
+                                        'processed' => 'bg-blue-100 text-blue-800',
+                                        'refunded' => 'bg-purple-100 text-purple-800',
+                                        'waived' => 'bg-gray-100 text-gray-800',
+                                        default => 'bg-gray-100 text-gray-800',
+                                    };
+                                @endphp
+                                <span class="px-2 py-1 text-xs rounded-full {{ $statusClass }}">{{ ucfirst($record->status) }}</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                @if($record->receipt_number)
+                                    <a href="#" class="text-primary-600 hover:text-primary-700" title="View Receipt">Receipt #{{ $record->receipt_number }}</a>
+                                @else
+                                    <span class="text-gray-400">N/A</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="py-4 text-center text-gray-500">No financial records found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
