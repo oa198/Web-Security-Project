@@ -133,6 +133,36 @@ class Student extends Model
     }
 
     /**
+     * Get the student's documents.
+     */
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    /**
+     * Get today's class schedule for the student.
+     */
+    public function todaySchedule()
+    {
+        return $this->hasManyThrough(Schedule::class, Enrollment::class, 'user_id', 'course_id', 'user_id', 'course_id')
+            ->whereDate('date', now()->toDateString())
+            ->orderBy('start_time');
+    }
+
+    /**
+     * Get the student's pending assignments.
+     */
+    public function pendingAssignments()
+    {
+        return $this->hasManyThrough(Assignment::class, Enrollment::class, 'user_id', 'course_id', 'user_id', 'course_id')
+            ->where('due_date', '>', now())
+            ->whereDoesntHave('submissions', function ($query) {
+                $query->where('student_id', $this->id);
+            });
+    }
+
+    /**
      * Calculate the student's GPA based on completed courses.
      * 
      * @return float

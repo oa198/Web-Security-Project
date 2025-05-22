@@ -32,7 +32,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', [AuthController::class, 'user']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
     Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
     Route::post('/email/resend-verification', [AuthController::class, 'resendVerificationCode']);
     
@@ -81,6 +83,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sections/{section}/attendance', [AttendanceController::class, 'sectionAttendance']);
     Route::get('/students/{student}/attendance/stats', [AttendanceController::class, 'studentAttendanceStats']);
     Route::get('/sections/{section}/attendance/stats', [AttendanceController::class, 'sectionAttendanceStats']);
+
+    // Student API Routes
+    Route::prefix('student')->group(function () {
+        Route::get('/profile', [StudentController::class, 'getProfile']);
+        Route::get('/courses', [StudentController::class, 'getCourses']);
+        Route::get('/grades', [StudentController::class, 'getGrades']);
+        Route::get('/attendance', [StudentController::class, 'getAttendance']);
+        Route::get('/documents', [StudentController::class, 'getDocuments']);
+        Route::get('/financial-records', [StudentController::class, 'getFinancialRecords']);
+    });
 });
 
 // Fallback route for undefined API routes

@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_user', function (Blueprint $table) {
+        Schema::create('assignments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
-            $table->string('role_type'); // 'student', 'professor', etc.
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->decimal('total_points', 5, 2);
+            $table->dateTime('due_date');
+            $table->string('type')->default('regular'); // regular, quiz, exam, project
+            $table->boolean('is_published')->default(false);
             $table->timestamps();
-
-            $table->unique(['user_id', 'course_id', 'role_type']);
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_user');
+        Schema::dropIfExists('assignments');
     }
-}; 
+};
