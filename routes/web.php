@@ -104,10 +104,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('schedule.index');
     })->name('schedule.index');
 
-    Route::get('/assignments', function () {
-        return view('assignments.index');
-    })->name('assignments.index');
-
     Route::get('/notifications', function () {
         $notifications = auth()->user()->notifications->map(function ($notification) {
             return [

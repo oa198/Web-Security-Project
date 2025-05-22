@@ -48,17 +48,6 @@ export interface Grade {
   year: number;
 }
 
-export interface Assignment {
-  id: string;
-  courseId: string;
-  courseName: string;
-  title: string;
-  description: string;
-  dueDate: string;
-  status: 'Pending' | 'Submitted' | 'Graded' | 'Late';
-  grade?: number;
-}
-
 export interface Notification {
   id: string;
   title: string;
