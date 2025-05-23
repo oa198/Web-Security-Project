@@ -13,12 +13,7 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-@layer components {
-  .all-\[unset\] {
-    all: unset;
-  }
-}
-
+@layer base {
 :root {
   --black: rgba(0, 0, 0, 1);
   --darkpurple: rgba(120, 72, 199, 1);
@@ -30,4 +25,11 @@
   --text-font-weight: 400;
   --text-letter-spacing: 0px;
   --text-line-height: 121.53102159500122%;
+  }
+}
+
+@layer components {
+  .all-\[unset\] {
+    all: unset;
+  }
 }

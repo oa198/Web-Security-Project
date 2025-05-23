@@ -11,13 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('programs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
+            $table->foreignId('department_id')->constrained()->onDelete('cascade');
+            $table->integer('credits_required');
+            $table->string('degree_type');
+            $table->integer('duration_years');
             $table->text('description')->nullable();
-            $table->string('head_of_department')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('coordinator_name')->nullable();
+            $table->string('coordinator_email')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('programs');
     }
 };

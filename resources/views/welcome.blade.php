@@ -7,11 +7,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React + Laravel</title>
-    @vite(['resources/js/app.jsx', 'resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/frontend/src/main.tsx'])
 </head>
 <body>
-    <div id="app"></div>
+    <div id="root"></div>
 </body>
 </html>
 

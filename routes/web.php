@@ -307,39 +307,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/search', function () {
         $query = request('query');
 
-        // If empty query, redirect back to dashboard
-        if (empty($query)) {
-            return redirect()->route('dashboard');
-        }
-
-        // Placeholder search results - in a real app, this would query a database
-        $results = [
-            [
-                'type' => 'course',
-                'title' => 'Object Oriented Programming',
-                'description' => 'A comprehensive course on OOP principles and patterns',
-                'url' => '/courses/oop'
-            ],
-            [
-                'type' => 'course',
-                'title' => 'Database Systems',
-                'description' => 'Introduction to database design and SQL',
-                'url' => '/courses/database'
-            ],
-            [
-                'type' => 'notice',
-                'title' => 'Exam Schedule',
-                'description' => 'View the upcoming exams schedule for this semester',
-                'url' => '/notices/exams'
-            ],
-            [
-                'type' => 'notice',
-                'title' => 'Fee Payment',
-                'description' => 'Details about semester fee payment deadlines',
-                'url' => '/notices/payment'
-            ],
-        ];
-
         // Filter results based on search query
         $filteredResults = array_filter($results, function($item) use ($query) {
             return stripos($item['title'], $query) !== false ||
@@ -428,46 +395,3 @@ Route::middleware(['auth'])->group(function () {
     })->name('notifications.index');
 });
 
-//============================================================================================================================
-
-
-Route::get('/blade-explorer', function () {
-    $viewsPath = resource_path('views');
-    $bladeFiles = [];
-    
-    function scanDirectory($dir, &$files, $basePath = '') {
-        $items = scandir($dir);
-        foreach ($items as $item) {
-            if ($item === '.' || $item === '..') continue;
-            
-            $path = $dir . '/' . $item;
-            $relativePath = $basePath . '/' . $item;
-            
-            if (is_dir($path)) {
-                scanDirectory($path, $files, $relativePath);
-            } else if (str_ends_with($item, '.blade.php')) {
-                $files[] = [
-                    'path' => $relativePath,
-                    'name' => str_replace('.blade.php', '', $item),
-                    'full_path' => $path
-                ];
-            }
-        }
-    }
-    
-    scanDirectory($viewsPath, $bladeFiles);
-    
-    return view('blade-explorer', ['bladeFiles' => $bladeFiles]);
-})->name('blade-explorer');
-
-Route::get('/blade-explorer/view/{path}', function ($path) {
-    $fullPath = resource_path('views/' . $path);
-    if (file_exists($fullPath)) {
-        $content = file_get_contents($fullPath);
-        return view('blade-viewer', [
-            'content' => $content,
-            'path' => $path
-        ]);
-    }
-    return redirect()->route('blade-explorer')->with('error', 'File not found');
-})->where('path', '.*')->name('blade-viewer');
