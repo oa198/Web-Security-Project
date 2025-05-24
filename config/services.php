@@ -52,5 +52,10 @@ return [
         'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
         'redirect' => env('LINKEDIN_REDIRECT_URI'),
     ],
+    
+    'turnstile' => [
+        'site_key' => env('TURNSTILE_SITE_KEY', '0x4AAAAAABPbY4booday-3at'),
+        'secret_key' => env('CF_TURNSTILE_SECRET', '0x4AAAAAABPbY9XvgbVNAs-3Uv-7u4ll-Qo'),
+    ],
 
 ];

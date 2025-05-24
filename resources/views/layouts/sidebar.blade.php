@@ -383,6 +383,7 @@
         </nav>
 
         <!-- User Profile -->
+        @if(auth()->check())
         <div class="p-4 border-t">
             <div class="flex items-center">
                 <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-semibold">
@@ -404,6 +405,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </aside>
 

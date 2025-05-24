@@ -144,6 +144,50 @@ The system must include:
      npm run dev
      ```
 
+## Tasks to Complete
+
+The following tasks need to be completed by the team:
+
+### Authentication and User Management
+
+- **Email Verification**
+  - Implement a robust email verification system for new users
+  - Add verification expiry and resend functionality
+  - Create email templates for verification messages
+
+- **Social Media Login**
+  - Finish implementing OAuth login with Google, GitHub, and LinkedIn
+  - Link student accounts with social media profiles for multi-login options
+  - Create consistent UI for all social login options
+
+- **User Profiles**
+  - Add profile picture upload functionality with image validation and resizing
+  - Create profile edit pages for all user roles
+  - Implement avatar display throughout the application
+
+### API Development
+
+- **RESTful API**
+  - Build comprehensive API endpoints for all core functionality
+  - Implement proper authentication and authorization for API access
+  - Create detailed API documentation in Postman
+
+- **Mobile Integration**
+  - Ensure all APIs are compatible with future mobile applications
+  - Test API performance and optimize response times
+
+### Dashboard and UI
+
+- **Student Dashboard Customization**
+  - Create personalized dashboards based on student programs and courses
+  - Add quick access widgets for common student tasks
+  - Implement notifications system for important updates
+
+- **UI/UX Improvements**
+  - Ensure consistent styling across all application pages
+  - Optimize UI for both desktop and mobile devices
+  - Implement dark/light mode toggle
+
 ## Development Workflow
 
 ### Git Workflow

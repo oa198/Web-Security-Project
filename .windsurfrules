@@ -1,7 +1,6 @@
 # .windsurf
 # Custom execution rules for University SIS Project (Windows 11)
 # Backend: Laravel PHP / Frontend: HTML, CSS, JS (with optional TailwindCSS via CDN)
-# Note: I use the project with Vhost project.localhost.com
 
 permissions:
   allow_all_commands: true
