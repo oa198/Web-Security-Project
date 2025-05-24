@@ -49,6 +49,14 @@ Route::middleware(['auth', 'verified', 'role:admin|registrar|faculty'])->prefix(
         Route::get('/programs/{program}/manage-prerequisites', [App\Http\Controllers\Web\Admin\ProgramController::class, 'managePrerequisites'])->name('programs.manage-prerequisites');
     });
     
+    // Application Management (Admin & Admissions only)
+    Route::middleware(['role:admin|admissions'])->group(function () {
+        Route::get('/applications', [App\Http\Controllers\Admin\ApplicationController::class, 'index'])->name('applications.index');
+        Route::get('/applications/{id}', [App\Http\Controllers\Admin\ApplicationController::class, 'show'])->name('applications.show');
+        Route::get('/applications/{id}/edit', [App\Http\Controllers\Admin\ApplicationController::class, 'edit'])->name('applications.edit');
+        Route::put('/applications/{id}', [App\Http\Controllers\Admin\ApplicationController::class, 'update'])->name('applications.update');
+    });
+    
     // Exam Management (Admin & Faculty)
     Route::get('/exams', [App\Http\Controllers\Web\Admin\ExamController::class, 'index'])->name('exams.index');
     Route::get('/exams/create', [App\Http\Controllers\Web\Admin\ExamController::class, 'create'])->name('exams.create');

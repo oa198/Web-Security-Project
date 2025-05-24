@@ -118,4 +118,28 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Student::class);
     }
+    
+    /**
+     * Get the applications submitted by the user.
+     */
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
+    
+    /**
+     * Get the latest application submitted by the user.
+     */
+    public function latestApplication()
+    {
+        return $this->hasOne(Application::class)->latest();
+    }
+    
+    /**
+     * Get the applications reviewed by this admin user.
+     */
+    public function reviewedApplications()
+    {
+        return $this->hasMany(Application::class, 'reviewed_by');
+    }
 }

@@ -91,3 +91,29 @@ execution_protocols:
   explain_decisions: true
   log_code_changes: true
   confirm_major_changes: true
+
+resource_validation:
+  ensure_no_duplicate_features: true
+  validation_strategy:
+    - Before adding any new table, column, or feature:
+        - Check if similar or equivalent functionality exists under a different name.
+        - If duplicate or alternative implementation exists, select the optimal choice.
+        - Remove or consolidate redundant structures.
+        - Always log the decision rationale in a text file.
+
+tinker_usage_rules:
+  allowed_mode: piped_commands_only
+  allowed_command_example: |
+    echo "echo User::count();" | php artisan tinker
+  disallowed_mode: interactive_shell
+  warning_message: |
+    ⚠️ Never open Tinker interactively (e.g., running `php artisan tinker` directly) to avoid terminal hangs. Always use piped commands.
+
+change_log:
+  location: /
+  file_type: .txt
+  note_protocol: |
+    For every change or backend modification:
+      - Create or append to a .txt file in the project root.
+      - Write a simple, human-readable note summarizing the change.
+      - Example: "Added 'social_logins' table and Student ID generator via Tinker."
