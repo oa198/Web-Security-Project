@@ -19,6 +19,7 @@ use App\Http\Controllers\API\ExamResultController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\ProgramController;
 use App\Http\Controllers\API\AnnouncementController;
+use App\Http\Controllers\API\DepartmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +81,13 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/students/{student}/academic-history', [StudentController::class, 'academicHistory']);
     Route::get('/students/{student}/holds', [StudentController::class, 'holds']);
     Route::get('/students/search', [StudentController::class, 'search']);
+    
+    // Departments
+    Route::apiResource('departments', DepartmentController::class);
+    Route::get('/departments/{department}/courses', [DepartmentController::class, 'courses']);
+    Route::get('/departments/{department}/faculty', [DepartmentController::class, 'faculty']);
+    Route::get('/faculties/{faculty}/departments', [DepartmentController::class, 'facultyDepartments']);
+    Route::get('/departments/faculties/list', [DepartmentController::class, 'getFaculties']);
     
     // Financial records
     Route::apiResource('financial-records', FinancialRecordController::class);

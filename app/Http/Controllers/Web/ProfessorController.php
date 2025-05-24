@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Course;
+use App\Models\Attendance;
+use App\Models\Grade;
+use Illuminate\Support\Facades\Auth;
 
 class ProfessorController extends Controller
 {
@@ -44,4 +48,55 @@ class ProfessorController extends Controller
         // Delete professor logic
         return redirect()->route('web.professors.index')->with('success', 'Professor deleted successfully');
     }
-} 
+    
+    /**
+     * Display the courses taught by the professor.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function courses()
+    {
+        $user = Auth::user();
+        
+        // Get courses taught by this professor
+        $courses = Course::where('professor_id', $user->id)
+            ->with(['department', 'sections'])
+            ->paginate(15);
+            
+        return view('professor.courses', compact('courses'));
+    }
+    
+    /**
+     * Display the grade management interface for the professor.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function grades()
+    {
+        $user = Auth::user();
+        
+        // Get courses taught by this professor
+        $courses = Course::where('professor_id', $user->id)
+            ->with(['sections.enrollments.student.user'])
+            ->get();
+            
+        return view('professor.grades', compact('courses'));
+    }
+    
+    /**
+     * Display the attendance management interface for the professor.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function attendance()
+    {
+        $user = Auth::user();
+        
+        // Get courses taught by this professor
+        $courses = Course::where('professor_id', $user->id)
+            ->with(['sections.enrollments.student.user'])
+            ->get();
+            
+        return view('professor.attendance', compact('courses'));
+    }
+}

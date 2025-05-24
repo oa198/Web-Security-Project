@@ -1,0 +1,81 @@
+# .windsurf
+# Custom execution rules for University SIS Project (Windows 11)
+# Backend: Laravel PHP / Frontend: HTML, CSS, JS (with optional TailwindCSS)
+
+permissions:
+  allow_all_commands: true
+
+# Restricted commands that require explicit confirmation before execution
+restricted_commands:
+  - php artisan migrate:fresh
+  - php artisan migrate:reset
+  - php artisan db:wipe
+  - php artisan migrate:rollback
+  - php artisan db:seed --force
+  - php artisan migrate:fresh --seed
+
+# Commands that AI can run freely without approval
+trusted_commands:
+  - composer install
+  - composer require spatie/laravel-permission
+  - php artisan migrate
+  - php artisan make:model
+  - php artisan make:controller
+  - php artisan make:migration
+  - php artisan make:request
+  - php artisan make:resource
+  - php artisan route:list
+  - npm install
+  - npm run dev
+  - npm run build
+  - php artisan serve
+  - php artisan storage:link
+  - php artisan vendor:publish
+  - php artisan make:notification
+  - php artisan make:policy
+  - php artisan make:middleware
+  - php artisan make:event
+  - php artisan make:listener
+  - php artisan make:command
+  - php artisan optimize
+  - php artisan config:cache
+  - npx tailwindcss init
+
+# Directories AI is allowed to access and modify
+allowed_directories:
+  - /backend
+  - /public
+  - /database
+  - /routes
+  - /storage
+  - /resources
+  - /logs
+  - /frontend  # For static HTML/CSS/JS files
+
+# AI operation behavior
+execution_behavior:
+  allow_interactive_commands: true
+  allow_external_package_install: true
+  stop_on_error: false
+
+# AI must confirm before executing restricted commands
+pre_execution_checks:
+  confirm_on_restricted_command: true
+  confirm_message: "⚠️ The command you're trying to run is destructive. Confirm with Mohamed Saied before proceeding."
+
+# Logging behavior
+logging:
+  enable_command_logs: true
+  log_directory: /logs/windsurf
+  log_command_history: true
+
+# Safety and validation protocols
+safety_checks:
+  check_malicious_commands: true
+  validate_generated_code: true
+  enforce_file_integrity: true
+
+# System info
+system:
+  os: Windows 11
+  project_type: University SIS (Laravel + HTML/CSS/JS)

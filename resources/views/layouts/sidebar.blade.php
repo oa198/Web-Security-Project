@@ -1,4 +1,4 @@
-<aside class="fixed inset-y-0 left-0 bg-white shadow-lg w-64 transform transition-transform duration-200 ease-in-out z-10 lg:relative lg:translate-x-0" id="sidebar">
+<aside class="fixed inset-y-0 left-0 bg-white shadow-lg w-64 transform transition-transform duration-200 ease-in-out z-10 lg:relative lg:translate-x-0" id="sidebar" x-data="{ activeSub: null }">
     <div class="flex flex-col h-full">
         <!-- Logo -->
         <div class="flex items-center justify-between p-4 border-b">
@@ -37,6 +37,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('departments.index') }}" class="flex items-center px-4 py-2 {{ request()->routeIs('departments.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 {{ request()->routeIs('departments.*') ? 'text-primary-600' : 'text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        Departments
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('grades.index') }}" class="flex items-center px-4 py-2 {{ request()->routeIs('grades.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 {{ request()->routeIs('grades.*') ? 'text-primary-600' : 'text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -44,13 +52,36 @@
                         Grades
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('schedule.index') }}" class="flex items-center px-4 py-2 {{ request()->routeIs('schedule.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2 {{ request()->routeIs('schedule.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 {{ request()->routeIs('schedule.*') ? 'text-primary-600' : 'text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        Schedule
-                    </a>
+                        <span class="flex-1">Schedule</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('schedule.index') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('schedule.index') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                All Schedules
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('schedule.calendar') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('schedule.calendar') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Calendar View
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('schedule.create') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('schedule.create') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Create Schedule
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="{{ route('notifications.index') }}" class="flex items-center px-4 py-2 {{ request()->routeIs('notifications.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -60,13 +91,48 @@
                         Notifications
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('financial.index') }}" class="flex items-center px-4 py-2 {{ request()->routeIs('financial.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2 {{ request()->routeIs('financial.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 {{ request()->routeIs('financial.*') ? 'text-primary-600' : 'text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Financial
-                    </a>
+                        <span class="flex-1">Financial</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('financial.index') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('financial.index') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Overview
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('financial.payment-history') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('financial.payment-history') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Payment History
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('financial.invoices') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('financial.invoices') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Invoices
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('financial.payment-form') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('financial.payment-form') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Make Payment
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('financial.scholarship-application') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('financial.scholarship-application') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Scholarships
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="{{ route('documents.index') }}" class="flex items-center px-4 py-2 {{ request()->routeIs('documents.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -76,6 +142,243 @@
                         Documents
                     </a>
                 </li>
+                
+                <!-- Faculty Module -->
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2 {{ request()->routeIs('faculty.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 {{ request()->routeIs('faculty.*') ? 'text-primary-600' : 'text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span class="flex-1">Faculty</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('faculty.index') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('faculty.index') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                All Faculty
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('departments.index') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('departments.index') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Departments
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Academic Calendar Module -->
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2 {{ request()->routeIs('academic-calendar.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 {{ request()->routeIs('academic-calendar.*') ? 'text-primary-600' : 'text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="flex-1">Academic Calendar</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('academic-calendar.index') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('academic-calendar.index') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                All Events
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('academic-calendar.calendar') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('academic-calendar.calendar') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Calendar View
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('academic-calendar.current') }}" class="flex items-center pl-8 pr-4 py-2 {{ request()->routeIs('academic-calendar.current') ? 'text-primary-600 font-medium' : 'text-gray-600 hover:text-primary-600' }}">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Current Events
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Admin Section - Only visible to users with admin role -->
+                @role('admin')
+                <li class="mt-4">
+                    <h3 class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">ADMIN CONTROLS</h3>
+                </li>
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2 {{ request()->routeIs('admin.users.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span class="flex-1">User Management</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('admin.users.index') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                All Users
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.users.create') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Create User
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2 {{ request()->routeIs('admin.roles.*') ? 'text-gray-900 bg-primary-100 border-r-4 border-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        <span class="flex-1">Roles & Permissions</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('admin.roles.index') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                All Roles
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.permissions.index') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                All Permissions
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endrole
+                
+                <!-- Department Head Section - Only visible to department heads -->
+                @role('department_head')
+                <li class="mt-4">
+                    <h3 class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">DEPARTMENT HEAD</h3>
+                </li>
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <span class="flex-1">Department Management</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('department.staff') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Staff Management
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('department.courses') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Course Management
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('department.statistics') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Department Statistics
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endrole
+                
+                <!-- Professor Section - Only visible to professors -->
+                @role('professor')
+                <li class="mt-4">
+                    <h3 class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">PROFESSOR TOOLS</h3>
+                </li>
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span class="flex-1">Teaching</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('professor.courses') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                My Courses
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('professor.grades') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Grade Management
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('professor.attendance') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Attendance
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endrole
+                
+                <!-- Financial Officer Section - Only visible to financial officers -->
+                @role('financial_officer')
+                <li class="mt-4">
+                    <h3 class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">FINANCIAL TOOLS</h3>
+                </li>
+                <li x-data="{open: false}" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center w-full px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="flex-1">Financial Management</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{'rotate-90': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <ul x-show="open" class="pl-4 py-2 space-y-1 bg-gray-50" style="display: none;">
+                        <li>
+                            <a href="{{ route('financial.admin.dashboard') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Finance Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('financial.admin.payments') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Process Payments
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('financial.admin.scholarships') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Scholarship Management
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('financial.admin.reports') }}" class="flex items-center pl-8 pr-4 py-2">
+                                <span class="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
+                                Financial Reports
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endrole
             </ul>
         </nav>
 
