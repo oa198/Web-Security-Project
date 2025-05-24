@@ -290,6 +290,108 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notices/exams', function () {
         return redirect('/dashboard')->with('info', 'Exam schedule page is under development');
     });
+    
+    // Schedule routes
+    Route::middleware(['permission:view schedule'])->group(function () {
+        Route::get('schedule', [\App\Http\Controllers\Web\ScheduleController::class, 'index'])->name('schedule.index');
+        Route::get('schedule/{schedule}', [\App\Http\Controllers\Web\ScheduleController::class, 'show'])->name('schedule.show');
+        Route::get('schedule/calendar', [\App\Http\Controllers\Web\ScheduleController::class, 'calendar'])->name('schedule.calendar');
+    });
+    
+    Route::middleware(['permission:create schedule'])->group(function () {
+        Route::get('schedule/create', [\App\Http\Controllers\Web\ScheduleController::class, 'create'])->name('schedule.create');
+        Route::post('schedule', [\App\Http\Controllers\Web\ScheduleController::class, 'store'])->name('schedule.store');
+    });
+    
+    Route::middleware(['permission:update schedule'])->group(function () {
+        Route::get('schedule/{schedule}/edit', [\App\Http\Controllers\Web\ScheduleController::class, 'edit'])->name('schedule.edit');
+        Route::put('schedule/{schedule}', [\App\Http\Controllers\Web\ScheduleController::class, 'update'])->name('schedule.update');
+        Route::patch('schedule/{schedule}', [\App\Http\Controllers\Web\ScheduleController::class, 'update']);
+    });
+    
+    Route::middleware(['permission:delete schedule'])->group(function () {
+        Route::delete('schedule/{schedule}', [\App\Http\Controllers\Web\ScheduleController::class, 'destroy'])->name('schedule.destroy');
+    });
+    
+    // Financial routes
+    Route::middleware(['permission:view financial'])->group(function () {
+        Route::get('financial', [\App\Http\Controllers\Web\FinancialController::class, 'index'])->name('financial.index');
+        Route::get('financial/{financial}', [\App\Http\Controllers\Web\FinancialController::class, 'show'])->name('financial.show');
+        Route::get('financial/payments', [\App\Http\Controllers\Web\FinancialController::class, 'payments'])->name('financial.payments');
+        Route::get('financial/invoices', [\App\Http\Controllers\Web\FinancialController::class, 'invoices'])->name('financial.invoices');
+        Route::get('financial/payment-history/{student?}', [\App\Http\Controllers\Web\FinancialController::class, 'paymentHistory'])->name('financial.payment-history');
+        Route::get('financial/invoice/{invoice}', [\App\Http\Controllers\Web\FinancialController::class, 'invoice'])->name('financial.invoice');
+        Route::get('financial/statement/{student?}', [\App\Http\Controllers\Web\FinancialController::class, 'statement'])->name('financial.statement');
+        Route::get('financial/payment-form/{invoice?}', [\App\Http\Controllers\Web\FinancialController::class, 'paymentForm'])->name('financial.payment-form');
+        Route::get('financial/scholarship-application', [\App\Http\Controllers\Web\FinancialController::class, 'scholarshipApplication'])->name('financial.scholarship-application');
+        Route::get('financial/scholarship/view/{application}', [\App\Http\Controllers\Web\FinancialController::class, 'viewScholarship'])->name('financial.scholarship.view');
+    });
+    
+    Route::middleware(['permission:create financial'])->group(function () {
+        Route::get('financial/create', [\App\Http\Controllers\Web\FinancialController::class, 'create'])->name('financial.create');
+        Route::post('financial', [\App\Http\Controllers\Web\FinancialController::class, 'store'])->name('financial.store');
+        Route::post('financial/scholarship/apply', [\App\Http\Controllers\Web\FinancialController::class, 'applyScholarship'])->name('financial.scholarship.apply');
+    });
+    
+    Route::middleware(['permission:update financial'])->group(function () {
+        Route::get('financial/{financial}/edit', [\App\Http\Controllers\Web\FinancialController::class, 'edit'])->name('financial.edit');
+        Route::put('financial/{financial}', [\App\Http\Controllers\Web\FinancialController::class, 'update'])->name('financial.update');
+        Route::patch('financial/{financial}', [\App\Http\Controllers\Web\FinancialController::class, 'update']);
+    });
+    
+    Route::middleware(['permission:delete financial'])->group(function () {
+        Route::delete('financial/{financial}', [\App\Http\Controllers\Web\FinancialController::class, 'destroy'])->name('financial.destroy');
+        Route::get('financial/scholarship/withdraw/{application}', [\App\Http\Controllers\Web\FinancialController::class, 'withdrawScholarship'])->name('financial.scholarship.withdraw');
+    });
+    
+    Route::middleware(['permission:process-payment financial'])->group(function () {
+        Route::post('financial/process-payment', [\App\Http\Controllers\Web\FinancialController::class, 'processPayment'])->name('financial.process-payment');
+    });
+    
+    // Faculty routes
+    Route::middleware(['permission:view faculty'])->group(function () {
+        Route::get('faculty', [\App\Http\Controllers\Web\FacultyController::class, 'index'])->name('faculty.index');
+        Route::get('faculty/{faculty}', [\App\Http\Controllers\Web\FacultyController::class, 'show'])->name('faculty.show');
+        Route::get('faculty/{faculty}/departments', [\App\Http\Controllers\Web\FacultyController::class, 'departments'])->name('faculty.departments');
+    });
+    
+    Route::middleware(['permission:create faculty'])->group(function () {
+        Route::get('faculty/create', [\App\Http\Controllers\Web\FacultyController::class, 'create'])->name('faculty.create');
+        Route::post('faculty', [\App\Http\Controllers\Web\FacultyController::class, 'store'])->name('faculty.store');
+    });
+    
+    Route::middleware(['permission:update faculty'])->group(function () {
+        Route::get('faculty/{faculty}/edit', [\App\Http\Controllers\Web\FacultyController::class, 'edit'])->name('faculty.edit');
+        Route::put('faculty/{faculty}', [\App\Http\Controllers\Web\FacultyController::class, 'update'])->name('faculty.update');
+        Route::patch('faculty/{faculty}', [\App\Http\Controllers\Web\FacultyController::class, 'update']);
+    });
+    
+    Route::middleware(['permission:delete faculty'])->group(function () {
+        Route::delete('faculty/{faculty}', [\App\Http\Controllers\Web\FacultyController::class, 'destroy'])->name('faculty.destroy');
+    });
+    
+    // Academic Calendar routes
+    Route::middleware(['permission:view academic-calendar'])->group(function () {
+        Route::get('academic-calendar', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'index'])->name('academic-calendar.index');
+        Route::get('academic-calendar/{academicCalendar}', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'show'])->name('academic-calendar.show');
+        Route::get('academic-calendar/current', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'current'])->name('academic-calendar.current');
+        Route::get('academic-calendar/calendar', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'calendar'])->name('academic-calendar.calendar');
+    });
+    
+    Route::middleware(['permission:create academic-calendar'])->group(function () {
+        Route::get('academic-calendar/create', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'create'])->name('academic-calendar.create');
+        Route::post('academic-calendar', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'store'])->name('academic-calendar.store');
+    });
+    
+    Route::middleware(['permission:update academic-calendar'])->group(function () {
+        Route::get('academic-calendar/{academicCalendar}/edit', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'edit'])->name('academic-calendar.edit');
+        Route::put('academic-calendar/{academicCalendar}', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'update'])->name('academic-calendar.update');
+        Route::patch('academic-calendar/{academicCalendar}', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'update']);
+    });
+    
+    Route::middleware(['permission:delete academic-calendar'])->group(function () {
+        Route::delete('academic-calendar/{academicCalendar}', [\App\Http\Controllers\Web\AcademicCalendarController::class, 'destroy'])->name('academic-calendar.destroy');
+    });
 
     // Course routes - No middleware, directly accessible
     Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('courses.index');
@@ -303,42 +405,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/courses/{course}/grades', [App\Http\Controllers\Web\CourseController::class, 'grades'])->name('courses.grades');
     Route::get('/courses/{course}/schedule', [App\Http\Controllers\Web\CourseController::class, 'schedule'])->name('courses.schedule');
 
+    // Department routes
+    Route::resource('departments', App\Http\Controllers\Web\DepartmentController::class);
+    Route::get('/departments/{department}/courses', [App\Http\Controllers\Web\DepartmentController::class, 'courses'])->name('departments.courses');
+    Route::get('/departments/{department}/faculty', [App\Http\Controllers\Web\DepartmentController::class, 'faculty'])->name('departments.faculty');
+
     // Search route
     Route::get('/search', function () {
         $query = request('query');
-
-        // If empty query, redirect back to dashboard
-        if (empty($query)) {
-            return redirect()->route('dashboard');
-        }
-
-        // Placeholder search results - in a real app, this would query a database
-        $results = [
-            [
-                'type' => 'course',
-                'title' => 'Object Oriented Programming',
-                'description' => 'A comprehensive course on OOP principles and patterns',
-                'url' => '/courses/oop'
-            ],
-            [
-                'type' => 'course',
-                'title' => 'Database Systems',
-                'description' => 'Introduction to database design and SQL',
-                'url' => '/courses/database'
-            ],
-            [
-                'type' => 'notice',
-                'title' => 'Exam Schedule',
-                'description' => 'View the upcoming exams schedule for this semester',
-                'url' => '/notices/exams'
-            ],
-            [
-                'type' => 'notice',
-                'title' => 'Fee Payment',
-                'description' => 'Details about semester fee payment deadlines',
-                'url' => '/notices/payment'
-            ],
-        ];
 
         // Filter results based on search query
         $filteredResults = array_filter($results, function($item) use ($query) {
@@ -351,25 +425,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'results' => $filteredResults
         ]);
     })->name('search');
-
-    Route::post('/enrollments', [App\Http\Controllers\Web\EnrollmentController::class, 'store'])->name('enrollments.store');
-    Route::post('/enrollments/{enrollment}/approve', [App\Http\Controllers\Web\EnrollmentController::class, 'approve'])->name('enrollments.approve');
-    Route::post('/enrollments/{enrollment}/reject', [App\Http\Controllers\Web\EnrollmentController::class, 'reject'])->name('enrollments.reject');
 });
 
 // Admin routes
-Route::get('/admin/login', [App\Http\Controllers\AdminController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [App\Http\Controllers\AdminController::class, 'login'])->name('admin.login.post');
-
-Route::middleware(['auth:admin', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/', [App\Http\Controllers\AdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/stats', [App\Http\Controllers\Admin\DashboardController::class, 'stats'])->name('dashboard.stats');
+    Route::get('/dashboard/system-info', [App\Http\Controllers\Admin\DashboardController::class, 'systemInfo'])->name('dashboard.system-info');
+    
     Route::post('/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('logout');
 
     // User management routes
-    Route::get('/users', [App\Http\Controllers\AdminController::class, 'showUsers'])->name('users');
+    Route::get('/users', [App\Http\Controllers\AdminController::class, 'showUsers'])->name('users.index');
     Route::get('/users/{id}/edit', [App\Http\Controllers\AdminController::class, 'editUser'])->name('users.edit');
     Route::put('/users/{id}', [App\Http\Controllers\AdminController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('users.delete');
+    
+    // Academic term management
+    Route::resource('academic-terms', App\Http\Controllers\Admin\AcademicTermController::class, ['as' => 'admin']);
 
     // New members page route
     Route::get('/members', function () {
@@ -383,32 +456,124 @@ Route::resource('users', \App\Http\Controllers\Web\UserController::class);
 Route::get('users/{user}/profile', [\App\Http\Controllers\Web\UserController::class, 'profile'])->name('users.profile');
 Route::put('users/{user}/profile', [\App\Http\Controllers\Web\UserController::class, 'updateProfile'])->name('users.profile.update');
 
-// Role routes
-Route::resource('roles', \App\Http\Controllers\Web\RoleController::class);
-Route::get('roles/{role}/permissions', [\App\Http\Controllers\Web\RoleController::class, 'permissions'])->name('roles.permissions');
-Route::put('roles/{role}/permissions', [\App\Http\Controllers\Web\RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
+// Role routes - Only accessible by admin
+Route::middleware(['role:admin'])->group(function () {
+    Route::resource('roles', \App\Http\Controllers\Web\RoleController::class);
+    Route::get('roles/{role}/permissions', [\App\Http\Controllers\Web\RoleController::class, 'permissions'])->name('roles.permissions');
+    Route::put('roles/{role}/permissions', [\App\Http\Controllers\Web\RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
+});
 
 // Student routes
-Route::resource('students', \App\Http\Controllers\Web\StudentController::class);
-Route::get('students/{student}/courses', [\App\Http\Controllers\Web\StudentController::class, 'courses'])->name('students.courses');
-Route::get('students/{student}/grades', [\App\Http\Controllers\Web\StudentController::class, 'grades'])->name('students.grades');
+Route::middleware(['permission:view user'])->group(function () {
+    Route::get('students', [\App\Http\Controllers\Web\StudentController::class, 'index'])->name('students.index');
+    Route::get('students/{student}', [\App\Http\Controllers\Web\StudentController::class, 'show'])->name('students.show');
+    Route::get('students/{student}/courses', [\App\Http\Controllers\Web\StudentController::class, 'courses'])->name('students.courses');
+    Route::get('students/{student}/grades', [\App\Http\Controllers\Web\StudentController::class, 'grades'])->name('students.grades');
+});
+
+Route::middleware(['permission:create user'])->group(function () {
+    Route::get('students/create', [\App\Http\Controllers\Web\StudentController::class, 'create'])->name('students.create');
+    Route::post('students', [\App\Http\Controllers\Web\StudentController::class, 'store'])->name('students.store');
+});
+
+Route::middleware(['permission:update user'])->group(function () {
+    Route::get('students/{student}/edit', [\App\Http\Controllers\Web\StudentController::class, 'edit'])->name('students.edit');
+    Route::put('students/{student}', [\App\Http\Controllers\Web\StudentController::class, 'update'])->name('students.update');
+    Route::patch('students/{student}', [\App\Http\Controllers\Web\StudentController::class, 'update']);
+});
+
+Route::middleware(['permission:delete user'])->group(function () {
+    Route::delete('students/{student}', [\App\Http\Controllers\Web\StudentController::class, 'destroy'])->name('students.destroy');
+});
 
 // Professor routes
-Route::resource('professors', \App\Http\Controllers\Web\ProfessorController::class);
-Route::get('professors/{professor}/courses', [\App\Http\Controllers\Web\ProfessorController::class, 'courses'])->name('professors.courses');
+Route::middleware(['permission:view user'])->group(function () {
+    Route::get('professors', [\App\Http\Controllers\Web\ProfessorController::class, 'index'])->name('professors.index');
+    Route::get('professors/{professor}', [\App\Http\Controllers\Web\ProfessorController::class, 'show'])->name('professors.show');
+    Route::get('professors/{professor}/courses', [\App\Http\Controllers\Web\ProfessorController::class, 'courses'])->name('professors.courses');
+});
+
+Route::middleware(['permission:create user'])->group(function () {
+    Route::get('professors/create', [\App\Http\Controllers\Web\ProfessorController::class, 'create'])->name('professors.create');
+    Route::post('professors', [\App\Http\Controllers\Web\ProfessorController::class, 'store'])->name('professors.store');
+});
+
+Route::middleware(['permission:update user'])->group(function () {
+    Route::get('professors/{professor}/edit', [\App\Http\Controllers\Web\ProfessorController::class, 'edit'])->name('professors.edit');
+    Route::put('professors/{professor}', [\App\Http\Controllers\Web\ProfessorController::class, 'update'])->name('professors.update');
+    Route::patch('professors/{professor}', [\App\Http\Controllers\Web\ProfessorController::class, 'update']);
+});
+
+Route::middleware(['permission:delete user'])->group(function () {
+    Route::delete('professors/{professor}', [\App\Http\Controllers\Web\ProfessorController::class, 'destroy'])->name('professors.destroy');
+});
 
 // Teaching Assistant routes
-Route::resource('teaching-assistants', \App\Http\Controllers\Web\TeachingAssistantController::class);
-Route::get('teaching-assistants/{teachingAssistant}/courses', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'courses'])->name('teaching-assistants.courses');
+Route::middleware(['permission:view user'])->group(function () {
+    Route::get('teaching-assistants', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'index'])->name('teaching-assistants.index');
+    Route::get('teaching-assistants/{teachingAssistant}', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'show'])->name('teaching-assistants.show');
+    Route::get('teaching-assistants/{teachingAssistant}/courses', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'courses'])->name('teaching-assistants.courses');
+});
+
+Route::middleware(['permission:create user'])->group(function () {
+    Route::get('teaching-assistants/create', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'create'])->name('teaching-assistants.create');
+    Route::post('teaching-assistants', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'store'])->name('teaching-assistants.store');
+});
+
+Route::middleware(['permission:update user'])->group(function () {
+    Route::get('teaching-assistants/{teachingAssistant}/edit', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'edit'])->name('teaching-assistants.edit');
+    Route::put('teaching-assistants/{teachingAssistant}', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'update'])->name('teaching-assistants.update');
+    Route::patch('teaching-assistants/{teachingAssistant}', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'update']);
+});
+
+Route::middleware(['permission:delete user'])->group(function () {
+    Route::delete('teaching-assistants/{teachingAssistant}', [\App\Http\Controllers\Web\TeachingAssistantController::class, 'destroy'])->name('teaching-assistants.destroy');
+});
 
 // Admission Officer routes
-Route::resource('admission-officers', \App\Http\Controllers\Web\AdmissionOfficerController::class);
-Route::get('admission-officers/applications', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'applications'])->name('admission-officers.applications');
+Route::middleware(['permission:view user'])->group(function () {
+    Route::get('admission-officers', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'index'])->name('admission-officers.index');
+    Route::get('admission-officers/{admissionOfficer}', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'show'])->name('admission-officers.show');
+    Route::get('admission-officers/applications', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'applications'])->name('admission-officers.applications');
+});
+
+Route::middleware(['permission:create user'])->group(function () {
+    Route::get('admission-officers/create', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'create'])->name('admission-officers.create');
+    Route::post('admission-officers', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'store'])->name('admission-officers.store');
+});
+
+Route::middleware(['permission:update user'])->group(function () {
+    Route::get('admission-officers/{admissionOfficer}/edit', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'edit'])->name('admission-officers.edit');
+    Route::put('admission-officers/{admissionOfficer}', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'update'])->name('admission-officers.update');
+    Route::patch('admission-officers/{admissionOfficer}', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'update']);
+});
+
+Route::middleware(['permission:delete user'])->group(function () {
+    Route::delete('admission-officers/{admissionOfficer}', [\App\Http\Controllers\Web\AdmissionOfficerController::class, 'destroy'])->name('admission-officers.destroy');
+});
 
 // IT Support routes
-Route::resource('it-support', \App\Http\Controllers\Web\ITSupportController::class);
-Route::get('it-support/tickets', [\App\Http\Controllers\Web\ITSupportController::class, 'tickets'])->name('it-support.tickets');
-Route::post('it-support/tickets', [\App\Http\Controllers\Web\ITSupportController::class, 'storeTicket'])->name('it-support.tickets.store');
+Route::middleware(['permission:view user'])->group(function () {
+    Route::get('it-support', [\App\Http\Controllers\Web\ITSupportController::class, 'index'])->name('it-support.index');
+    Route::get('it-support/{itSupport}', [\App\Http\Controllers\Web\ITSupportController::class, 'show'])->name('it-support.show');
+    Route::get('it-support/tickets', [\App\Http\Controllers\Web\ITSupportController::class, 'tickets'])->name('it-support.tickets');
+});
+
+Route::middleware(['permission:create user'])->group(function () {
+    Route::get('it-support/create', [\App\Http\Controllers\Web\ITSupportController::class, 'create'])->name('it-support.create');
+    Route::post('it-support', [\App\Http\Controllers\Web\ITSupportController::class, 'store'])->name('it-support.store');
+    Route::post('it-support/tickets', [\App\Http\Controllers\Web\ITSupportController::class, 'storeTicket'])->name('it-support.tickets.store');
+});
+
+Route::middleware(['permission:update user'])->group(function () {
+    Route::get('it-support/{itSupport}/edit', [\App\Http\Controllers\Web\ITSupportController::class, 'edit'])->name('it-support.edit');
+    Route::put('it-support/{itSupport}', [\App\Http\Controllers\Web\ITSupportController::class, 'update'])->name('it-support.update');
+    Route::patch('it-support/{itSupport}', [\App\Http\Controllers\Web\ITSupportController::class, 'update']);
+});
+
+Route::middleware(['permission:delete user'])->group(function () {
+    Route::delete('it-support/{itSupport}', [\App\Http\Controllers\Web\ITSupportController::class, 'destroy'])->name('it-support.destroy');
+});
 
 // Enrollment routes
 Route::resource('enrollments', \App\Http\Controllers\Web\EnrollmentController::class);
@@ -428,46 +593,3 @@ Route::middleware(['auth'])->group(function () {
     })->name('notifications.index');
 });
 
-//============================================================================================================================
-
-
-Route::get('/blade-explorer', function () {
-    $viewsPath = resource_path('views');
-    $bladeFiles = [];
-    
-    function scanDirectory($dir, &$files, $basePath = '') {
-        $items = scandir($dir);
-        foreach ($items as $item) {
-            if ($item === '.' || $item === '..') continue;
-            
-            $path = $dir . '/' . $item;
-            $relativePath = $basePath . '/' . $item;
-            
-            if (is_dir($path)) {
-                scanDirectory($path, $files, $relativePath);
-            } else if (str_ends_with($item, '.blade.php')) {
-                $files[] = [
-                    'path' => $relativePath,
-                    'name' => str_replace('.blade.php', '', $item),
-                    'full_path' => $path
-                ];
-            }
-        }
-    }
-    
-    scanDirectory($viewsPath, $bladeFiles);
-    
-    return view('blade-explorer', ['bladeFiles' => $bladeFiles]);
-})->name('blade-explorer');
-
-Route::get('/blade-explorer/view/{path}', function ($path) {
-    $fullPath = resource_path('views/' . $path);
-    if (file_exists($fullPath)) {
-        $content = file_get_contents($fullPath);
-        return view('blade-viewer', [
-            'content' => $content,
-            'path' => $path
-        ]);
-    }
-    return redirect()->route('blade-explorer')->with('error', 'File not found');
-})->where('path', '.*')->name('blade-viewer');

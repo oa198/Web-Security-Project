@@ -14,8 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Call RoleSeeder first to create the roles
-        $this->call(RoleSeeder::class);
+        // Call RolesAndPermissionsSeeder first to create all roles and permissions
+        $this->call(RolesAndPermissionsSeeder::class);
         
         // Create default users with roles
         $this->call(UserSeeder::class);
@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DepartmentSeeder::class,
+            DemoSeeder::class,
+            TestAdminSeeder::class,
         ]);
     }
 }

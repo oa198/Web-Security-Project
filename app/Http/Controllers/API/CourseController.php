@@ -19,9 +19,6 @@ class CourseController extends Controller
     public function __construct(CourseService $courseService)
     {   
         $this->courseService = $courseService;
-        $this->middleware('auth');
-        $this->middleware('permission:view-course')->only(['index', 'show', 'getDepartments', 'getCourseSections']);
-        $this->middleware('permission:manage-course')->only(['store', 'update', 'destroy', 'getCoursePrerequisites']);
     }
 
     /**

@@ -1,54 +1,60 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Edit Course</h2>
-                </div>
+<div class="py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-semibold text-gray-900">Edit Course</h1>
+            <a href="{{ route('courses.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Courses
+            </a>
+        </div>
 
-                <div class="card-body">
-                    <form action="{{ route('courses.update', $course->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <form action="{{ route('courses.update', $course->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
 
-                        <div class="form-group mb-3">
-                            <label for="code">Course Code</label>
-                            <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" value="{{ old('code', $course->code) }}" required>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="col-span-1">
+                            <label for="code" class="block text-sm font-medium text-gray-700">Course Code</label>
+                            <input type="text" name="code" id="code" value="{{ old('code', $course->code) }}" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('code') border-red-500 @enderror">
                             @error('code')
-                                <span class="invalid-feedback">{{ $message }}</span>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="title">Course Title</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $course->title) }}" required>
+                        <div class="col-span-1">
+                            <label for="title" class="block text-sm font-medium text-gray-700">Course Title</label>
+                            <input type="text" name="title" id="title" value="{{ old('title', $course->title) }}" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('title') border-red-500 @enderror">
                             @error('title')
-                                <span class="invalid-feedback">{{ $message }}</span>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="description">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3">{{ old('description', $course->description) }}</textarea>
+                        <div class="col-span-2">
+                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea id="description" name="description" rows="3" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('description') border-red-500 @enderror">{{ old('description', $course->description) }}</textarea>
                             @error('description')
-                                <span class="invalid-feedback">{{ $message }}</span>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="credits">Credits</label>
-                            <input type="number" class="form-control @error('credits') is-invalid @enderror" id="credits" name="credits" value="{{ old('credits', $course->credits) }}" required>
+                        <div class="col-span-1">
+                            <label for="credits" class="block text-sm font-medium text-gray-700">Credits</label>
+                            <input type="number" name="credits" id="credits" value="{{ old('credits', $course->credits) }}" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('credits') border-red-500 @enderror">
                             @error('credits')
-                                <span class="invalid-feedback">{{ $message }}</span>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="professor_id">Professor</label>
-                            <select class="form-control @error('professor_id') is-invalid @enderror" id="professor_id" name="professor_id">
+                        <div class="col-span-1">
+                            <label for="professor_id" class="block text-sm font-medium text-gray-700">Professor</label>
+                            <select id="professor_id" name="professor_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('professor_id') border-red-500 @enderror">
                                 <option value="">Select Professor</option>
                                 @foreach($professors as $professor)
                                     <option value="{{ $professor->id }}" {{ old('professor_id', $course->professor_id) == $professor->id ? 'selected' : '' }}>
@@ -57,26 +63,30 @@
                                 @endforeach
                             </select>
                             @error('professor_id')
-                                <span class="invalid-feedback">{{ $message }}</span>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="schedule">Schedule</label>
-                            <input type="text" class="form-control @error('schedule') is-invalid @enderror" id="schedule" name="schedule" value="{{ old('schedule', $course->schedule) }}">
+                        <div class="col-span-2">
+                            <label for="schedule" class="block text-sm font-medium text-gray-700">Schedule (e.g., Mon,Wed 10:00 AM - 11:30 AM Room 305)</label>
+                            <input type="text" name="schedule" id="schedule" value="{{ old('schedule', $course->schedule) }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('schedule') border-red-500 @enderror">
                             @error('schedule')
-                                <span class="invalid-feedback">{{ $message }}</span>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Update Course</button>
-                            <a href="{{ route('courses.index') }}" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    </form>
-                </div>
+                    <div class="mt-6 flex items-center justify-end space-x-3">
+                        <a href="{{ route('courses.index') }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancel
+                        </a>
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Update Course
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-@endsection 
+@endsection

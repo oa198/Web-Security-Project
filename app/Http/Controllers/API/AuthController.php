@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -37,11 +38,14 @@ class AuthController extends Controller
         }
 
         $user = $request->user();
-        $token = $user->createToken('Personal Access Token')->plainTextToken;
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->accessToken;
 
         return response()->json([
             'user' => $user,
             'token' => $token,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
             'message' => 'Login successful'
         ]);
     }
@@ -73,11 +77,14 @@ class AuthController extends Controller
         // Send verification email
         $user->sendEmailVerificationNotification();
 
-        $token = $user->createToken('Personal Access Token')->plainTextToken;
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->accessToken;
 
         return response()->json([
             'user' => $user,
             'token' => $token,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
             'message' => 'Registration successful. Please verify your email.'
         ], 201);
     }
@@ -90,7 +97,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->token()->revoke();
 
         return response()->json([
             'message' => 'Successfully logged out'
