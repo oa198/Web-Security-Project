@@ -1,7 +1,6 @@
 # .windsurf
 # Custom execution rules for University SIS Project (Windows 11)
 # Backend: Laravel PHP / Frontend: HTML, CSS, JS (with optional TailwindCSS via CDN)
-# Note: I use the project with Vhost project.localhost.com
 
 permissions:
   allow_all_commands: true
@@ -92,3 +91,37 @@ execution_protocols:
   explain_decisions: true
   log_code_changes: true
   confirm_major_changes: true
+
+resource_validation:
+  ensure_no_duplicate_features: true
+  validation_strategy:
+    - Before adding any new table, column, or feature:
+        - Check if similar or equivalent functionality exists under a different name.
+        - If duplicate or alternative implementation exists, select the optimal choice.
+        - Remove or consolidate redundant structures.
+        - Always log the decision rationale in a text file.
+
+tinker_usage_rules:
+  allowed_mode: none
+  warning_message: |
+    ⚠️ Tinker is disabled. Use php DB.php for any DB edits or inserts.
+
+coding_conventions:
+  enforce_laravel_syntax: true
+  instructions: |
+    ✅ Always use Laravel's built-in syntax, features, and helpers wherever possible — even if the file is non-Laravel or Laravel isn't explicitly required for that task.
+    ✅ Use simplest Laravel-native methods for permissions and access control:
+      - Use @can directive in Blade for permission checks.
+      - Use hasPermissionTo() and hasRole() in controllers, policies, and middleware.
+      - Avoid raw PHP permission handling or custom authorization logic.
+    ✅ Prefer Laravel Collection methods, Eloquent relationships, and Query Builder functions.
+    ✅ Do not overcomplicate logic — choose the most concise, clean, and native Laravel solution.
+
+change_log:
+  location: /
+  file_type: .txt
+  note_protocol: |
+    For every change or backend modification:
+      - Create or append to a .txt file in the project root.
+      - Write a simple, human-readable note summarizing the change.
+      - Example: "Added 'social_logins' table and Student ID generator via DB.php."

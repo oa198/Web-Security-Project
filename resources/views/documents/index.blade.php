@@ -6,6 +6,30 @@
 
 @section('content')
 <div class="space-y-6">
+    <!-- Flash Messages and Debug Info -->
+    @if(session('success') || session('error') || session('info'))
+    <div class="mb-4">
+        @if(session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-2" role="alert">
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+        
+        @if(session('error'))
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-2" role="alert">
+                <p>{{ session('error') }}</p>
+            </div>
+        @endif
+        
+        @if(session('info'))
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-2" role="alert">
+                <p>{{ session('info') }}</p>
+            </div>
+        @endif
+        
+        {{-- Debug information removed --}}
+    </div>
+    @endif
     <!-- Header with upload button -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex flex-wrap gap-2">
@@ -82,7 +106,7 @@
                                         <input type="file" name="document" id="document" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
                                     </div>
                                     <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                        <button id="upload-btn" type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">
                                             Upload
                                         </button>
                                         <button type="button" onclick="closeUploadModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-sm">
@@ -143,10 +167,63 @@
 </div>
 
 <script>
+    // When the document is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up the upload form with validation and submit handler
+        const uploadForm = document.querySelector('form[action="{{ route('documents.upload') }}"]');
+        if (uploadForm) {
+            uploadForm.addEventListener('submit', function(e) {
+                // Get form elements
+                const titleInput = document.getElementById('title');
+                const typeSelect = document.getElementById('type');
+                const fileInput = document.getElementById('document');
+                
+                // Basic validation
+                if (!titleInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Please enter a document title');
+                    return false;
+                }
+                
+                if (!typeSelect.value) {
+                    e.preventDefault();
+                    alert('Please select a document type');
+                    return false;
+                }
+                
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    e.preventDefault();
+                    alert('Please select a file to upload');
+                    return false;
+                }
+                
+                // Show loading indicator
+                document.getElementById('upload-btn').textContent = 'Uploading...';
+                document.getElementById('upload-btn').disabled = true;
+                
+                // Let the form submit normally
+                return true;
+            });
+        }
+    });
+    
     function openUploadModal() {
         const modal = document.getElementById('uploadModal');
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+        
+        // Reset form if it exists
+        const uploadForm = document.querySelector('form[action="{{ route('documents.upload') }}"]');
+        if (uploadForm) {
+            uploadForm.reset();
+        }
+        
+        // Reset button state
+        const uploadBtn = document.getElementById('upload-btn');
+        if (uploadBtn) {
+            uploadBtn.textContent = 'Upload';
+            uploadBtn.disabled = false;
+        }
     }
 
     function closeUploadModal() {

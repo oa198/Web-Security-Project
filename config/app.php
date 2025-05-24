@@ -150,6 +150,7 @@ return [
 
         // Package Service Providers...
         Laravel\Passport\PassportServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
 
         // Application Service Providers...
@@ -157,6 +158,28 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Class Aliases
+    |--------------------------------------------------------------------------
+    |
+    | This array of class aliases will be registered when this application
+    | is started. However, feel free to register as many as you wish as
+    | the aliases are "lazy" loaded so they don't hinder performance.
+    |
+    */
+
+    'aliases' => [
+        'App' => Illuminate\Support\Facades\App::class,
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+        'DB' => Illuminate\Support\Facades\DB::class,
+        'Route' => Illuminate\Support\Facades\Route::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Storage' => Illuminate\Support\Facades\Storage::class,
+        'URL' => Illuminate\Support\Facades\URL::class,
+        'Validator' => Illuminate\Support\Facades\Validator::class,
     ],
 
 ];

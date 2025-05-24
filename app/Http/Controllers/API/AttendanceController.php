@@ -17,7 +17,19 @@ class AttendanceController extends Controller
      * Constructor with middleware
      */
     public function __construct()
-    {   
+
+
+
+
+
+
+
+
+
+
+
+
+    {
         $this->middleware('auth');
         $this->middleware('permission:view-attendance')->only(['index', 'show', 'getStudentAttendance', 'getSectionAttendance', 'getAttendanceStatistics']);
         $this->middleware('permission:manage-attendance')->only(['store', 'update', 'destroy', 'recordBulkAttendance']);
@@ -38,9 +50,9 @@ class AttendanceController extends Controller
             'date_range',
             'status',
         ]);
-        
+
         $perPage = $request->input('per_page', 15);
-        
+
         $attendance = Attendance::query()
             ->with(['student', 'section', 'section.course'])
             ->when(isset($filters['student_id']), function ($query) use ($filters) {
@@ -64,7 +76,7 @@ class AttendanceController extends Controller
             })
             ->latest('date')
             ->paginate($perPage);
-        
+
         return response()->json([
             'success' => true,
             'data' => $attendance,
@@ -87,32 +99,32 @@ class AttendanceController extends Controller
             'status' => 'required|string|in:present,absent,late,excused',
             'remarks' => 'nullable|string|max:255',
         ]);
-        
+
         try {
             // Check if student is enrolled in the section
             $student = Student::findOrFail($request->input('student_id'));
             $section = Section::findOrFail($request->input('section_id'));
-            
+
             if (!$student->isEnrolledInSection($section->id)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Student is not enrolled in this section'
                 ], 400);
             }
-            
+
             // Check if attendance record already exists for this student and date
             $existingRecord = Attendance::where('student_id', $request->input('student_id'))
                 ->where('section_id', $request->input('section_id'))
                 ->whereDate('date', $request->input('date'))
                 ->first();
-                
+
             if ($existingRecord) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Attendance record already exists for this student on this date'
                 ], 400);
             }
-            
+
             // Create the attendance record
             $attendance = Attendance::create([
                 'student_id' => $request->input('student_id'),
@@ -122,10 +134,10 @@ class AttendanceController extends Controller
                 'remarks' => $request->input('remarks'),
                 'recorded_by' => auth()->id(),
             ]);
-            
+
             // Load the relationships for the response
             $attendance->load(['student', 'section', 'section.course']);
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $attendance,
@@ -149,7 +161,7 @@ class AttendanceController extends Controller
     {
         $attendance = Attendance::with(['student', 'section', 'section.course', 'recordedBy'])
             ->findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => $attendance,
@@ -167,23 +179,23 @@ class AttendanceController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $attendance = Attendance::findOrFail($id);
-        
+
         $request->validate([
             'status' => 'nullable|string|in:present,absent,late,excused',
             'remarks' => 'nullable|string|max:255',
         ]);
-        
+
         try {
             // Update the attendance record
             $attendance->update($request->only(['status', 'remarks']));
-            
+
             // Log who updated the record
             $attendance->updated_by = auth()->id();
             $attendance->save();
-            
+
             // Load the relationships for the response
             $attendance->load(['student', 'section', 'section.course']);
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $attendance,
@@ -207,7 +219,7 @@ class AttendanceController extends Controller
     {
         try {
             $attendance = Attendance::findOrFail($id);
-            
+
             // Only allow deletion if the attendance record is recent (within 24 hours)
             if (Carbon::parse($attendance->created_at)->diffInHours(now()) > 24) {
                 return response()->json([
@@ -215,9 +227,9 @@ class AttendanceController extends Controller
                     'message' => 'Cannot delete attendance records older than 24 hours'
                 ], 400);
             }
-            
+
             $attendance->delete();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Attendance record deleted successfully'
@@ -246,9 +258,9 @@ class AttendanceController extends Controller
             'semester',
             'academic_year',
         ]);
-        
+
         $perPage = $request->input('per_page', 15);
-        
+
         $attendance = Attendance::query()
             ->with(['section', 'section.course'])
             ->where('student_id', $studentId)
@@ -273,7 +285,7 @@ class AttendanceController extends Controller
             })
             ->latest('date')
             ->paginate($perPage);
-        
+
         return response()->json([
             'success' => true,
             'data' => $attendance,
@@ -293,28 +305,28 @@ class AttendanceController extends Controller
         $request->validate([
             'date' => 'required|date',
         ]);
-        
+
         try {
             $section = Section::with('course')->findOrFail($sectionId);
             $date = $request->input('date');
-            
+
             // Get all students enrolled in the section
             $enrolledStudents = $section->enrollments()
                 ->with('student')
                 ->where('status', 'active')
                 ->get()
                 ->pluck('student');
-            
+
             // Get all attendance records for this section on this date
             $attendanceRecords = Attendance::where('section_id', $sectionId)
                 ->whereDate('date', $date)
                 ->get()
                 ->keyBy('student_id');
-            
+
             // Prepare the attendance data
             $attendanceData = $enrolledStudents->map(function ($student) use ($attendanceRecords, $sectionId, $date) {
                 $record = $attendanceRecords->get($student->id);
-                
+
                 return [
                     'student_id' => $student->id,
                     'student_name' => $student->user->name,
@@ -326,7 +338,7 @@ class AttendanceController extends Controller
                     'attendance_id' => $record ? $record->id : null,
                 ];
             });
-            
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -360,41 +372,41 @@ class AttendanceController extends Controller
             'attendance_data.*.status' => 'required|string|in:present,absent,late,excused',
             'attendance_data.*.remarks' => 'nullable|string|max:255',
         ]);
-        
+
         try {
             $sectionId = $request->input('section_id');
             $date = $request->input('date');
             $attendanceData = $request->input('attendance_data');
-            
+
             // Check if the section exists
             $section = Section::findOrFail($sectionId);
-            
+
             // Start a transaction
             \DB::beginTransaction();
-            
+
             $recordedCount = 0;
             $errors = [];
-            
+
             foreach ($attendanceData as $record) {
                 $studentId = $record['student_id'];
-                
+
                 // Check if student is enrolled in the section
                 $isEnrolled = $section->enrollments()
                     ->where('student_id', $studentId)
                     ->where('status', 'active')
                     ->exists();
-                    
+
                 if (!$isEnrolled) {
                     $errors[] = "Student ID {$studentId} is not enrolled in this section";
                     continue;
                 }
-                
+
                 // Check if attendance record already exists
                 $existingRecord = Attendance::where('student_id', $studentId)
                     ->where('section_id', $sectionId)
                     ->whereDate('date', $date)
                     ->first();
-                    
+
                 if ($existingRecord) {
                     // Update existing record
                     $existingRecord->update([
@@ -413,13 +425,13 @@ class AttendanceController extends Controller
                         'recorded_by' => auth()->id(),
                     ]);
                 }
-                
+
                 $recordedCount++;
             }
-            
+
             // Commit the transaction
             \DB::commit();
-            
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -431,7 +443,7 @@ class AttendanceController extends Controller
         } catch (Exception $e) {
             // Rollback in case of error
             \DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -453,22 +465,22 @@ class AttendanceController extends Controller
             'semester' => 'nullable|string',
             'academic_year' => 'nullable|string',
         ]);
-        
+
         try {
             $sectionId = $request->input('section_id');
             $studentId = $request->input('student_id');
-            
+
             // Get the attendance records
             $query = Attendance::where('section_id', $sectionId);
-            
+
             if ($studentId) {
                 $query->where('student_id', $studentId);
             }
-            
+
             // Add semester and academic year filter if provided
             if ($request->has('semester') && $request->has('academic_year')) {
                 $section = Section::find($sectionId);
-                if ($section->semester != $request->input('semester') || 
+                if ($section->semester != $request->input('semester') ||
                     $section->academic_year != $request->input('academic_year')) {
                     return response()->json([
                         'success' => false,
@@ -476,27 +488,27 @@ class AttendanceController extends Controller
                     ], 400);
                 }
             }
-            
+
             // Get total attendance count by status
             $statistics = $query->select('status', \DB::raw('count(*) as count'))
                 ->groupBy('status')
                 ->get()
                 ->pluck('count', 'status')
                 ->toArray();
-            
+
             // Calculate attendance percentage
             $totalRecords = array_sum($statistics);
             $presentCount = $statistics['present'] ?? 0;
             $lateCount = $statistics['late'] ?? 0;
-            $attendanceRate = $totalRecords > 0 ? 
+            $attendanceRate = $totalRecords > 0 ?
                 round((($presentCount + $lateCount) / $totalRecords) * 100, 2) : 0;
-            
+
             // Get the section details
             $section = Section::with('course')->find($sectionId);
-            
+
             // Get student details if student_id is provided
             $student = $studentId ? Student::with('user')->find($studentId) : null;
-            
+
             return response()->json([
                 'success' => true,
                 'data' => [

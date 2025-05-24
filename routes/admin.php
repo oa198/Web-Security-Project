@@ -13,8 +13,8 @@ use App\Http\Controllers\Web\Admin\DashboardController;
 |
 */
 
-// Admin routes - protected with auth and role middleware
-Route::middleware(['auth', 'verified', 'role:admin|registrar|faculty'])->prefix('admin')->name('admin.')->group(function () {
+// Admin routes - protected with auth and permission middleware
+Route::middleware(['auth', 'verified', 'permission:access admin area'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard routes
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/system-info', [DashboardController::class, 'systemInfo'])->name('system-info');
@@ -22,7 +22,7 @@ Route::middleware(['auth', 'verified', 'role:admin|registrar|faculty'])->prefix(
     Route::get('/activity-logs', [DashboardController::class, 'activityLogs'])->name('activity-logs');
     
     // Academic Terms Management (Admin & Registrar only)
-    Route::middleware(['role:admin|registrar'])->group(function () {
+    Route::middleware(['permission:manage academic terms'])->group(function () {
         Route::get('/academic-terms', [App\Http\Controllers\Web\Admin\AcademicTermController::class, 'index'])->name('academic-terms.index');
         Route::get('/academic-terms/create', [App\Http\Controllers\Web\Admin\AcademicTermController::class, 'create'])->name('academic-terms.create');
         Route::get('/academic-terms/{academicTerm}', [App\Http\Controllers\Web\Admin\AcademicTermController::class, 'show'])->name('academic-terms.show');
@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified', 'role:admin|registrar|faculty'])->prefix(
     });
     
     // Academic Calendar Management (Admin & Registrar only)
-    Route::middleware(['role:admin|registrar'])->group(function () {
+    Route::middleware(['permission:manage calendar'])->group(function () {
         Route::get('/academic-calendars', [App\Http\Controllers\Web\Admin\AcademicCalendarController::class, 'index'])->name('academic-calendars.index');
         Route::get('/academic-calendars/create', [App\Http\Controllers\Web\Admin\AcademicCalendarController::class, 'create'])->name('academic-calendars.create');
         Route::get('/academic-calendars/month/{year}/{month}', [App\Http\Controllers\Web\Admin\AcademicCalendarController::class, 'monthView'])->name('academic-calendars.month-view');
@@ -40,13 +40,21 @@ Route::middleware(['auth', 'verified', 'role:admin|registrar|faculty'])->prefix(
     });
     
     // Program Management (Admin & Registrar only)
-    Route::middleware(['role:admin|registrar'])->group(function () {
+    Route::middleware(['permission:manage programs'])->group(function () {
         Route::get('/programs', [App\Http\Controllers\Web\Admin\ProgramController::class, 'index'])->name('programs.index');
         Route::get('/programs/create', [App\Http\Controllers\Web\Admin\ProgramController::class, 'create'])->name('programs.create');
         Route::get('/programs/{program}', [App\Http\Controllers\Web\Admin\ProgramController::class, 'show'])->name('programs.show');
         Route::get('/programs/{program}/edit', [App\Http\Controllers\Web\Admin\ProgramController::class, 'edit'])->name('programs.edit');
         Route::get('/programs/{program}/manage-requirements', [App\Http\Controllers\Web\Admin\ProgramController::class, 'manageRequirements'])->name('programs.manage-requirements');
         Route::get('/programs/{program}/manage-prerequisites', [App\Http\Controllers\Web\Admin\ProgramController::class, 'managePrerequisites'])->name('programs.manage-prerequisites');
+    });
+    
+    // Application Management (Admin & Admissions only)
+    Route::middleware(['role:admin|admissions'])->group(function () {
+        Route::get('/applications', [App\Http\Controllers\Admin\ApplicationController::class, 'index'])->name('applications.index');
+        Route::get('/applications/{id}', [App\Http\Controllers\Admin\ApplicationController::class, 'show'])->name('applications.show');
+        Route::get('/applications/{id}/edit', [App\Http\Controllers\Admin\ApplicationController::class, 'edit'])->name('applications.edit');
+        Route::put('/applications/{id}', [App\Http\Controllers\Admin\ApplicationController::class, 'update'])->name('applications.update');
     });
     
     // Exam Management (Admin & Faculty)

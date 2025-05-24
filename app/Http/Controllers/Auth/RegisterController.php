@@ -86,71 +86,76 @@ class RegisterController extends Controller
                 'form_data' => $request->except(['password', 'password_confirmation']),
             ]);
             
-            // Create the user account with email already verified
+            // Create the user account WITHOUT verifying email
             $user = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'email_verified_at' => now(), // Mark email as verified immediately
+                'email_verified_at' => null, // Email requires verification
             ]);
+            
+            // Create the address JSON for storage
+            $address = json_encode([
+                'street' => $request->street,
+                'city' => $request->city,
+                'state' => $request->state,
+                'zip_code' => $request->zip_code
+            ]);
+            
+            // Create application record instead of directly creating a student
+            try {
+                // Create a new application
+                $application = new \App\Models\Application([
+                    'user_id' => $user->id,
+                    'status' => 'pending',
+                    'notes' => 'Application submitted through registration form.'
+                ]);
                 
-            // Check if the student record already exists
-            if ($user->student) {
-                Log::warning('Student record already exists for user', ['user_id' => $user->id]);
-            } else {
+                $application->save();
+                
+                // Store additional applicant data in the user's profile or session
+                // We can retrieve this later when the application is approved
+                session(['applicant_data' => [
+                    'national_id' => $request->national_id,
+                    'address' => $address
+                ]]);
+                
+                Log::info('Application created successfully', [
+                    'user_id' => $user->id,
+                    'application_id' => $application->id
+                ]);
+                
+                // Notify admissions department about the new application
                 try {
-                    // Generate a unique student ID
-                    $studentId = 'ST' . date('Y') . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
-                    
-                    // Create the address JSON
-                    $address = json_encode([
-                        'street' => $request->street,
-                        'city' => $request->city,
-                        'state' => $request->state,
-                        'zip_code' => $request->zip_code
-                    ]);
-                    
-                    // Create the student record directly instead of using relationship
-                    $student = new \App\Models\Student([
-                        'user_id' => $user->id,
-                        'student_id' => $studentId,
-                        'national_id' => $request->national_id,
-                        'address' => $address,
-                        // Set all other required fields with default values
-                        'department_id' => null, // Will use null since it's nullable
-                        'program' => 'Pending',
-                        'credits_completed' => 0,
-                        'gpa' => 0.00,
-                        'academic_standing' => 'New Student',
-                        'level' => 'Freshman',
-                        'admission_date' => now(),
-                        'expected_graduation_date' => now()->addYears(4)
-                    ]);
-                    
-                    $student->save();
-                    
-                    Log::info('Student record created successfully', [
-                        'user_id' => $user->id,
-                        'student_id' => $studentId
-                    ]);
+                    // This would be implemented with a notification or email
+                    // Mail::to('admissions@university.edu')->send(new NewApplicationSubmitted($application));
                 } catch (\Exception $e) {
-                    Log::error('Failed to create student record', [
-                        'user_id' => $user->id,
-                        'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
+                    Log::error('Failed to send notification about new application', [
+                        'application_id' => $application->id,
+                        'error' => $e->getMessage()
                     ]);
-                    // Don't throw the exception - we'll still continue with user creation
-                    // This ensures the user can at least log in, even if student record creation fails
                 }
+            } catch (\Exception $e) {
+                Log::error('Failed to create application record', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                // We'll still continue with user creation even if application creation fails
+                // This ensures the user can at least log in
             }
             
             // Automatically log the user in
             Auth::login($user);
-            $user->assignRole('Student');
+            // Assign applicant role instead of student
+            $user->assignRole('applicant');
     
-            // Redirect to dashboard (no email verification needed)
-            return redirect()->route('dashboard')
-                            ->with('status', 'Registration successful! Welcome to the University Management System.');
+            // Generate OTP for email verification
+            $verification = \App\Models\EmailVerification::generateOtp($user);
+            
+            // Redirect to OTP verification page
+            return redirect()->route('verify.otp.form')
+                            ->with('status', 'Registration successful! Please verify your email address with the OTP code sent to your email.');
                             
         } catch(\Exception $e) {
             Log::error('Registration error', [

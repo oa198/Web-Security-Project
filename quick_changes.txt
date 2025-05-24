@@ -1,0 +1,1 @@
+Removed the Quick Stats section and its Blade include from dashboard.blade.php as per user request. The dashboard layout was updated to ensure a clean UI with no empty gaps.

@@ -48,9 +48,9 @@ return [
     ],
     
     'linkedin' => [
-        'client_id' => env('LINKEDIN_CLIENT_ID'),
-        'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
-        'redirect' => env('LINKEDIN_REDIRECT_URI'),
+        'client_id' => env('LINKEDIN_CLIENT_ID', '864hsbfdunsfkx'),
+        'client_secret' => env('LINKEDIN_CLIENT_SECRET', 'WPL_AP1.yqck66Um4NbvkrJr.POcssw=='),
+        'redirect' => env('LINKEDIN_REDIRECT_URI', 'http://localhost:8000/auth/linkedin/callback'),
     ],
     
     'turnstile' => [

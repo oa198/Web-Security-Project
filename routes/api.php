@@ -39,7 +39,14 @@ Route::get('/greeting', function () {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+// API Test routes - temporarily without auth for testing
+Route::prefix('test')->group(function () {
+    Route::get('/system-stats', [App\Http\Controllers\Api\ApiTestController::class, 'getSystemStats']);
+    Route::get('/application-stats', [App\Http\Controllers\Api\ApiTestController::class, 'getApplicationStats']);
+});
+
 // Protected routes
+
 Route::middleware('auth:api')->group(function () {
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -223,6 +230,34 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/exam-results/template', [\App\Http\Controllers\Admin\ExamResultController::class, 'downloadTemplate']);
     });
 });
+
+// Social Login Routes
+Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.login');
+Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback']);
+
+// Link/Unlink Social Accounts (Protected)
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/social-accounts', [SocialAuthController::class, 'getSocialAccounts']);
+    Route::post('/link/{provider}', [SocialAuthController::class, 'linkAccount']);
+    Route::delete('/unlink/{provider}', [SocialAuthController::class, 'unlinkAccount']);
+});
+
+// Student Application Routes
+
+Route::middleware('auth:api')->group(function () {
+    // Student application endpoints
+    Route::get('/applications', [\App\Http\Controllers\API\ApplicationController::class, 'index']);
+    Route::post('/applications', [\App\Http\Controllers\API\ApplicationController::class, 'store']);
+    Route::get('/applications/{id}', [\App\Http\Controllers\API\ApplicationController::class, 'show']);
+    
+    // Admin/Admissions application management endpoints
+    Route::middleware(['role:admin|admissions'])->group(function () {
+        Route::put('/applications/{id}', [\App\Http\Controllers\API\ApplicationController::class, 'update']);
+        Route::get('/applications/statistics', [\App\Http\Controllers\API\ApplicationController::class, 'statistics']);
+    });
+});
+
 
 // Fallback route for undefined API routes
 Route::fallback(function () {

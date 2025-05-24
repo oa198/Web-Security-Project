@@ -36,6 +36,10 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
                 
+            // Load auth routes
+            Route::middleware('web')
+                ->group(base_path('routes/auth.php'));
+                
             // Load admin routes if they exist
             if (file_exists(base_path('routes/admin.php'))) {
                 Route::middleware('web')
