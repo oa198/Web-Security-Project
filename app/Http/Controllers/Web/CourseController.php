@@ -183,4 +183,11 @@ class CourseController extends Controller
         
         return view('courses.grades', compact('course'));
     }
+
+    public function schedule($id)
+    {
+        $course = Course::findOrFail($id);
+        // You can customize the data passed to the view as needed
+        return view('courses.schedule', compact('course'));
+    }
 } 
