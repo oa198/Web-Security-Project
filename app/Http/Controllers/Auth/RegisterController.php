@@ -27,54 +27,148 @@ class RegisterController extends Controller
     }
 
     public function doRegister(Request $request) {
-    $key = 'register|' . \Str::lower($request->input('email')) . '|' . $request->ip();
-    if (\RateLimiter::tooManyAttempts($key, 5)) {
-        return back()->withErrors(['email' => 'Too many registration attempts. Please try again in 1 minute.']);
-    }
-    \RateLimiter::hit($key, 60);
-    
-    try {
-        $request->validate([
-            'name' => ['required', 'string', 'min:5'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'confirmed', PasswordRule::min(8)->numbers()->letters()->mixedCase()->symbols()],
-            'cf-turnstile-response' => ['required'],
-        ], [
-            'email.unique' => 'This email is already registered. Please try logging in or use a different email.',
-        ]);
-        
-        // Verify Cloudflare Turnstile
-        $turnstileResponse = $this->verifyTurnstile($request->input('cf-turnstile-response'), $request->ip());
-        
-        if (!$turnstileResponse['success']) {
-            Log::error('Turnstile verification failed', [
-                'errors' => $turnstileResponse['error-codes'] ?? 'Unknown error',
-                'ip' => $request->ip()
-            ]);
-            return redirect()->back()->withInput($request->except('password', 'password_confirmation'))
-                                   ->withErrors(['captcha' => 'CAPTCHA verification failed. Please try again.']);
+        $key = 'register|' . \Str::lower($request->input('email')) . '|' . $request->ip();
+        if (\RateLimiter::tooManyAttempts($key, 5)) {
+            return back()->withErrors(['email' => 'Too many registration attempts. Please try again in 1 minute.']);
         }
-    } catch(\Exception $e) {
-        Log::error('Registration error', ['error' => $e->getMessage()]);
-        return redirect()->back()->withInput($request->except('password', 'password_confirmation'))
-                               ->withErrors('An unexpected error occurred during registration.');
-    }
+        \RateLimiter::hit($key, 60);
+        
+        try {
+            $request->validate([
+                'first_name' => ['required', 'string', 'min:2'],
+                'last_name' => ['required', 'string', 'min:2'],
+                'email' => ['required', 'email', 'unique:users'],
+                'national_id' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
+                'street' => ['required', 'string', 'min:5'],
+                'city' => ['required', 'string', 'min:2'],
+                'state' => ['required', 'string', 'min:2'],
+                'zip_code' => ['required', 'string', 'regex:/^\d{5}(-\d{4})?$/'],
+                'password' => [
+                    'required', 
+                    'confirmed', 
+                    PasswordRule::min(8)
+                        ->numbers()
+                        ->letters()
+                        ->mixedCase()
+                        ->symbols()
+                ],
+                'terms' => ['required', 'accepted'],
+                'privacy' => ['required', 'accepted'],
+            ], [
+                'first_name.required' => 'Please enter your first name.',
+                'first_name.min' => 'Your first name must be at least 2 characters.',
+                'last_name.required' => 'Please enter your last name.',
+                'last_name.min' => 'Your last name must be at least 2 characters.',
+                'email.required' => 'Please enter your email address.',
+                'email.email' => 'Please enter a valid email address.',
+                'email.unique' => 'This email is already registered. Please try logging in or use a different email.',
+                'national_id.required' => 'Please enter your National ID number.',
+                'national_id.regex' => 'National ID must be exactly 10 digits.',
+                'street.required' => 'Please enter your street address.',
+                'street.min' => 'Street address must be at least 5 characters.',
+                'city.required' => 'Please enter your city.',
+                'state.required' => 'Please enter your state/province.',
+                'zip_code.required' => 'Please enter your ZIP/postal code.',
+                'zip_code.regex' => 'ZIP code must be in format 12345 or 12345-6789.',
+                'password.required' => 'Please create a password.',
+                'password.confirmed' => 'Password confirmation does not match.',
+                'password.min' => 'Password must be at least 8 characters.',
+                'password.numbers' => 'Password must include at least one number.',
+                'password.letters' => 'Password must include at least one letter.',
+                'password.mixedCase' => 'Password must include both uppercase and lowercase letters.',
+                'password.symbols' => 'Password must include at least one special character (e.g., !@#$%^&*).',
+                'terms.accepted' => 'You must accept the Terms of Service.',
+                'privacy.accepted' => 'You must accept the Privacy Policy.',
+            ]);
+            
+            // Debug log the form data
+            Log::info('Registration form data received', [
+                'form_data' => $request->except(['password', 'password_confirmation']),
+            ]);
+            
+            // Create the user account with email already verified
+            $user = User::create([
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'email_verified_at' => now(), // Mark email as verified immediately
+            ]);
+                
+            // Check if the student record already exists
+            if ($user->student) {
+                Log::warning('Student record already exists for user', ['user_id' => $user->id]);
+            } else {
+                try {
+                    // Generate a unique student ID
+                    $studentId = 'ST' . date('Y') . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+                    
+                    // Create the address JSON
+                    $address = json_encode([
+                        'street' => $request->street,
+                        'city' => $request->city,
+                        'state' => $request->state,
+                        'zip_code' => $request->zip_code
+                    ]);
+                    
+                    // Create the student record directly instead of using relationship
+                    $student = new \App\Models\Student([
+                        'user_id' => $user->id,
+                        'student_id' => $studentId,
+                        'national_id' => $request->national_id,
+                        'address' => $address,
+                        // Set all other required fields with default values
+                        'department_id' => null, // Will use null since it's nullable
+                        'program' => 'Pending',
+                        'credits_completed' => 0,
+                        'gpa' => 0.00,
+                        'academic_standing' => 'New Student',
+                        'level' => 'Freshman',
+                        'admission_date' => now(),
+                        'expected_graduation_date' => now()->addYears(4)
+                    ]);
+                    
+                    $student->save();
+                    
+                    Log::info('Student record created successfully', [
+                        'user_id' => $user->id,
+                        'student_id' => $studentId
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to create student record', [
+                        'user_id' => $user->id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    // Don't throw the exception - we'll still continue with user creation
+                    // This ensures the user can at least log in, even if student record creation fails
+                }
+            }
+            
+            // Automatically log the user in
+            Auth::login($user);
+            $user->assignRole('Student');
     
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password)
-    ]);
-    
-    // Automatically log the user in
-    Auth::login($user);
-    $user->assignRole('Student');
-
-    // Send the email verification notification using Laravel's built-in system
-    $user->sendEmailVerificationNotification();
-    
-    return redirect()->route('verification.notice')
-                    ->with('status', 'Registration successful! Please check your email to verify your account.');
+            // Redirect to dashboard (no email verification needed)
+            return redirect()->route('dashboard')
+                            ->with('status', 'Registration successful! Welcome to the University Management System.');
+                            
+        } catch(\Exception $e) {
+            Log::error('Registration error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
+            
+            // In development environment, show the actual error for debugging
+            if (config('app.debug')) {
+                return redirect()->back()->withInput($request->except('password', 'password_confirmation'))
+                                       ->withErrors('Error: ' . $e->getMessage());
+            }
+            
+            return redirect()->back()->withInput($request->except('password', 'password_confirmation'))
+                                   ->withErrors('An unexpected error occurred during registration.');
+        }
     }
 
     public function verify(Request $request) {

@@ -8,7 +8,6 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="h5 mb-0">Verify Your Email Address</h2>
                 </div>
-                    @endif
                 
                 <div class="card-body">
                     @if (session('status'))

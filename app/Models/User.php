@@ -71,19 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'screen_reader' => 'boolean',
     ];
     
-    /**
-     * Send the email verification notification.
-     *
-     * @return void
-     */
-    public function sendEmailVerificationNotification()
-    {
-        // Generate a new verification code
-        $code = $this->generateVerificationCode();
-        
-        // Send the notification with the code
-        $this->notify(new \App\Notifications\VerificationCodeNotification($code));
-    }
+    // Email verification methods removed
 
     /**
      * Get the courses where the user is a professor.

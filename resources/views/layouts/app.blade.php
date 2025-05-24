@@ -71,13 +71,18 @@
 </head>
 <body class="bg-gray-50">
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        @include('layouts.sidebar')
+        @if(request()->is('login') || request()->is('register') || request()->is('password/*') || !auth()->check())
+            <!-- Main Content for Auth Pages (Full Width) -->
+            <main class="flex-1 min-w-0 overflow-auto">
+        @else
+            <!-- Sidebar for Authenticated Pages -->
+            @include('layouts.sidebar')
 
-        <!-- Main Content -->
-        <main class="flex-1 min-w-0 overflow-auto">
-            <!-- Top Navigation -->
-            @include('layouts.header')
+            <!-- Main Content -->
+            <main class="flex-1 min-w-0 overflow-auto">
+                <!-- Top Navigation -->
+                @include('layouts.header')
+        @endif
 
             <!-- Page Content -->
             <div class="p-4 md:p-6 lg:p-8">

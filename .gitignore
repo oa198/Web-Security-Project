@@ -49,6 +49,9 @@ yarn-debug.log
 # React specific
 /.react
 /.next
+
+# Do NOT ignore Windsurf rules
+!.windsurfrules
 /build
 /dist
 /public/build
