@@ -2,11 +2,17 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
+=======
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+>>>>>>> 20627ff683677b167e09ac475c7bd5b0b1f69552
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+<<<<<<< HEAD
+    //
+=======
     use HasFactory;
 
     /**
@@ -84,4 +90,5 @@ class Invoice extends Model
     {
         return $this->belongsTo(AcademicTerm::class);
     }
+>>>>>>> 20627ff683677b167e09ac475c7bd5b0b1f69552
 }

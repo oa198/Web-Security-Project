@@ -64,3 +64,4 @@ class Payment extends Model
         );
     }
 }
+    

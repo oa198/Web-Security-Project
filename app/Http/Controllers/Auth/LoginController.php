@@ -293,7 +293,10 @@ class LoginController extends Controller
      */
     public function redirectToLinkedin()
     {
-        return Socialite::driver('linkedin')->redirect();
+        return Socialite::driver('linkedin')
+            ->stateless() // Using stateless mode to avoid CSRF token issues
+            ->scopes(['r_liteprofile']) // Only request the profile scope which should be authorized
+            ->redirect();
     }
 
     /**
@@ -301,11 +304,29 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handleLinkedinCallback()
+    public function handleLinkedinCallback(Request $request)
     {
         try {
-            // Retrieve LinkedIn user data with state validation
-            $linkedinUser = Socialite::driver('linkedin')->user();
+            // Debug logging - capture all incoming parameters
+            Log::info('LinkedIn callback received parameters', [
+                'all_params' => $request->all(),
+                'query_string' => $request->getQueryString(),
+                'has_code' => $request->has('code'),
+                'code_value' => $request->input('code')
+            ]);
+            
+            // Check if there's a code parameter in the request
+            if (!$request->has('code')) {
+                Log::error('LinkedIn callback missing code parameter', [
+                    'request_params' => $request->all()
+                ]);
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Authentication error: Missing required parameters from LinkedIn. Please try again.'
+                ]);
+            }
+
+            // Retrieve LinkedIn user data without state validation
+            $linkedinUser = Socialite::driver('linkedin')->stateless()->user();
 
             // Find user by linkedin_id
             $user = User::where('linkedin_id', $linkedinUser->getId())->first();
@@ -357,6 +378,18 @@ class LoginController extends Controller
                 ]);
             }
 
+            // Store LinkedIn token and refresh token
+            $user->linkedin_token = $linkedinUser->token;
+            $user->linkedin_refresh_token = $linkedinUser->refreshToken ?? null;
+            $user->save();
+            
+            // Log token storage
+            Log::info('LinkedIn tokens stored for user', [
+                'user_id' => $user->id,
+                'token_length' => $linkedinUser->token ? strlen($linkedinUser->token) : 0,
+                'has_refresh_token' => !empty($linkedinUser->refreshToken)
+            ]);
+            
             // Log in the user and regenerate session
             Auth::login($user, true);
             session()->regenerate();

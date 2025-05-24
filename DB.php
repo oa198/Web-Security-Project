@@ -65,6 +65,11 @@ switch ($operation) {
         describeTable($tableName);
         break;
         
+    case 'add-linkedin-token-fields':
+    case 'addLinkedinTokenFields':
+        addLinkedinTokenFields();
+        break;
+        
     default:
         echo "Unknown operation: {$operation}. Run 'php DB.php help' for usage information.\n";
 }
@@ -81,6 +86,7 @@ function showHelp() {
     echo "  check-tables           - List all tables in the database\n";
     echo "  create-payments-table  - Create the payments table with required fields\n";
     echo "  describe-payments [table] - Show the structure of the specified table (default: payments)\n";
+    echo "  add-linkedin-token-fields - Add missing LinkedIn token and refresh token fields to users table\n";
     echo "\n";
 }
 
@@ -390,5 +396,53 @@ function describeTable($tableName) {
         
     } catch (\Exception $e) {
         echo "Error describing table: " . $e->getMessage() . "\n";
+    }
+}
+
+function addLinkedinTokenFields() {
+    try {
+        // Check if users table exists
+        if (!DB::getSchemaBuilder()->hasTable('users')) {
+            echo "The 'users' table does not exist.\n";
+            return;
+        }
+        
+        // Check if the columns already exist
+        $schema = DB::getSchemaBuilder();
+        $hasLinkedinToken = false;
+        $hasLinkedinRefreshToken = false;
+        
+        // Get current columns
+        $columns = $schema->getColumnListing('users');
+        foreach ($columns as $column) {
+            if ($column === 'linkedin_token') {
+                $hasLinkedinToken = true;
+            }
+            if ($column === 'linkedin_refresh_token') {
+                $hasLinkedinRefreshToken = true;
+            }
+        }
+        
+        // Add linkedin_token column if it doesn't exist
+        if (!$hasLinkedinToken) {
+            DB::statement('ALTER TABLE users ADD COLUMN linkedin_token TEXT NULL AFTER linkedin_id');
+            echo "Added 'linkedin_token' column to users table.\n";
+        } else {
+            echo "The 'linkedin_token' column already exists in the users table.\n";
+        }
+        
+        // Add linkedin_refresh_token column if it doesn't exist
+        if (!$hasLinkedinRefreshToken) {
+            DB::statement('ALTER TABLE users ADD COLUMN linkedin_refresh_token TEXT NULL AFTER linkedin_token');
+            echo "Added 'linkedin_refresh_token' column to users table.\n";
+        } else {
+            echo "The 'linkedin_refresh_token' column already exists in the users table.\n";
+        }
+        
+        echo "LinkedIn token fields operation completed.\n";
+        
+    } catch (\Exception $e) {
+        echo "Error adding LinkedIn token fields: " . $e->getMessage() . "\n";
+        echo $e->getTraceAsString() . "\n";
     }
 }
