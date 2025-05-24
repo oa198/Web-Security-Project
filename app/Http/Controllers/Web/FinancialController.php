@@ -23,37 +23,64 @@ class FinancialController extends Controller
     {
         $user = Auth::user();
         
-        if ($user->hasRole('student')) {
-            $financialRecords = FinancialRecord::where('student_id', $user->student->id)
+        try {
+            if ($user->hasRole('student')) {
+                if (!$user->student) {
+                    return redirect()->route('dashboard')
+                        ->with('error', 'Student record not found. Please contact support.');
+                }
+                
+                $studentId = $user->student->id;
+                $financialRecords = FinancialRecord::where('student_id', $studentId)
+                    ->latest()
+                    ->paginate(10);
+                    
+                // Calculate totals
+                $totalBalance = $financialRecords->sum('amount');
+                $totalCharges = $financialRecords->where('amount', '>', 0)->sum('amount');
+                $totalCredits = $financialRecords->where('amount', '<', 0)->sum('amount');
+                
+            } else {
+                $financialRecords = FinancialRecord::with('student.user')
+                    ->latest()
+                    ->paginate(10);
+                    
+                // For non-student users, show summary of all records
+                $totalBalance = FinancialRecord::sum('amount');
+                $totalCharges = FinancialRecord::where('amount', '>', 0)->sum('amount');
+                $totalCredits = FinancialRecord::where('amount', '<', 0)->sum('amount');
+            }
+            
+            // Get recent payments (last 5)
+            $recentPayments = Payment::with('financialRecord')
                 ->latest()
-                ->paginate(10);
-        } else {
-            $financialRecords = FinancialRecord::with('student.user')
-                ->latest()
-                ->paginate(10);
+                ->limit(5)
+                ->get();
+                
+            // Get pending invoices if student
+            $pendingInvoices = $user->hasRole('student') && $user->student
+                ? Invoice::where('student_id', $user->student->id)
+                    ->where('status', 'pending')
+                    ->latest()
+                    ->limit(5)
+                    ->get()
+                : collect();
+            
+            return view('financial.index', [
+                'currentBalance' => $totalBalance,
+                'totalCharges' => $totalCharges,
+                'totalCredits' => $totalCredits,
+                'financialRecords' => $financialRecords,
+                'recentPayments' => $recentPayments,
+                'pendingInvoices' => $pendingInvoices,
+                'isStudent' => $user->hasRole('student'),
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error in FinancialController@index: ' . $e->getMessage());
+            return redirect()->route('dashboard')
+                ->with('error', 'An error occurred while loading the financial page. Please try again later.');
         }
-        
-        // Get summary statistics
-        $totalBalance = $user->hasRole('student') 
-            ? $user->student->financialRecords()->sum('amount') 
-            : 0;
-            
-        $recentPayments = Payment::with('financialRecord')
-            ->latest()
-            ->limit(5)
-            ->get();
-            
-        $pendingInvoices = Invoice::where('status', 'pending')
-            ->latest()
-            ->limit(5)
-            ->get();
-        
-        return view('financial.index', compact(
-            'financialRecords', 
-            'totalBalance', 
-            'recentPayments', 
-            'pendingInvoices'
-        ));
     }
 
     /**
